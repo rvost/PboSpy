@@ -1,0 +1,151 @@
+﻿<Window x:Class="PboExplorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PboExplorer"
+        mc:Ignorable="d"
+        Title="PBO Explorer" Height="450" Width="800">
+    
+    <Window.Resources>
+        <HierarchicalDataTemplate x:Key="TreeTemplate" ItemsSource="{Binding Children}">
+            <TextBlock Text="{Binding Name}" />
+        </HierarchicalDataTemplate>
+    </Window.Resources>
+    
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open file..." Click="OpenFile" />
+                <MenuItem Header="Open all from _directory..." Click="OpenDirectory" />
+                <!--<MenuItem Header="_Close"/>
+                <MenuItem Header="Close _all"/>-->
+            </MenuItem>
+            <MenuItem Header="_Extract">
+                <MenuItem Header="_All current PBO files..." Click="ExtractCurrentPBO" Name="ExtractPBO" IsEnabled="False"  />
+                <MenuItem Header="_Current file..." Click="ExtractSelected" Name="ExtractFile" IsEnabled="False" />
+                <MenuItem Header="Current file as _text..." Click="ExtractSelectedAsText" Name="ExtractFileText" IsEnabled="False" />
+                <MenuItem Header="Current file as _PNG..."  Click="ExtractSelectedAsPNG" Name="ExtractFilePNG" IsEnabled="False" />
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <TabControl  Grid.Column="0">
+                <TabItem Header="PBO Files">
+                    <TreeView Name="PboView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowPboEntry">
+
+                    </TreeView>
+
+                </TabItem>
+                <!--<TabItem Header="Merged Config">
+                    <TreeView Name="ConfigView" ItemTemplate="{StaticResource TreeTemplate}">
+  
+                    </TreeView>
+                    
+                </TabItem>
+                <TabItem Header="Mereged Data">
+                    <TreeView Name="DataView" ItemTemplate="{StaticResource TreeTemplate}">
+
+                    </TreeView>
+
+                </TabItem>-->
+            </TabControl>
+
+            <GridSplitter Grid.Column="1" 
+              HorizontalAlignment="Left" 
+              VerticalAlignment="Stretch"
+              Width="5"/>
+
+            <Grid Grid.Column="2" Margin="5 0 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <DataGrid Name="PropertiesGrid" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Property" Binding="{Binding Name}" Width="1*"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="3*"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <GridSplitter Grid.Row="1" 
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Top"
+                      ResizeDirection="Rows"
+                      Height="5"/>
+                <Grid Background="LightGray" Grid.Row="1" Margin="0 5 0 0">
+                    <ScrollViewer Name="AboutBox" Margin="10">
+                        <TextBlock>
+                            PBO Explorer version 0.1<LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/jetelain/PboExplorer" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/jetelain/PboExplorer</Hyperlink>
+                            <LineBreak />
+                            <LineBreak />
+                            MIT License<LineBreak />
+                            <LineBreak />
+                            Copyright (c) 2021 Julien Etelain (aka GrueArbre)<LineBreak />
+                            <LineBreak />
+                            Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                            of this software and associated documentation files (the "Software"), to deal<LineBreak />
+                            in the Software without restriction, including without limitation the rights<LineBreak />
+                            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                            copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                            furnished to do so, subject to the following conditions:<LineBreak />
+                            <LineBreak />
+                            The above copyright notice and this permission notice shall be included in all<LineBreak />
+                            copies or substantial portions of the Software.<LineBreak />
+                            <LineBreak />
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                            SOFTWARE.
+                            <LineBreak />
+                            <LineBreak />
+                            Includes "ArmA File Format Library"<LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/Braini01/bis-file-formats" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/Braini01/bis-file-formats</Hyperlink>
+                            <LineBreak />
+                            <LineBreak />
+                            MIT License<LineBreak />
+                            <LineBreak />
+                            Copyright (c) 2017 Braini01<LineBreak />
+                            <LineBreak />
+                            Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                            of this software and associated documentation files (the "Software"), to deal<LineBreak />
+                            in the Software without restriction, including without limitation the rights<LineBreak />
+                            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                            copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                            furnished to do so, subject to the following conditions:<LineBreak />
+                            <LineBreak />
+                            The above copyright notice and this permission notice shall be included in all<LineBreak />
+                            copies or substantial portions of the Software.<LineBreak />
+                            <LineBreak />
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                            SOFTWARE.
+                            <LineBreak />
+                            <LineBreak />
+                        </TextBlock>
+                    </ScrollViewer>
+                    <TextBox Name="TextPreview" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Visibility="Hidden" FontFamily="Consolas" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
+                    <Image Name="ImagePreview"  />
+                </Grid>
+
+            </Grid>
+            
+        </Grid>
+        
+        
+        
+        
+        
+    </DockPanel>
+</Window>
