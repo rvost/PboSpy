@@ -59,7 +59,7 @@ namespace PboExplorer
             var dlg = new OpenFileDialog();
             dlg.Title = "Load PBO archive";
             dlg.DefaultExt = ".pbo";
-            dlg.Filter = "PBO File (.pbo)|*.pbo";
+            dlg.Filter = "PBO File|*.pbo";
             dlg.Multiselect = true;
             if (dlg.ShowDialog() == true)
             {
@@ -120,6 +120,10 @@ namespace PboExplorer
                 CurrentPBO.Extract(dialog.FileName);
             }
         }
+        private void CanExtractSelected(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = SelectedEntry != null;
+        }
 
         private void ExtractSelected(object sender, RoutedEventArgs e)
         {
@@ -128,7 +132,7 @@ namespace PboExplorer
                 var dlg = new SaveFileDialog();
                 dlg.Title = "Extract";
                 dlg.FileName = SelectedEntry.Name;
-                dlg.Filter = "All files (.*)|*.*";
+                dlg.Filter = "All files|*.*";
                 if (dlg.ShowDialog() == true)
                 {
                     SelectedEntry.Extract(dlg.FileName);
@@ -144,7 +148,7 @@ namespace PboExplorer
                 dlg.Title = "Extract to text file";
                 dlg.FileName = SelectedEntry.Extension == ".bin" ? System.IO.Path.ChangeExtension(SelectedEntry.Name, ".cpp") : SelectedEntry.Name;
                 dlg.DefaultExt = ".txt";
-                dlg.Filter = "Text file (.txt)|*.txt|CPP (.cpp)|*.cpp|SQM (.sqm)|*.sqm|SQF (.sqf)|*.sqf|RVMAT (.rvmat)|*.rvmat";
+                dlg.Filter = "Text file|*.txt|CPP|*.cpp|HPP|*.hpp|SQM|*.sqm|SQF|*.sqf|RVMAT|*.rvmat";
                 if (dlg.ShowDialog() == true)
                 {
                     File.WriteAllText(dlg.FileName, TextPreview.Text);
@@ -160,7 +164,7 @@ namespace PboExplorer
                 dlg.Title = "Extract to PNG";
                 dlg.FileName = System.IO.Path.ChangeExtension(SelectedEntry.Name, ".png");
                 dlg.DefaultExt = ".png";
-                dlg.Filter = "PNG (.png)|*.png";
+                dlg.Filter = "PNG|*.png";
                 if (dlg.ShowDialog() == true)
                 {
                     var encoder = new PngBitmapEncoder();
@@ -201,7 +205,6 @@ namespace PboExplorer
             ImagePreview.Source = null;
             TextPreview.Text = string.Empty;
 
-            ExtractFile.IsEnabled = false;
             ExtractFilePNG.IsEnabled = false;
             ExtractFileText.IsEnabled = false;
             ExtractPBO.IsEnabled = false;
@@ -237,7 +240,6 @@ namespace PboExplorer
 
         private void Show(PboEntry entry)
         {
-            ExtractFile.IsEnabled = true;
             var infos = new List<PropertyItem>()
             {
                 new PropertyItem("PBO File", entry.PBO.PBOFilePath),
@@ -291,8 +293,7 @@ namespace PboExplorer
             }
             catch(Exception e)
             {
-                TextPreview.Text = e.ToString();
-                TextPreview.Visibility = Visibility.Visible;
+                ShowText(e.ToString());
             }
             PropertiesGrid.ItemsSource = infos;
         }
@@ -309,15 +310,19 @@ namespace PboExplorer
 
         private void ShowGenericText(PboEntry entry, List<PropertyItem> infos)
         {
+            ShowText(entry.GetText());
+        }
+
+        private void ShowText(string text)
+        {
             ExtractFileText.IsEnabled = true;
-            TextPreview.Text = entry.GetText();
+            TextPreview.Text = text;
             TextPreview.Visibility = Visibility.Visible;
         }
 
         private void ShowDetectConfig(PboEntry entry, List<PropertyItem> infos)
         {
-            TextPreview.Text = entry.GetDetectConfigAsText(out bool wasBinary);
-            TextPreview.Visibility = Visibility.Visible;
+            ShowText(entry.GetDetectConfigAsText(out bool wasBinary));
             infos.Add(new PropertyItem("Format", wasBinary ? "Binarized" : "Text"));
         }
 
@@ -332,8 +337,7 @@ namespace PboExplorer
 
         private void ShowBinaryConfig(PboEntry entry, List<PropertyItem> infos)
         {
-            TextPreview.Text = entry.GetBinaryConfigAsText();
-            TextPreview.Visibility = Visibility.Visible;
+            ShowText(entry.GetBinaryConfigAsText());
         }
 
         private void ShowImage(PboEntry entry, List<PropertyItem> infos)
@@ -366,6 +370,32 @@ namespace PboExplorer
                 size = size / 1024;
             }
             return string.Format("{0:0.##} {1}", size, sizes[order]);
+        }
+
+        private void CopyToClipboard(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TextPreview.Text))
+            {
+                Clipboard.SetText(TextPreview.Text);
+            }
+            else if (ImagePreview.Source is BitmapSource bmp)
+            {
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bmp));
+                using (var pngMemStream = new MemoryStream())
+                {
+                    encoder.Save(pngMemStream);
+                    var data = new DataObject();
+                    data.SetImage(bmp); // For applications that does not support PNG data
+                    data.SetData("PNG", pngMemStream, false);
+                    Clipboard.SetDataObject(data, true);
+                }
+            }
+        }
+
+        private void CanCopyToClipboard(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = !string.IsNullOrEmpty(TextPreview.Text) || ImagePreview.Source is BitmapSource;
         }
     }
 }

@@ -7,6 +7,18 @@
         mc:Ignorable="d"
         Title="PBO Explorer" Height="450" Width="800">
     
+    <Window.CommandBindings>
+        <CommandBinding Command="Copy" Executed="CopyToClipboard" CanExecute="CanCopyToClipboard" />
+        <CommandBinding Command="Save" Executed="ExtractSelected" CanExecute="CanExtractSelected" />
+        <CommandBinding Command="Open" Executed="OpenFile" />
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Key="C" Modifiers="Control" Command="Copy"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="Save"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
+    </Window.InputBindings>
+
     <Window.Resources>
         <HierarchicalDataTemplate x:Key="TreeTemplate" ItemsSource="{Binding Children}">
             <TextBlock Text="{Binding Name}" />
@@ -16,16 +28,17 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open file..." Click="OpenFile" />
+                <MenuItem Header="_Open file..." Command="Open" InputGestureText="Ctrl+O"  />
                 <MenuItem Header="Open all from _directory..." Click="OpenDirectory" />
                 <!--<MenuItem Header="_Close"/>-->
                 <MenuItem Header="Close _all" Click="CloseAll"/>
             </MenuItem>
             <MenuItem Header="_Extract">
                 <MenuItem Header="_All current PBO files..." Click="ExtractCurrentPBO" Name="ExtractPBO" IsEnabled="False"  />
-                <MenuItem Header="_Current file..." Click="ExtractSelected" Name="ExtractFile" IsEnabled="False" />
+                <MenuItem Header="_Current file..." Command="Save" InputGestureText="Ctrl+S" />
                 <MenuItem Header="Current file as _text..." Click="ExtractSelectedAsText" Name="ExtractFileText" IsEnabled="False" />
                 <MenuItem Header="Current file as _PNG..."  Click="ExtractSelectedAsPNG" Name="ExtractFilePNG" IsEnabled="False" />
+                <MenuItem Header="Copy to Clipboard" Command="Copy" InputGestureText="Ctrl+C" />
             </MenuItem>
             <MenuItem Header="_About" Click="About"/>
         </Menu>
