@@ -77,6 +77,20 @@ namespace PboExplorer
             }
         }
 
+        private void CloseAll(object sender, RoutedEventArgs e)
+        {
+            ResetView();
+            AboutBox.Visibility = Visibility.Visible;
+            PboList.Clear();
+            DataView.ItemsSource = null;
+        }
+
+        private void About(object sender, RoutedEventArgs e)
+        {
+            ResetView();
+            AboutBox.Visibility = Visibility.Visible;
+        }
+
         private void LoadPboList(IEnumerable<string> fileNames)
         {
             Task.Factory
@@ -87,7 +101,13 @@ namespace PboExplorer
                     {
                         PboList.Add(e);
                     }
+                    GenerateMerged(r.Result);
                 }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void GenerateMerged(IEnumerable<PboFile> files)
+        {
+            DataView.ItemsSource = PboFile.MergedView(files).Children;
         }
 
         private void ExtractCurrentPBO(object sender, RoutedEventArgs e)
@@ -155,20 +175,9 @@ namespace PboExplorer
 
         private void ShowPboEntry(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            AboutBox.Visibility = Visibility.Hidden;
-            TextPreview.Visibility = Visibility.Hidden;
-            ImagePreview.Visibility = Visibility.Hidden;
-            ImagePreview.Source = null;
-            TextPreview.Text = string.Empty;
+            ResetView();
 
-            ExtractFile.IsEnabled = false;
-            ExtractFilePNG.IsEnabled = false;
-            ExtractFileText.IsEnabled = false;
-            ExtractPBO.IsEnabled = false;
-            SelectedEntry = null;
-            CurrentPBO = null;
-
-            if (e.NewValue is PboEntry entry) 
+            if (e.NewValue is PboEntry entry)
             {
                 SelectedEntry = entry;
                 Show(entry);
@@ -184,13 +193,30 @@ namespace PboExplorer
             }
         }
 
+        private void ResetView()
+        {
+            AboutBox.Visibility = Visibility.Hidden;
+            TextPreview.Visibility = Visibility.Hidden;
+            ImagePreview.Visibility = Visibility.Hidden;
+            ImagePreview.Source = null;
+            TextPreview.Text = string.Empty;
+
+            ExtractFile.IsEnabled = false;
+            ExtractFilePNG.IsEnabled = false;
+            ExtractFileText.IsEnabled = false;
+            ExtractPBO.IsEnabled = false;
+            SelectedEntry = null;
+            CurrentPBO = null;
+            PropertiesGrid.ItemsSource = null;
+        }
+
         private void Show(PboFile file)
         {
             ExtractPBO.IsEnabled = true;
             var infos =  new List<PropertyItem>()
             {
                 new PropertyItem("PBO File", file.PBO.PBOFilePath),
-                new PropertyItem("Size", new FileInfo(file.PBO.PBOFilePath).Length.ToString()),
+                new PropertyItem("Size", FormatSize(new FileInfo(file.PBO.PBOFilePath).Length)),
                 new PropertyItem("Entries", file.PBO.FileEntries.Count.ToString()),
                 new PropertyItem("Prefix", file.PBO.Prefix),
             };
@@ -222,12 +248,12 @@ namespace PboExplorer
 
             if (entry.Entry.IsCompressed)
             {
-                infos.Add(new PropertyItem("Size uncompressed", entry.Entry.UncompressedSize.ToString()));
-                infos.Add(new PropertyItem("Size in PBO", entry.Entry.DataSize.ToString()));
+                infos.Add(new PropertyItem("Size uncompressed", FormatSize(entry.Entry.UncompressedSize)));
+                infos.Add(new PropertyItem("Size in PBO", FormatSize(entry.Entry.DataSize)));
             }
             else
             {
-                infos.Add(new PropertyItem("Size", entry.Entry.DataSize.ToString()));
+                infos.Add(new PropertyItem("Size", FormatSize(entry.Entry.DataSize)));
             }
 
             try
@@ -275,8 +301,8 @@ namespace PboExplorer
         {
             ExtractFilePNG.IsEnabled = true;
             var paa = entry.GetPaaImage();
-            infos.Add(new PropertyItem("Size", $"{paa.Paa.Width}x{paa.Paa.Height}"));
-            infos.Add(new PropertyItem("Type", paa.Paa.Type.ToString()));
+            infos.Add(new PropertyItem("Image size", $"{paa.Paa.Width}x{paa.Paa.Height}"));
+            infos.Add(new PropertyItem("Image type", paa.Paa.Type.ToString()));
             ImagePreview.Source = paa.Bitmap;
             ImagePreview.Visibility = Visibility.Visible;
         }
@@ -319,8 +345,8 @@ namespace PboExplorer
         {
             PropertiesGrid.ItemsSource = new List<PropertyItem>()
             {
-                new PropertyItem("Size uncompressed", directory.UncompressedSize.ToString()),
-                new PropertyItem("Size in PBO", directory.DataSize.ToString()),
+                new PropertyItem("Size uncompressed", FormatSize(directory.UncompressedSize)),
+                new PropertyItem("Size in PBO", FormatSize(directory.DataSize)),
             };
         }
 
@@ -328,6 +354,18 @@ namespace PboExplorer
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
+        }
+
+        private static string FormatSize(double size)
+        {
+            string[] sizes = { "Bytes", "KiB", "MiB", "GiB", "TiB" };
+            int order = 0;
+            while (size >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                size = size / 1024;
+            }
+            return string.Format("{0:0.##} {1}", size, sizes[order]);
         }
     }
 }

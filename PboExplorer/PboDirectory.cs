@@ -18,9 +18,9 @@ namespace PboExplorer
 
         public string Name { get; }
 
-        public int DataSize => files.Sum(f => f.Entry.DataSize) + directories.Sum(f => f.DataSize);
+        public double DataSize => files.Sum(f => f.Entry.DataSize) + directories.Sum(f => f.DataSize);
 
-        public int UncompressedSize => files.Sum(f => f.Entry.IsCompressed ? f.Entry.UncompressedSize : f.Entry.DataSize) + directories.Sum(f => f.UncompressedSize);
+        public double UncompressedSize => files.Sum(f => f.Entry.IsCompressed ? f.Entry.UncompressedSize : f.Entry.DataSize) + directories.Sum(f => f.UncompressedSize);
 
         public ICollection<ITreeItem> Children
         {
@@ -36,7 +36,12 @@ namespace PboExplorer
 
         internal void AddEntry(PBO pbo, FileEntry entry)
         {
-            files.Add(new PboEntry(pbo, entry));
+            AddEntry(new PboEntry(pbo, entry));
+        }
+
+        internal void AddEntry(PboEntry entry)
+        {
+            files.Add(entry);
             merged = null;
         }
 
@@ -51,5 +56,7 @@ namespace PboExplorer
             }
             return existing;
         }
+
+        internal IEnumerable<PboEntry> AllFiles => directories.SelectMany(d => d.AllFiles).Concat(files);
     }
 }

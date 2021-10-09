@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BIS.PBO;
 
 namespace PboExplorer
@@ -49,9 +50,21 @@ namespace PboExplorer
             return GetDirectory(root, parent).GetOrAddDirectory(Path.GetFileName(directory));
         }
 
+        internal static PboDirectory MergedView(IEnumerable<PboFile> files)
+        {
+            var masterRoot = new PboDirectory(null);
+            foreach (var entry in files.SelectMany(f => f.AllEntries))
+            {
+                PboFile.GetDirectory(masterRoot, System.IO.Path.GetDirectoryName(entry.FullPath).Trim('/', '\\')).AddEntry(entry);
+            }
+            return masterRoot;
+        }
+
         internal void Extract(string fileName)
         {
             pbo.ExtractAllFiles(fileName);
         }
+
+        internal IEnumerable<PboEntry> AllEntries => root.AllFiles;
     }
 }
