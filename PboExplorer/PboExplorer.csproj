@@ -6,13 +6,23 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\bis-file-formats\BIS.PAA\BIS.PAA.csproj" />
     <ProjectReference Include="..\..\bis-file-formats\BIS.PBO\BIS.PBO.csproj" />
+    <ProjectReference Include="..\..\bis-file-formats\BIS.WRP\BIS.WRP.csproj" />
   </ItemGroup>
 
 </Project>

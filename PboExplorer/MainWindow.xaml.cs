@@ -4,21 +4,20 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using BIS.PAA;
+using BIS.Core.Streams;
 using BIS.PBO;
+using BIS.WRP;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace PboExplorer
 {
@@ -27,10 +26,11 @@ namespace PboExplorer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ObservableCollection<PboFile> PboList = new ObservableCollection<PboFile>();
+        private readonly ObservableCollection<ITreeItem> PboList = new ObservableCollection<ITreeItem>();
         private PboFile CurrentPBO { get; set; }
         private PboEntry SelectedEntry { get; set; }
 
+        private PhysicalFiles physicalFiles;
         public MainWindow()
         {
             InitializeComponent();
@@ -59,7 +59,7 @@ namespace PboExplorer
             var dlg = new OpenFileDialog();
             dlg.Title = "Load PBO archive";
             dlg.DefaultExt = ".pbo";
-            dlg.Filter = "PBO File|*.pbo";
+            dlg.Filter = "PBO File|*.pbo|Preview BI Files|*.paa;*.rvmat;*.bin;*.pac;*.p3d;*.wrp;*.sqm";
             dlg.Multiselect = true;
             if (dlg.ShowDialog() == true)
             {
@@ -93,16 +93,53 @@ namespace PboExplorer
 
         private void LoadPboList(IEnumerable<string> fileNames)
         {
+            var pbos = fileNames.Where(f => string.Equals(System.IO.Path.GetExtension(f), ".pbo", StringComparison.OrdinalIgnoreCase)).ToList();
+            var nonPbos = fileNames.Where(f => !string.Equals(System.IO.Path.GetExtension(f), ".pbo", StringComparison.OrdinalIgnoreCase)).ToList();
+
             Task.Factory
-                .StartNew(() => fileNames.OrderBy(f => System.IO.Path.GetFileName(f), StringComparer.OrdinalIgnoreCase).Select(fileName => new PboFile(new PBO(fileName, false))))
+                .StartNew(() => pbos.OrderBy(f => System.IO.Path.GetFileName(f), StringComparer.OrdinalIgnoreCase).Select(fileName => new PboFile(new PBO(fileName, false))))
                 .ContinueWith((r) =>
                 {
                     foreach(var e in r.Result)
                     {
                         PboList.Add(e);
                     }
-                    GenerateMerged(r.Result);
+                    GenerateMerged(PboList.OfType<PboFile>());
                 }, TaskScheduler.FromCurrentSynchronizationContext());
+
+            PhysicalFile lastFile = null;
+            foreach (var file in nonPbos)
+            {
+                if (File.Exists(file))
+                {
+                    lastFile = OpenNonPbo(System.IO.Path.GetFullPath(file));
+                }
+            }
+            if (lastFile != null)
+            {
+                var files = (TreeViewItem)PboView.ItemContainerGenerator.ContainerFromItem(physicalFiles);
+                files.IsExpanded = true;
+
+                if (files.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
+                {
+                    files.ItemContainerGenerator.StatusChanged += (_, _) =>
+                    {
+                        var file = (TreeViewItem)files.ItemContainerGenerator.ContainerFromItem(lastFile);
+                        if (file != null)
+                        {
+                            file.IsSelected = true;
+                        }
+                    };
+                }
+                else
+                {
+                    var file = (TreeViewItem)files.ItemContainerGenerator.ContainerFromItem(lastFile);
+                    if (file != null)
+                    {
+                        file.IsSelected = true;
+                    }
+                }
+            }
         }
 
         private void GenerateMerged(IEnumerable<PboFile> files)
@@ -180,7 +217,7 @@ namespace PboExplorer
         private void ShowPboEntry(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             ResetView();
-
+            Cursor = Cursors.Wait;
             if (e.NewValue is PboEntry entry)
             {
                 SelectedEntry = entry;
@@ -195,13 +232,19 @@ namespace PboExplorer
             {
                 Show(directory);
             }
+            else if (e.NewValue is PhysicalFile pfile)
+            {
+                Show(pfile);
+            }
+            Cursor = Cursors.Arrow;
         }
 
         private void ResetView()
         {
             AboutBox.Visibility = Visibility.Hidden;
             TextPreview.Visibility = Visibility.Hidden;
-            ImagePreview.Visibility = Visibility.Hidden;
+            ImagePreviewBorder.Reset();
+            ImagePreviewBorder.Visibility = Visibility.Hidden;
             ImagePreview.Source = null;
             TextPreview.Text = string.Empty;
 
@@ -237,6 +280,17 @@ namespace PboExplorer
             }
             PropertiesGrid.ItemsSource = infos;
         }
+        private void Show(PhysicalFile entry)
+        {
+
+            var infos = new List<PropertyItem>()
+            {
+                new PropertyItem("Full path", entry.FullPath)
+            };
+
+            Show(entry, infos);
+
+        }
 
         private void Show(PboEntry entry)
         {
@@ -258,6 +312,11 @@ namespace PboExplorer
                 infos.Add(new PropertyItem("Size", FormatSize(entry.Entry.DataSize)));
             }
 
+            Show(entry, infos);
+        }
+
+        private void Show(FileBase entry, List<PropertyItem> infos)
+        {
             try
             {
                 switch (entry.Extension)
@@ -275,14 +334,19 @@ namespace PboExplorer
                     case ".sqm":
                         ShowDetectConfig(entry, infos);
                         break;
+                    case ".wrp":
+                        ShowWRP(entry, infos);
+                        break;
                     case ".p3d":
                     case ".rtm":
                     case ".wss":
-                    case ".wrp":
                     case ".ogg":
                     case ".bin":
                     case ".fxy":
                     case ".wsi":
+                    case ".shp":
+                    case ".dbf":
+                    case ".shx":
                         ShowGenericBinary(entry, infos);
                         break;
                     default:
@@ -291,24 +355,84 @@ namespace PboExplorer
 
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ShowText(e.ToString());
             }
             PropertiesGrid.ItemsSource = infos;
         }
 
-        private void ShowPAA(PboEntry entry, List<PropertyItem> infos)
+        private void ShowWRP(FileBase entry, List<PropertyItem> infos)
+        {
+            using(var stream = entry.GetStream())
+            {
+                var wrp = StreamHelper.Read<AnyWrp>(stream);
+                infos.Add(new PropertyItem("CellSize", wrp.CellSize.ToString()));
+                infos.Add(new PropertyItem("LandRange", $"{wrp.LandRangeX}x{wrp.LandRangeY}"));
+                infos.Add(new PropertyItem("TerrainRange", $"{wrp.TerrainRangeX}x{wrp.TerrainRangeY}"));
+                infos.Add(new PropertyItem("Objects.Count", wrp.ObjectsCount.ToString()));
+                infos.Add(new PropertyItem("Materials.Count", wrp.MatNames.Length.ToString()));
+                ImagePreview.Source = PreviewElevation(wrp);
+                ImagePreviewBorder.Visibility = Visibility.Visible;
+            }
+
+
+        }
+        public BitmapSource PreviewElevation(AnyWrp wrp)
+        {
+            var min = 4000d;
+
+            var max = -1000d;
+
+            for (int y = 0; y < wrp.TerrainRangeY; y++)
+            {
+                for (int x = 0; x < wrp.TerrainRangeX; x++)
+                {
+                    max = Math.Max(wrp.Elevation[x + (y * wrp.TerrainRangeY)], max);
+                    min = Math.Min(wrp.Elevation[x + (y * wrp.TerrainRangeY)], min);
+                }
+            }
+
+            var min0 = Math.Min(-1, min);
+            min = Math.Max(0, min);
+            var legend = new[]
+            {
+                new { E = min0, Color = SixLabors.ImageSharp.Color.DarkBlue.ToPixel<Rgb24>().ToScaledVector4() },
+                new { E = min, Color = SixLabors.ImageSharp.Color.LightBlue.ToPixel<Rgb24>().ToScaledVector4() },
+                new { E = min + (max - min) * 0.10, Color = SixLabors.ImageSharp.Color.DarkGreen.ToPixel<Rgb24>().ToScaledVector4() },
+                new { E = min + (max - min) * 0.15, Color = SixLabors.ImageSharp.Color.Green.ToPixel<Rgb24>().ToScaledVector4() },
+                new { E = min + (max - min) * 0.40, Color = SixLabors.ImageSharp.Color.Yellow.ToPixel<Rgb24>().ToScaledVector4() },
+                new { E = min + (max - min) * 0.70, Color = SixLabors.ImageSharp.Color.Red.ToPixel<Rgb24>().ToScaledVector4() },
+                new { E = max, Color = SixLabors.ImageSharp.Color.Maroon.ToPixel<Rgb24>().ToScaledVector4() }
+            };
+            var img = new SixLabors.ImageSharp.Image<Bgra32>(wrp.TerrainRangeX, wrp.TerrainRangeY);
+            for (int y = 0; y < wrp.TerrainRangeY; y++)
+            {
+                for (int x = 0; x < wrp.TerrainRangeX; x++)
+                {
+                    var elevation = wrp.Elevation[x + (y * wrp.TerrainRangeY)];
+                    var before = legend.Where(e => e.E <= elevation).Last();
+                    var after = legend.FirstOrDefault(e => e.E > elevation) ?? legend.Last();
+                    var scale = (float)((elevation - before.E) / (after.E - before.E));
+                    Bgra32 rgb = new Bgra32();
+                    rgb.FromScaledVector4(Vector4.Lerp(before.Color, after.Color, scale));
+                    img[x, wrp.TerrainRangeY - y - 1] = rgb;
+                }
+            }
+            return new ImageSharpImageSource(img);
+        }
+
+        private void ShowPAA(FileBase entry, List<PropertyItem> infos)
         {
             ExtractFilePNG.IsEnabled = true;
             var paa = entry.GetPaaImage();
             infos.Add(new PropertyItem("Image size", $"{paa.Paa.Width}x{paa.Paa.Height}"));
             infos.Add(new PropertyItem("Image type", paa.Paa.Type.ToString()));
             ImagePreview.Source = paa.Bitmap;
-            ImagePreview.Visibility = Visibility.Visible;
+            ImagePreviewBorder.Visibility = Visibility.Visible;
         }
 
-        private void ShowGenericText(PboEntry entry, List<PropertyItem> infos)
+        private void ShowGenericText(FileBase entry, List<PropertyItem> infos)
         {
             ShowText(entry.GetText());
         }
@@ -320,13 +444,13 @@ namespace PboExplorer
             TextPreview.Visibility = Visibility.Visible;
         }
 
-        private void ShowDetectConfig(PboEntry entry, List<PropertyItem> infos)
+        private void ShowDetectConfig(FileBase entry, List<PropertyItem> infos)
         {
             ShowText(entry.GetDetectConfigAsText(out bool wasBinary));
             infos.Add(new PropertyItem("Format", wasBinary ? "Binarized" : "Text"));
         }
 
-        private void ShowGenericBinary(PboEntry entry, List<PropertyItem> infos)
+        private void ShowGenericBinary(FileBase entry, List<PropertyItem> infos)
         {
             if (string.Equals(entry.Name, "config.bin", StringComparison.OrdinalIgnoreCase))
             {
@@ -335,14 +459,21 @@ namespace PboExplorer
             }
         }
 
-        private void ShowBinaryConfig(PboEntry entry, List<PropertyItem> infos)
+        private void ShowBinaryConfig(FileBase entry, List<PropertyItem> infos)
         {
             ShowText(entry.GetBinaryConfigAsText());
         }
 
-        private void ShowImage(PboEntry entry, List<PropertyItem> infos)
+        private void ShowImage(FileBase entry, List<PropertyItem> infos)
         {
-
+            ExtractFilePNG.IsEnabled = true;
+            using (var stream = entry.GetStream())
+            {
+                ImagePreview.Source = BitmapFrame.Create(stream,
+                                                  BitmapCreateOptions.None,
+                                                  BitmapCacheOption.OnLoad);
+            }
+            ImagePreviewBorder.Visibility = Visibility.Visible;
         }
 
         private void Show(PboDirectory directory)
@@ -396,6 +527,18 @@ namespace PboExplorer
         private void CanCopyToClipboard(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = !string.IsNullOrEmpty(TextPreview.Text) || ImagePreview.Source is BitmapSource;
+        }
+
+        internal PhysicalFile OpenNonPbo(string fullPath)
+        {
+            if (physicalFiles == null)
+            { 
+                physicalFiles = new PhysicalFiles();
+                PboList.Add(physicalFiles);
+            }
+            var file = new PhysicalFile(fullPath);
+            physicalFiles.AddEntry(file);
+            return file;
         }
     }
 }

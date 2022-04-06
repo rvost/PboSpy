@@ -12,7 +12,7 @@ using BIS.PBO;
 
 namespace PboExplorer
 {
-    class PboEntry : ITreeItem
+    class PboEntry : FileBase, ITreeItem
     {
         private readonly PBO pbo;
 
@@ -28,76 +28,17 @@ namespace PboExplorer
 
         public FileEntry Entry { get; }
 
-        public string Name { get; }
+        public override string Name { get; }
 
-        public string Extension { get; }
+        public override string Extension { get; }
 
         public ICollection<ITreeItem> Children => null;
 
-        public string FullPath => pbo.Prefix + "\\" + Entry.FileName;
+        public override string FullPath => pbo.Prefix + "\\" + Entry.FileName;
 
-        public Stream GetStream()
+        public override Stream GetStream()
         {
             return pbo.GetFileEntryStream(Entry);
-        }
-
-        public string GetText()
-        {
-            using(var reader = new StreamReader(GetStream()))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-        public string GetBinaryConfigAsText()
-        {
-            return GetBinaryConfig().ToString();
-
-        }
-        public ParamFile GetBinaryConfig()
-        {
-            using (var stream = GetStream())
-            {
-                return new ParamFile(stream);
-            }
-        }
-
-        public PaaImage GetPaaImage()
-        {
-            using (var paaStream = GetStream())
-            {
-                var paa = new PAA(paaStream, Extension == ".pac");
-                var pixels = PAA.GetARGB32PixelData(paa, paaStream);
-                var colors = paa.Palette.Colors.Select(c => Color.FromRgb(c.R8, c.G8, c.B8)).ToList();
-                var bitmapPalette = (colors.Count > 0) ? new BitmapPalette(colors) : null;
-                var bms = BitmapSource.Create(paa.Width, paa.Height, 300, 300, PixelFormats.Bgra32, bitmapPalette, pixels, paa.Width * 4);
-
-                return new PaaImage()
-                {
-                    Paa = paa,
-                    Bitmap = bms
-                };
-            }
-        }
-
-        public string GetDetectConfigAsText(out bool wasBinary)
-        {
-            using (var stream = GetStream())
-            {
-                var buffer = new byte[4];
-                stream.Read(buffer, 0, 4);
-                stream.Seek(0, SeekOrigin.Begin);
-                if (buffer.SequenceEqual(new byte[] { 0, (byte)'r', (byte)'a', (byte)'P' }))
-                {
-                    wasBinary = true;
-                    return new ParamFile(stream).ToString();
-                }
-                wasBinary = false;
-                using (var reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
         }
 
         internal void Extract(string fileName)

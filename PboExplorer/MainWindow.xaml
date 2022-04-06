@@ -76,7 +76,7 @@
 
             <Grid Grid.Column="2" Margin="5 0 0 0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="150" />
+                    <RowDefinition Height="200" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <DataGrid Name="PropertiesGrid" IsReadOnly="True" AutoGenerateColumns="False" Grid.Row="0">
@@ -148,7 +148,9 @@
                         </TextBlock>
                     </ScrollViewer>
                     <TextBox Name="TextPreview" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Visibility="Hidden" FontFamily="Consolas" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                    <Image Name="ImagePreview"  />
+                    <local:ZoomBorder x:Name="ImagePreviewBorder" ClipToBounds="True">
+                        <Image Name="ImagePreview"  />
+                    </local:ZoomBorder>
                 </Grid>
 
             </Grid>
