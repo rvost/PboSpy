@@ -19,6 +19,7 @@ namespace PboExplorer
         public abstract string Extension { get; }
         public abstract string Name { get; }
         public abstract string FullPath { get; }
+        public abstract int DataSize { get; }
 
         public string GetText()
         {
@@ -63,10 +64,7 @@ namespace PboExplorer
         {
             using (var stream = GetStream())
             {
-                var buffer = new byte[4];
-                stream.Read(buffer, 0, 4);
-                stream.Seek(0, SeekOrigin.Begin);
-                if (buffer.SequenceEqual(new byte[] { 0, (byte)'r', (byte)'a', (byte)'P' }))
+                if (IsBinaryConfig(stream))
                 {
                     wasBinary = true;
                     return new ParamFile(stream).ToString();
@@ -77,6 +75,26 @@ namespace PboExplorer
                     return reader.ReadToEnd();
                 }
             }
+        }
+
+        private static bool IsBinaryConfig(Stream stream)
+        {
+            var buffer = new byte[4];
+            stream.Read(buffer, 0, 4);
+            stream.Seek(0, SeekOrigin.Begin);
+            return buffer.SequenceEqual(new byte[] { 0, (byte)'r', (byte)'a', (byte)'P' });
+        }
+
+        public virtual bool IsBinaryConfig()
+        {
+            if (DataSize > 4)
+            {
+                using (var stream = GetStream())
+                {
+                    return IsBinaryConfig(stream);
+                }
+            }
+            return false;
         }
     }
 }

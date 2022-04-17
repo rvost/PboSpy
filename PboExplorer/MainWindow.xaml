@@ -55,12 +55,12 @@
                     </TreeView>
 
                 </TabItem>
-                <!--<TabItem Header="Merged Config">
-                    <TreeView Name="ConfigView" ItemTemplate="{StaticResource TreeTemplate}">
+                <TabItem Header="Merged Config">
+                    <TreeView Name="ConfigView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowConfigClassEntry">
   
                     </TreeView>
                     
-                </TabItem>-->
+                </TabItem>
                 <TabItem Header="Merged Game Data">
                     <TreeView Name="DataView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowPboEntry">
 

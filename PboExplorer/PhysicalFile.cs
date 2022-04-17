@@ -24,6 +24,8 @@ namespace PboExplorer
 
         public override string FullPath { get; }
 
+        public override int DataSize => (int)new FileInfo(FullPath).Length;
+
         public override Stream GetStream()
         {
             return File.OpenRead(FullPath);

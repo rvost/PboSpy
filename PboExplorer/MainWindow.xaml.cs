@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -83,6 +84,7 @@ namespace PboExplorer
             AboutBox.Visibility = Visibility.Visible;
             PboList.Clear();
             DataView.ItemsSource = null;
+            ConfigView.ItemsSource = null;
         }
 
         private void About(object sender, RoutedEventArgs e)
@@ -145,6 +147,7 @@ namespace PboExplorer
         private void GenerateMerged(IEnumerable<PboFile> files)
         {
             DataView.ItemsSource = PboFile.MergedView(files).Children;
+            ConfigView.ItemsSource = ConfigClassItem.MergedView(files);
         }
 
         private void ExtractCurrentPBO(object sender, RoutedEventArgs e)
@@ -212,6 +215,30 @@ namespace PboExplorer
                     }
                 }
             }
+        }
+
+        private void ShowConfigClassEntry(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            ResetView();
+            Cursor = Cursors.Wait;
+            var entry = e.NewValue as ConfigClassItem;
+            if ( entry != null)
+            {
+                PropertiesGrid.ItemsSource = entry.GetAllProperties().Select(p => new PropertyItem(p.Key, p.Value?.ToString() ?? "(null)")).ToList();
+                var sb = new StringBuilder();
+                foreach(var def in entry.Definitions)
+                {
+                    sb.AppendFormat("// Defined by '{1}' (in '{0}')", def.Item1.PBO.PBOFilePath, def.Item1.FullPath);
+                    sb.AppendLine();
+                    sb.Append(def.Item2.ToString(0));
+                    sb.AppendLine();
+                    sb.AppendLine();
+                    sb.AppendLine();
+                }
+                ShowText(sb.ToString());
+            
+            }
+            Cursor = Cursors.Arrow;
         }
 
         private void ShowPboEntry(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -452,7 +479,7 @@ namespace PboExplorer
 
         private void ShowGenericBinary(FileBase entry, List<PropertyItem> infos)
         {
-            if (string.Equals(entry.Name, "config.bin", StringComparison.OrdinalIgnoreCase))
+            if (entry.IsBinaryConfig())
             {
                 ShowBinaryConfig(entry, infos);
                 return;

@@ -36,6 +36,8 @@ namespace PboExplorer
 
         public override string FullPath => pbo.Prefix + "\\" + Entry.FileName;
 
+        public override int DataSize => Entry.DataSize;
+
         public override Stream GetStream()
         {
             return pbo.GetFileEntryStream(Entry);
