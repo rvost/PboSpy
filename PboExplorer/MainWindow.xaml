@@ -50,19 +50,36 @@
 
             <TabControl  Grid.Column="0">
                 <TabItem Header="PBO Files">
-                    <TreeView Name="PboView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowPboEntry">
+                    <TreeView Name="PboView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowPboEntry" VirtualizingStackPanel.IsVirtualizing="True">
 
                     </TreeView>
 
                 </TabItem>
-                <TabItem Header="Merged Config">
-                    <TreeView Name="ConfigView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowConfigClassEntry">
-  
-                    </TreeView>
-                    
+
+                <TabItem Header="Config">
+                    <!--<DockPanel>
+                        <Grid DockPanel.Dock="Top">
+                            <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" x:Name="SearchConfigTextBox" Margin="5" TextChanged="SearchConfigTextBox_TextChanged" />
+                            <TextBlock IsHitTestVisible="False" Text="Enter Search Term Here" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>-->
+                        <TreeView Name="ConfigView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowConfigClassEntry" VirtualizingStackPanel.IsVirtualizing="True">
+                        </TreeView>
+                    <!--</DockPanel>-->
                 </TabItem>
-                <TabItem Header="Merged Game Data">
-                    <TreeView Name="DataView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowPboEntry">
+                
+                <TabItem Header="Game Data">
+                    <TreeView Name="DataView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowPboEntry" VirtualizingStackPanel.IsVirtualizing="True">
 
                     </TreeView>
 

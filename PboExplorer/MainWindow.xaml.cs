@@ -30,6 +30,7 @@ namespace PboExplorer
         private readonly ObservableCollection<ITreeItem> PboList = new ObservableCollection<ITreeItem>();
         private PboFile CurrentPBO { get; set; }
         private PboEntry SelectedEntry { get; set; }
+        internal ICollection<ConfigClassItem> MergedConfig { get; private set; }
 
         private PhysicalFiles physicalFiles;
         public MainWindow()
@@ -83,6 +84,7 @@ namespace PboExplorer
             ResetView();
             AboutBox.Visibility = Visibility.Visible;
             PboList.Clear();
+            MergedConfig = null;
             DataView.ItemsSource = null;
             ConfigView.ItemsSource = null;
         }
@@ -147,7 +149,8 @@ namespace PboExplorer
         private void GenerateMerged(IEnumerable<PboFile> files)
         {
             DataView.ItemsSource = PboFile.MergedView(files).Children;
-            ConfigView.ItemsSource = ConfigClassItem.MergedView(files);
+            MergedConfig = ConfigClassItem.MergedView(files);
+            ConfigView.ItemsSource = MergedConfig;
         }
 
         private void ExtractCurrentPBO(object sender, RoutedEventArgs e)
