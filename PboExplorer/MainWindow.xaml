@@ -110,7 +110,7 @@
                 <Grid Background="LightGray" Grid.Row="1" Margin="0 5 0 0">
                     <ScrollViewer Name="AboutBox" Margin="10">
                         <TextBlock>
-                            PBO Explorer version 0.2<LineBreak />
+                            PBO Explorer version 0.3<LineBreak />
                             <Hyperlink NavigateUri="https://github.com/jetelain/PboExplorer" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/jetelain/PboExplorer</Hyperlink>
                             <LineBreak />
                             <LineBreak />
