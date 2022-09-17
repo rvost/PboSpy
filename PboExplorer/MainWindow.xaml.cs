@@ -122,6 +122,10 @@ namespace PboExplorer
             if (lastFile != null)
             {
                 var files = (TreeViewItem)PboView.ItemContainerGenerator.ContainerFromItem(physicalFiles);
+                if (files == null)
+                {
+                    return;
+                }
                 files.IsExpanded = true;
 
                 if (files.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
@@ -180,6 +184,34 @@ namespace PboExplorer
                 {
                     SelectedEntry.Extract(dlg.FileName);
                 }
+            }
+        }
+        private void ReplaceSelected(object sender, RoutedEventArgs e)
+        {
+            if (SelectedEntry != null)
+            {
+                var dlg = new OpenFileDialog();
+                dlg.Title = "Replace";
+                dlg.FileName = SelectedEntry.Name;
+                dlg.Filter = SelectedEntry.Name+ "|" + SelectedEntry.Name+ "|*" + SelectedEntry.Extension + "|*" + SelectedEntry.Extension;
+                if (dlg.ShowDialog() == true)
+                {
+                    var pbo = SelectedEntry.PBO;
+                    var index = pbo.Files.IndexOf(SelectedEntry.Entry);
+                    pbo.Files[index] = new PBOFileToAdd(new FileInfo(dlg.FileName), SelectedEntry.Entry.FileName);
+                    pbo.Save();
+                    RefreshEntries(pbo);
+                }
+            }
+        }
+
+        private void RefreshEntries(PBO pbo)
+        {
+            ResetView();
+            var view = PboList.OfType<PboFile>().FirstOrDefault(p => p.PBO == pbo);
+            if (view != null)
+            {
+                view.RefreshEntries();
             }
         }
 
@@ -293,20 +325,12 @@ namespace PboExplorer
             {
                 new PropertyItem("PBO File", file.PBO.PBOFilePath),
                 new PropertyItem("Size", FormatSize(new FileInfo(file.PBO.PBOFilePath).Length)),
-                new PropertyItem("Entries", file.PBO.FileEntries.Count.ToString()),
+                new PropertyItem("Entries", file.PBO.Files.Count.ToString()),
                 new PropertyItem("Prefix", file.PBO.Prefix),
             };
-            var props = file.PBO.Properties.ToArray();
-            for (int i = 0; i < props.Length; i += 2 )
+            foreach(var pair in file.PBO.PropertiesPairs)
             {
-                if ( i + 1 == props.Length)
-                {
-                    infos.Add(new PropertyItem(props[i], ""));
-                }
-                else
-                {
-                    infos.Add(new PropertyItem($"Property '{props[i]}'", props[i + 1]));
-                }
+                infos.Add(new PropertyItem($"Property '{pair.Key}'", pair.Value));
             }
             PropertiesGrid.ItemsSource = infos;
         }
@@ -329,17 +353,17 @@ namespace PboExplorer
                 new PropertyItem("PBO File", entry.PBO.PBOFilePath),
                 new PropertyItem("Entry name", entry.Entry.FileName),
                 new PropertyItem("Entry full path", entry.FullPath),
-                new PropertyItem("TimeStamp", entry.Entry.TimeStamp.ToString()),
+                new PropertyItem("TimeStamp", PBO.Epoch.AddSeconds(entry.Entry.TimeStamp).ToString()),
             };
 
             if (entry.Entry.IsCompressed)
             {
-                infos.Add(new PropertyItem("Size uncompressed", FormatSize(entry.Entry.UncompressedSize)));
-                infos.Add(new PropertyItem("Size in PBO", FormatSize(entry.Entry.DataSize)));
+                infos.Add(new PropertyItem("Size uncompressed", FormatSize(entry.Entry.Size)));
+                infos.Add(new PropertyItem("Size in PBO", FormatSize(entry.Entry.DiskSize)));
             }
             else
             {
-                infos.Add(new PropertyItem("Size", FormatSize(entry.Entry.DataSize)));
+                infos.Add(new PropertyItem("Size", FormatSize(entry.Entry.Size)));
             }
 
             Show(entry, infos);
@@ -368,6 +392,8 @@ namespace PboExplorer
                         ShowWRP(entry, infos);
                         break;
                     case ".p3d":
+                        ShowP3D(entry, infos);
+                        break;
                     case ".rtm":
                     case ".wss":
                     case ".ogg":
@@ -377,6 +403,7 @@ namespace PboExplorer
                     case ".shp":
                     case ".dbf":
                     case ".shx":
+                    case ".bisurf":
                         ShowGenericBinary(entry, infos);
                         break;
                     default:
@@ -392,6 +419,61 @@ namespace PboExplorer
             PropertiesGrid.ItemsSource = infos;
         }
 
+        private void ShowP3D(FileBase entry, List<PropertyItem> infos)
+        {
+            using (var stream = entry.GetStream())
+            {
+                var p3d = StreamHelper.Read<BIS.P3D.P3D>(stream);
+                infos.Add(new PropertyItem("Type", p3d.IsEditable ? "MLOD" : "ODOL"));
+                infos.Add(new PropertyItem("Bbox Max", p3d.ModelInfo.BboxMax.ToString()));
+                infos.Add(new PropertyItem("Bbox Min", p3d.ModelInfo.BboxMin.ToString()));
+                infos.Add(new PropertyItem("MapType", p3d.ModelInfo.MapType.ToString()));
+                infos.Add(new PropertyItem("Class", p3d.ModelInfo.Class.ToString()));
+                infos.Add(new PropertyItem("Version", p3d.Version.ToString()));
+                infos.Add(new PropertyItem("LODs", p3d.LODs.Count().ToString()));
+
+                var sb = new StringBuilder();
+                foreach (var lod in p3d.LODs)
+                {
+                    sb.AppendLine("---------------------------------------------------------------------------------------------------");
+                    sb.AppendLine($"LOD {lod.Resolution}");
+                    sb.AppendLine($"    {lod.FaceCount} Faces, {lod.VertexCount} Vertexes, {lod.GetModelHashId()}");
+                    sb.AppendLine($"    Named properties");
+                    foreach (var prop in lod.NamedProperties.OrderBy(p => p.Item1))
+                    {
+                        sb.AppendLine($"        {prop.Item1} = {prop.Item2}");
+                    }
+                    sb.AppendLine($"    Named selections");
+                    foreach (var prop in lod.NamedSelections.OrderBy(m => m.Name))
+                    {
+                        var mat = prop.Material;
+                        var tex = prop.Texture;
+                        if (!string.IsNullOrEmpty(mat) || !string.IsNullOrEmpty(tex))
+                        {
+                            sb.AppendLine($"        {prop.Name} (material='{mat}' texture='{tex}')");
+                        }
+                        else
+                        {
+                            sb.AppendLine($"        {prop.Name}");
+                        }
+                    }
+                    sb.AppendLine($"    Textures");
+                    foreach (var prop in lod.GetTextures().OrderBy(m => m))
+                    {
+                        sb.AppendLine($"        {prop}");
+                    }
+                    sb.AppendLine($"    Materials");
+                    foreach (var prop in lod.GetMaterials().OrderBy(m => m))
+                    {
+                        sb.AppendLine($"        {prop}");
+                    }
+                    sb.AppendLine();
+                }
+                TextPreview.Text = sb.ToString();
+                TextPreview.Visibility = Visibility.Visible;
+            }
+        }
+
         private void ShowWRP(FileBase entry, List<PropertyItem> infos)
         {
             using(var stream = entry.GetStream())
@@ -405,9 +487,8 @@ namespace PboExplorer
                 ImagePreview.Source = PreviewElevation(wrp);
                 ImagePreviewBorder.Visibility = Visibility.Visible;
             }
-
-
         }
+
         public BitmapSource PreviewElevation(AnyWrp wrp)
         {
             var min = 4000d;

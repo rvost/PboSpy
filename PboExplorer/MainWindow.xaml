@@ -10,6 +10,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="Copy" Executed="CopyToClipboard" CanExecute="CanCopyToClipboard" />
         <CommandBinding Command="Save" Executed="ExtractSelected" CanExecute="CanExtractSelected" />
+        <CommandBinding Command="Replace" Executed="ReplaceSelected" CanExecute="CanExtractSelected" />
         <CommandBinding Command="Open" Executed="OpenFile" />
     </Window.CommandBindings>
 
@@ -32,6 +33,9 @@
                 <MenuItem Header="Open all from _directory..." Click="OpenDirectory" />
                 <!--<MenuItem Header="_Close"/>-->
                 <MenuItem Header="Close _all" Click="CloseAll"/>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="Replace current file..." Command="Replace" />
             </MenuItem>
             <MenuItem Header="_Extract">
                 <MenuItem Header="_All current PBO files..." Click="ExtractCurrentPBO" Name="ExtractPBO" IsEnabled="False"  />
@@ -110,13 +114,18 @@
                 <Grid Background="LightGray" Grid.Row="1" Margin="0 5 0 0">
                     <ScrollViewer Name="AboutBox" Margin="10">
                         <TextBlock>
-                            PBO Explorer version 0.3<LineBreak />
+                            <Bold>
+                            Remarks: If your are not the author of the files, you have to ensure that files<LineBreak /> 
+                            licence allows you to manipulate them (extract, re-use or edit them). If your<LineBreak /> 
+                            are not sure about this, you must get approval from the author of the files.</Bold><LineBreak />
+                            <LineBreak />
+                            PBO Explorer version 0.4<LineBreak />
                             <Hyperlink NavigateUri="https://github.com/jetelain/PboExplorer" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/jetelain/PboExplorer</Hyperlink>
                             <LineBreak />
                             <LineBreak />
                             MIT License<LineBreak />
                             <LineBreak />
-                            Copyright (c) 2021 Julien Etelain (aka GrueArbre)<LineBreak />
+                            Copyright (c) 2021-2022 Julien Etelain (aka GrueArbre)<LineBreak />
                             <LineBreak />
                             Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
                             of this software and associated documentation files (the "Software"), to deal<LineBreak />
@@ -137,13 +146,15 @@
                             SOFTWARE.
                             <LineBreak />
                             <LineBreak />
-                            Includes "ArmA File Format Library"<LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/Braini01/bis-file-formats" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/Braini01/bis-file-formats</Hyperlink>
+                            Includes a modified version of "ArmA File Format Library"<LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/Braini01/bis-file-formats" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/Braini01/bis-file-formats</Hyperlink><LineBreak />
+                            <Hyperlink NavigateUri="https://github.com/jetelain/bis-file-formats" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/jetelain/bis-file-formats</Hyperlink>
                             <LineBreak />
                             <LineBreak />
                             MIT License<LineBreak />
                             <LineBreak />
                             Copyright (c) 2017 Braini01<LineBreak />
+                            Copyright (c) 2021-2022 Julien Etelain (aka GrueArbre)<LineBreak />
                             <LineBreak />
                             Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
                             of this software and associated documentation files (the "Software"), to deal<LineBreak />

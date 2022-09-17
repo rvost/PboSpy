@@ -1,13 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using BIS.Core.Config;
-using BIS.PAA;
 using BIS.PBO;
 
 namespace PboExplorer
@@ -16,7 +9,7 @@ namespace PboExplorer
     {
         private readonly PBO pbo;
 
-        public PboEntry(PBO pbo, FileEntry entry)
+        public PboEntry(PBO pbo, IPBOFileEntry entry)
         {
             this.pbo = pbo;
             Name = Path.GetFileName(entry.FileName);
@@ -26,7 +19,7 @@ namespace PboExplorer
 
         public PBO PBO => pbo;
 
-        public FileEntry Entry { get; }
+        public IPBOFileEntry Entry { get; set; }
 
         public override string Name { get; }
 
@@ -36,19 +29,27 @@ namespace PboExplorer
 
         public override string FullPath => pbo.Prefix + "\\" + Entry.FileName;
 
-        public override int DataSize => Entry.DataSize;
+        public override int DataSize => Entry.Size;
 
         public override Stream GetStream()
         {
-            return pbo.GetFileEntryStream(Entry);
+            return Entry.OpenRead();
         }
 
         internal void Extract(string fileName)
         {
             using (var stream = File.Create(fileName))
             {
-                pbo.GetFileEntryStream(Entry).CopyTo(stream);
+                using (var source = Entry.OpenRead())
+                {
+                    source.CopyTo(stream);
+                }
             }
+        }
+
+        internal void Refresh(IPBOFileEntry newEntry)
+        {
+            Entry = newEntry;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31727.386
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PboExplorer", "PboExplorer\PboExplorer.csproj", "{A3931905-5DD4-4CCD-AD5F-19B27214ABE7}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.PAA", "..\bis-file-formats\BIS.PAA\BIS.PAA.csproj", "{EF156C1A-9A31-42F1-854A-E0796C2E6CE5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.WRP", "..\bis-file-formats\BIS.WRP\BIS.WRP.csproj", "{E5CB2B9B-42D2-492C-A34D-39CE7986142A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.P3D", "..\bis-file-formats\BIS.P3D\BIS.P3D.csproj", "{BE6787DB-56DA-465C-93BA-F7CD1DFF6488}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{E5CB2B9B-42D2-492C-A34D-39CE7986142A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5CB2B9B-42D2-492C-A34D-39CE7986142A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5CB2B9B-42D2-492C-A34D-39CE7986142A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE6787DB-56DA-465C-93BA-F7CD1DFF6488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE6787DB-56DA-465C-93BA-F7CD1DFF6488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE6787DB-56DA-465C-93BA-F7CD1DFF6488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE6787DB-56DA-465C-93BA-F7CD1DFF6488}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

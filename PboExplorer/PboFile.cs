@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BIS.PBO;
@@ -25,7 +26,7 @@ namespace PboExplorer
         private static PboDirectory GenerateRoot(PBO pbo)
         {
             var root = new PboDirectory(null);
-            foreach (var entry in pbo.FileEntries)
+            foreach (var entry in pbo.Files)
             {
                 var parent = Path.GetDirectoryName(entry.FileName).Trim('/','\\');
                 if (string.IsNullOrEmpty(parent))
@@ -66,5 +67,21 @@ namespace PboExplorer
         }
 
         internal IEnumerable<PboEntry> AllEntries => root.AllFiles;
+
+        internal void RefreshEntries()
+        {
+            foreach(var view in AllEntries)
+            {
+                var newEntry = pbo.Files.FirstOrDefault(e => string.Equals(e.FileName,view.Entry.FileName, StringComparison.OrdinalIgnoreCase));
+                if (newEntry != null)
+                {
+                    view.Refresh(newEntry);
+                }
+                else
+                {
+                    // TODO !
+                }
+            }
+        }
     }
 }
