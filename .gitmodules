@@ -1,0 +1,3 @@
+[submodule "bis-file-formats"]
+	path = bis-file-formats
+	url = https://github.com/jetelain/bis-file-formats.git
