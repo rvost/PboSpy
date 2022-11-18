@@ -1,0 +1,43 @@
+name: "Release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+env:
+  PROJECT_PATH: PboExplorer/PboExplorer.csproj
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Restore
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      - name: Build
+        run: >
+          dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore
+          --self-contained=false -r win-x64 -p:PublishSingleFile=true
+
+      - name: Publish
+        run: >
+          dotnet publish ${{ env.PROJECT_PATH }} -c Release -o Releases --no-build
+          --self-contained=false -r win-x64 -p:PublishSingleFile=true
+
+      - name: Create release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          draft: true
+          files: Releases/*.exe
