@@ -651,5 +651,26 @@ namespace PboExplorer
             physicalFiles.AddEntry(file);
             return file;
         }
+
+        private void PboFiles_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                // Split folders and files
+                var lookup = paths.ToLookup(
+                    (path) => File.GetAttributes(path).HasFlag(FileAttributes.Directory)
+                    );
+
+                // Load files from folders
+                lookup[true].ToList().ForEach(
+                    dir => LoadPboList(Directory.GetFiles(dir, "*.pbo", SearchOption.AllDirectories))
+                    );
+
+                // Load other files
+                LoadPboList(lookup[false]);
+            }
+        }
     }
 }
