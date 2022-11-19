@@ -29,20 +29,23 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open file..." Command="Open" InputGestureText="Ctrl+O"  />
-                <MenuItem Header="Open all from _directory..." Click="OpenDirectory" />
+                <MenuItem Header="_Open file..." Command="Open" InputGestureText="Ctrl+O" Icon="{StaticResource OpenFileIcon}" />
+                <MenuItem Header="Open all from _directory..." Click="OpenDirectory" Icon="{StaticResource OpenFolderIcon}" />
                 <!--<MenuItem Header="_Close"/>-->
-                <MenuItem Header="Close _all" Click="CloseAll"/>
+                <MenuItem Header="Close _all" Click="CloseAll" Icon="{StaticResource CloseAllIcon}" />
             </MenuItem>
             <MenuItem Header="_Edit">
-                <MenuItem Header="Replace current file..." Command="Replace" />
+                <MenuItem Header="Replace current file..." Command="Replace" Icon="{StaticResource ReplaceFileIcon}" />
             </MenuItem>
             <MenuItem Header="_Extract">
-                <MenuItem Header="_All current PBO files..." Click="ExtractCurrentPBO" Name="ExtractPBO" IsEnabled="False"  />
-                <MenuItem Header="_Current file..." Command="Save" InputGestureText="Ctrl+S" />
-                <MenuItem Header="Current file as _text..." Click="ExtractSelectedAsText" Name="ExtractFileText" IsEnabled="False" />
-                <MenuItem Header="Current file as _PNG..."  Click="ExtractSelectedAsPNG" Name="ExtractFilePNG" IsEnabled="False" />
-                <MenuItem Header="Copy to Clipboard" Command="Copy" InputGestureText="Ctrl+C" />
+                <MenuItem Header="_All current PBO files..." Click="ExtractCurrentPBO" Name="ExtractPBO" IsEnabled="False"
+                          Icon="{StaticResource ExtractPBOIcon}"/>
+                <MenuItem Header="_Current file..." Command="Save" InputGestureText="Ctrl+S" Icon="{StaticResource ExtractFileIcon}"/>
+                <MenuItem Header="Current file as _text..." Click="ExtractSelectedAsText" Name="ExtractFileText" IsEnabled="False"
+                          Icon="{StaticResource ExtractTextIcon}" />
+                <MenuItem Header="Current file as _PNG..."  Click="ExtractSelectedAsPNG" Name="ExtractFilePNG" IsEnabled="False"
+                          Icon="{StaticResource ExtractImageIcon}" />
+                <MenuItem Header="Copy to Clipboard" Command="Copy" InputGestureText="Ctrl+C" Icon="{StaticResource CopyIcon}" />
             </MenuItem>
             <MenuItem Header="_About" Click="About"/>
         </Menu>

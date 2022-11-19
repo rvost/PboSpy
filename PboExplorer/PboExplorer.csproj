@@ -16,6 +16,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Icons\Close.svg" />
+    <None Remove="Resources\Icons\CloseAll.svg" />
+    <None Remove="Resources\Icons\Copy.svg" />
+    <None Remove="Resources\Icons\ExtractFile.svg" />
+    <None Remove="Resources\Icons\ExtractImage.svg" />
+    <None Remove="Resources\Icons\ExtractPBO.svg" />
+    <None Remove="Resources\Icons\ExtractText.svg" />
+    <None Remove="Resources\Icons\FolderClosed.svg" />
+    <None Remove="Resources\Icons\FolderOpened.svg" />
+    <None Remove="Resources\Icons\OpenFile.svg" />
+    <None Remove="Resources\Icons\OpenFolder.svg" />
+    <None Remove="Resources\Icons\ReplaceFile.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
   </ItemGroup>
@@ -25,6 +41,21 @@
     <ProjectReference Include="..\bis-file-formats\BIS.PAA\BIS.PAA.csproj" />
     <ProjectReference Include="..\bis-file-formats\BIS.PBO\BIS.PBO.csproj" />
     <ProjectReference Include="..\bis-file-formats\BIS.WRP\BIS.WRP.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Close.svg" />
+    <Resource Include="Resources\Icons\CloseAll.svg" />
+    <Resource Include="Resources\Icons\Copy.svg" />
+    <Resource Include="Resources\Icons\ExtractFile.svg" />
+    <Resource Include="Resources\Icons\ExtractImage.svg" />
+    <Resource Include="Resources\Icons\ExtractPBO.svg" />
+    <Resource Include="Resources\Icons\ExtractText.svg" />
+    <Resource Include="Resources\Icons\FolderClosed.svg" />
+    <Resource Include="Resources\Icons\FolderOpened.svg" />
+    <Resource Include="Resources\Icons\OpenFile.svg" />
+    <Resource Include="Resources\Icons\OpenFolder.svg" />
+    <Resource Include="Resources\Icons\ReplaceFile.svg" />
   </ItemGroup>
 
 </Project>

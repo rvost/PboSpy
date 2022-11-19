@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>.canvas{fill: none; opacity: 0;}.light-defaultgrey-10{fill: #212121; opacity: 0.1;}.light-defaultgrey{fill: #212121; opacity: 1;}.light-blue{fill: #005dba; opacity: 1;}</style>
+  </defs>
+  <title>CompareFiles</title>
+  <g id="canvas" class="canvas">
+    <path class="canvas" d="M16,16H0V0H16Z" />
+  </g>
+  <g id="level-1">
+    <path class="light-defaultgrey-10" d="M15.5,8.5h-6v-7H14L15.5,3Z" />
+    <path class="light-defaultgrey" d="M15.854,2.646l-1.5-1.5L14,1H9.5L9,1.5v7l.5.5h6l.5-.5V3ZM10,8V2h3V4h2V8Z" />
+    <path class="light-defaultgrey-10" d="M6.5,14.5H.5v-7H5L6.5,9Z" />
+    <path class="light-defaultgrey" d="M6.854,8.646l-1.5-1.5L5,7H.5L0,7.5v7l.5.5h6l.5-.5V9ZM1,14V8H4v2H6v4Z" />
+    <path class="light-blue" d="M15,10v2.5l-.5.5H11.707l1.147,1.146-.708.708-2-2v-.708l2-2,.708.708L11.707,12H14V10Z" />
+    <path class="light-blue" d="M1,6V3.5L1.5,3H4.293L3.146,1.854l.708-.708,2,2v.708l-2,2-.708-.708L4.293,4H2V6Z" />
+  </g>
+</svg>
