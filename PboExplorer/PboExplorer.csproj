@@ -16,18 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Icons\Close.svg" />
-    <None Remove="Resources\Icons\CloseAll.svg" />
-    <None Remove="Resources\Icons\Copy.svg" />
-    <None Remove="Resources\Icons\ExtractFile.svg" />
-    <None Remove="Resources\Icons\ExtractImage.svg" />
-    <None Remove="Resources\Icons\ExtractPBO.svg" />
-    <None Remove="Resources\Icons\ExtractText.svg" />
-    <None Remove="Resources\Icons\FolderClosed.svg" />
-    <None Remove="Resources\Icons\FolderOpened.svg" />
-    <None Remove="Resources\Icons\OpenFile.svg" />
-    <None Remove="Resources\Icons\OpenFolder.svg" />
-    <None Remove="Resources\Icons\ReplaceFile.svg" />
+    <None Remove="Resources\Icons\*.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,18 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Icons\Close.svg" />
-    <Resource Include="Resources\Icons\CloseAll.svg" />
-    <Resource Include="Resources\Icons\Copy.svg" />
-    <Resource Include="Resources\Icons\ExtractFile.svg" />
-    <Resource Include="Resources\Icons\ExtractImage.svg" />
-    <Resource Include="Resources\Icons\ExtractPBO.svg" />
-    <Resource Include="Resources\Icons\ExtractText.svg" />
-    <Resource Include="Resources\Icons\FolderClosed.svg" />
-    <Resource Include="Resources\Icons\FolderOpened.svg" />
-    <Resource Include="Resources\Icons\OpenFile.svg" />
-    <Resource Include="Resources\Icons\OpenFolder.svg" />
-    <Resource Include="Resources\Icons\ReplaceFile.svg" />
+    <Resource Include="Resources\Icons\*.svg" />
   </ItemGroup>
 
 </Project>

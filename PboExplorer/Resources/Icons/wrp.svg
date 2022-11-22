@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <style>.canvas{fill: none; opacity: 0;}.light-defaultgrey-10{fill: #212121; opacity: 0.1;}.light-green{fill: #1f801f; opacity: 1;}.light-defaultgrey{fill: #212121; opacity: 1;}</style>
+  </defs>
+  <title>IconLightPerformance</title>
+  <g id="canvas" class="canvas">
+    <path class="canvas" d="M16,16H0V0H16Z" />
+  </g>
+  <g id="level-1">
+    <path class="light-defaultgrey-10" d="M14.5,12.5H1.5V2.5h13Z" />
+    <path class="light-green" d="M14.1,6.439V7.853l-2.5-2.5L7.95,9H7.243L5.6,7.353,1.95,11l-.707-.707,4-4H5.95L7.6,7.939l3.646-3.647h.707Z" />
+    <path class="light-defaultgrey" d="M14.5,2H1.5L1,2.5v10l.5.5h13l.5-.5V2.5ZM14,12H2V3H14Z" />
+  </g>
+</svg>

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PboExplorer"
+        xmlns:converters="clr-namespace:PboExplorer.Converters"
         mc:Ignorable="d"
         Title="PBO Explorer" Height="450" Width="800">
     
@@ -21,6 +22,15 @@
     </Window.InputBindings>
 
     <Window.Resources>
+        <converters:TreeItemToIconConverter x:Key="IconConverter"/>
+        
+        <HierarchicalDataTemplate x:Key="PboTreeTemplate" ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="{Binding ., Mode=OneWay, Converter={StaticResource IconConverter}}" Margin="0 0 4 0"/>
+                <TextBlock Text="{Binding Name}" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        
         <HierarchicalDataTemplate x:Key="TreeTemplate" ItemsSource="{Binding Children}">
             <TextBlock Text="{Binding Name}" />
         </HierarchicalDataTemplate>
@@ -57,7 +67,7 @@
 
             <TabControl  Grid.Column="0">
                 <TabItem Header="PBO Files" AllowDrop="True" Drop="PboFiles_Drop">
-                    <TreeView Name="PboView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowPboEntry" VirtualizingStackPanel.IsVirtualizing="True">
+                    <TreeView Name="PboView" ItemTemplate="{StaticResource PboTreeTemplate}" SelectedItemChanged="ShowPboEntry" VirtualizingStackPanel.IsVirtualizing="True">
 
                     </TreeView>
 
@@ -86,7 +96,7 @@
                 </TabItem>
                 
                 <TabItem Header="Game Data">
-                    <TreeView Name="DataView" ItemTemplate="{StaticResource TreeTemplate}" SelectedItemChanged="ShowPboEntry" VirtualizingStackPanel.IsVirtualizing="True">
+                    <TreeView Name="DataView" ItemTemplate="{StaticResource PboTreeTemplate}" SelectedItemChanged="ShowPboEntry" VirtualizingStackPanel.IsVirtualizing="True">
 
                     </TreeView>
 
