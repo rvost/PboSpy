@@ -8,8 +8,6 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -32,14 +30,13 @@ namespace PboExplorer
         private PboEntry SelectedEntry { get; set; }
         internal ICollection<ConfigClassItem> MergedConfig { get; private set; }
 
-        private PhysicalFiles physicalFiles;
         public MainWindow()
         {
             InitializeComponent();
             PboView.ItemsSource = PboList;
 
             var list = new List<string>();
-            foreach(var arg in Environment.GetCommandLineArgs().Skip(1))
+            foreach (var arg in Environment.GetCommandLineArgs().Skip(1))
             {
                 if (File.Exists(arg))
                 {
@@ -97,55 +94,40 @@ namespace PboExplorer
 
         private void LoadPboList(IEnumerable<string> fileNames)
         {
-            var pbos = fileNames.Where(f => string.Equals(System.IO.Path.GetExtension(f), ".pbo", StringComparison.OrdinalIgnoreCase)).ToList();
-            var nonPbos = fileNames.Where(f => !string.Equals(System.IO.Path.GetExtension(f), ".pbo", StringComparison.OrdinalIgnoreCase)).ToList();
+            var lookup = fileNames.ToLookup(f => string.Equals(Path.GetExtension(f), ".pbo", StringComparison.OrdinalIgnoreCase));
+            var pbos = lookup[true];
+            var nonPbos = lookup[false];
 
             Task.Factory
-                .StartNew(() => pbos.OrderBy(f => System.IO.Path.GetFileName(f), StringComparer.OrdinalIgnoreCase).Select(fileName => new PboFile(new PBO(fileName, false))))
+                .StartNew(() => pbos.OrderBy(f => Path.GetFileName(f), StringComparer.OrdinalIgnoreCase)
+                .Select(fileName => new PboFile(new PBO(fileName, false))))
                 .ContinueWith((r) =>
                 {
-                    foreach(var e in r.Result)
+                    foreach (var e in r.Result)
                     {
                         PboList.Add(e);
                     }
                     GenerateMerged(PboList.OfType<PboFile>());
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
-            PhysicalFile lastFile = null;
-            foreach (var file in nonPbos)
-            {
-                if (File.Exists(file))
-                {
-                    lastFile = OpenNonPbo(System.IO.Path.GetFullPath(file));
-                }
-            }
-            if (lastFile != null)
-            {
-                var files = (TreeViewItem)PboView.ItemContainerGenerator.ContainerFromItem(physicalFiles);
-                if (files == null)
-                {
-                    return;
-                }
-                files.IsExpanded = true;
+            var filesToAdd = nonPbos
+                .Where(file => File.Exists(file))
+                .Select(file => new PhysicalFile(Path.GetFullPath(file)))
+                .ToList();
 
-                if (files.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated)
+            if (filesToAdd.Any())
+            {
+                var openedFiles = PboList.OfType<PhysicalFiles>().FirstOrDefault();
+
+                if (openedFiles is null)
                 {
-                    files.ItemContainerGenerator.StatusChanged += (_, _) =>
-                    {
-                        var file = (TreeViewItem)files.ItemContainerGenerator.ContainerFromItem(lastFile);
-                        if (file != null)
-                        {
-                            file.IsSelected = true;
-                        }
-                    };
+                    openedFiles = new PhysicalFiles();
+                    PboList.Add(openedFiles);
                 }
-                else
+
+                foreach (var file in filesToAdd)
                 {
-                    var file = (TreeViewItem)files.ItemContainerGenerator.ContainerFromItem(lastFile);
-                    if (file != null)
-                    {
-                        file.IsSelected = true;
-                    }
+                    openedFiles.AddEntry(file);
                 }
             }
         }
@@ -193,7 +175,7 @@ namespace PboExplorer
                 var dlg = new OpenFileDialog();
                 dlg.Title = "Replace";
                 dlg.FileName = SelectedEntry.Name;
-                dlg.Filter = SelectedEntry.Name+ "|" + SelectedEntry.Name+ "|*" + SelectedEntry.Extension + "|*" + SelectedEntry.Extension;
+                dlg.Filter = SelectedEntry.Name + "|" + SelectedEntry.Name + "|*" + SelectedEntry.Extension + "|*" + SelectedEntry.Extension;
                 if (dlg.ShowDialog() == true)
                 {
                     var pbo = SelectedEntry.PBO;
@@ -221,7 +203,7 @@ namespace PboExplorer
             {
                 var dlg = new SaveFileDialog();
                 dlg.Title = "Extract to text file";
-                dlg.FileName = SelectedEntry.Extension == ".bin" ? System.IO.Path.ChangeExtension(SelectedEntry.Name, ".cpp") : SelectedEntry.Name;
+                dlg.FileName = SelectedEntry.Extension == ".bin" ? Path.ChangeExtension(SelectedEntry.Name, ".cpp") : SelectedEntry.Name;
                 dlg.DefaultExt = ".txt";
                 dlg.Filter = "Text file|*.txt|CPP|*.cpp|HPP|*.hpp|SQM|*.sqm|SQF|*.sqf|RVMAT|*.rvmat";
                 if (dlg.ShowDialog() == true)
@@ -237,7 +219,7 @@ namespace PboExplorer
             {
                 var dlg = new SaveFileDialog();
                 dlg.Title = "Extract to PNG";
-                dlg.FileName = System.IO.Path.ChangeExtension(SelectedEntry.Name, ".png");
+                dlg.FileName = Path.ChangeExtension(SelectedEntry.Name, ".png");
                 dlg.DefaultExt = ".png";
                 dlg.Filter = "PNG|*.png";
                 if (dlg.ShowDialog() == true)
@@ -257,11 +239,11 @@ namespace PboExplorer
             ResetView();
             Cursor = Cursors.Wait;
             var entry = e.NewValue as ConfigClassItem;
-            if ( entry != null)
+            if (entry != null)
             {
                 PropertiesGrid.ItemsSource = entry.GetAllProperties().Select(p => new PropertyItem(p.Key, p.Value?.ToString() ?? "(null)")).ToList();
                 var sb = new StringBuilder();
-                foreach(var def in entry.Definitions)
+                foreach (var def in entry.Definitions)
                 {
                     sb.AppendFormat("// Defined by '{1}' (in '{0}')", def.Item1.PBO.PBOFilePath, def.Item1.FullPath);
                     sb.AppendLine();
@@ -271,7 +253,7 @@ namespace PboExplorer
                     sb.AppendLine();
                 }
                 ShowText(sb.ToString());
-            
+
             }
             Cursor = Cursors.Arrow;
         }
@@ -321,14 +303,14 @@ namespace PboExplorer
         private void Show(PboFile file)
         {
             ExtractPBO.IsEnabled = true;
-            var infos =  new List<PropertyItem>()
+            var infos = new List<PropertyItem>()
             {
                 new PropertyItem("PBO File", file.PBO.PBOFilePath),
                 new PropertyItem("Size", FormatSize(new FileInfo(file.PBO.PBOFilePath).Length)),
                 new PropertyItem("Entries", file.PBO.Files.Count.ToString()),
                 new PropertyItem("Prefix", file.PBO.Prefix),
             };
-            foreach(var pair in file.PBO.PropertiesPairs)
+            foreach (var pair in file.PBO.PropertiesPairs)
             {
                 infos.Add(new PropertyItem($"Property '{pair.Key}'", pair.Value));
             }
@@ -476,7 +458,7 @@ namespace PboExplorer
 
         private void ShowWRP(FileBase entry, List<PropertyItem> infos)
         {
-            using(var stream = entry.GetStream())
+            using (var stream = entry.GetStream())
             {
                 var wrp = StreamHelper.Read<AnyWrp>(stream);
                 infos.Add(new PropertyItem("CellSize", wrp.CellSize.ToString()));
@@ -638,18 +620,6 @@ namespace PboExplorer
         private void CanCopyToClipboard(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = !string.IsNullOrEmpty(TextPreview.Text) || ImagePreview.Source is BitmapSource;
-        }
-
-        internal PhysicalFile OpenNonPbo(string fullPath)
-        {
-            if (physicalFiles == null)
-            { 
-                physicalFiles = new PhysicalFiles();
-                PboList.Add(physicalFiles);
-            }
-            var file = new PhysicalFile(fullPath);
-            physicalFiles.AddEntry(file);
-            return file;
         }
 
         private void PboFiles_Drop(object sender, DragEventArgs e)
