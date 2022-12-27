@@ -48,7 +48,7 @@ namespace PboExplorer
             }
             if (list.Count > 0)
             {
-                LoadPboList(list);
+                LoadSupportedFiles(list);
             }
         }
 
@@ -61,7 +61,7 @@ namespace PboExplorer
             dlg.Multiselect = true;
             if (dlg.ShowDialog() == true)
             {
-                LoadPboList(dlg.FileNames);
+                LoadSupportedFiles(dlg.FileNames);
             }
         }
         private void OpenDirectory(object sender, RoutedEventArgs e)
@@ -71,7 +71,7 @@ namespace PboExplorer
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                LoadPboList(DirectoryExtensions.GetSupportedFiles(dialog.FileName));
+                LoadSupportedFiles(DirectoryExtensions.GetSupportedFiles(dialog.FileName));
             }
         }
 
@@ -91,7 +91,7 @@ namespace PboExplorer
             AboutBox.Visibility = Visibility.Visible;
         }
 
-        private void LoadPboList(IEnumerable<string> fileNames)
+        private void LoadSupportedFiles(IEnumerable<string> fileNames)
         {
             var lookup = fileNames.ToLookup(f => string.Equals(Path.GetExtension(f), ".pbo", StringComparison.OrdinalIgnoreCase));
             var pbos = lookup[true];
@@ -106,7 +106,7 @@ namespace PboExplorer
                     {
                         PboList.Add(e);
                     }
-                    GenerateMerged(PboList.OfType<PboFile>());
+                    GenerateMergedConfig(PboList.OfType<PboFile>());
                 }, TaskScheduler.FromCurrentSynchronizationContext());
 
             var filesToAdd = nonPbos
@@ -131,7 +131,7 @@ namespace PboExplorer
             }
         }
 
-        private void GenerateMerged(IEnumerable<PboFile> files)
+        private void GenerateMergedConfig(IEnumerable<PboFile> files)
         {
             DataView.ItemsSource = PboFile.MergedView(files).Children;
             MergedConfig = ConfigClassItem.MergedView(files);
@@ -233,7 +233,7 @@ namespace PboExplorer
             }
         }
 
-        private void ShowConfigClassEntry(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void OnConfigViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             ResetView();
             Cursor = Cursors.Wait;
@@ -257,7 +257,7 @@ namespace PboExplorer
             Cursor = Cursors.Arrow;
         }
 
-        private void ShowPboEntry(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void OnPboViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             ResetView();
             Cursor = Cursors.Wait;
@@ -578,11 +578,11 @@ namespace PboExplorer
 
                 // Load files from folders
                 lookup[true].ToList().ForEach(
-                    dir => LoadPboList(DirectoryExtensions.GetSupportedFiles(dir))
+                    dir => LoadSupportedFiles(DirectoryExtensions.GetSupportedFiles(dir))
                     );
 
                 // Load other files
-                LoadPboList(lookup[false]);
+                LoadSupportedFiles(lookup[false]);
             }
         }
     }
