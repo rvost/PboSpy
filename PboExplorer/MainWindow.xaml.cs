@@ -286,8 +286,8 @@ namespace PboExplorer
         {
             AboutBox.Visibility = Visibility.Hidden;
             TextPreview.Visibility = Visibility.Hidden;
-            ImagePreviewBorder.Reset();
-            ImagePreviewBorder.Visibility = Visibility.Hidden;
+            ImagePreview.Reset();
+            ImagePreview.Visibility = Visibility.Hidden;
             ImagePreview.Source = null;
             TextPreview.Text = string.Empty;
 
@@ -466,7 +466,7 @@ namespace PboExplorer
                 infos.Add(new PropertyItem("Objects.Count", wrp.ObjectsCount.ToString()));
                 infos.Add(new PropertyItem("Materials.Count", wrp.MatNames.Length.ToString()));
                 ImagePreview.Source = wrp.PreviewElevation();
-                ImagePreviewBorder.Visibility = Visibility.Visible;
+                ImagePreview.Visibility = Visibility.Visible;
             }
         }
 
@@ -477,7 +477,7 @@ namespace PboExplorer
             infos.Add(new PropertyItem("Image size", $"{paa.Paa.Width}x{paa.Paa.Height}"));
             infos.Add(new PropertyItem("Image type", paa.Paa.Type.ToString()));
             ImagePreview.Source = paa.Bitmap;
-            ImagePreviewBorder.Visibility = Visibility.Visible;
+            ImagePreview.Visibility = Visibility.Visible;
         }
 
         private void ShowGenericText(FileBase entry, List<PropertyItem> infos)
@@ -521,7 +521,7 @@ namespace PboExplorer
                                                   BitmapCreateOptions.None,
                                                   BitmapCacheOption.OnLoad);
             }
-            ImagePreviewBorder.Visibility = Visibility.Visible;
+            ImagePreview.Visibility = Visibility.Visible;
         }
 
         private void Show(PboDirectory directory)

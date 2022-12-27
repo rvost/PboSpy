@@ -128,9 +128,7 @@
                 <Grid Background="LightGray" Grid.Row="1" Margin="0 5 0 0">
                     <views:AboutView x:Name="AboutBox"/>
                     <TextBox Name="TextPreview" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Visibility="Hidden" FontFamily="Consolas" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                    <local:ZoomBorder x:Name="ImagePreviewBorder" ClipToBounds="True">
-                        <Image Name="ImagePreview"  />
-                    </local:ZoomBorder>
+                    <views:ImageView x:Name="ImagePreview" ClipToBounds="True"/>
                 </Grid>
 
             </Grid>
