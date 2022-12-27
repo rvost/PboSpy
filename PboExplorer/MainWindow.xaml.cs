@@ -533,12 +533,6 @@ namespace PboExplorer
             };
         }
 
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-            e.Handled = true;
-        }
-
         private void CopyToClipboard(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(TextPreview.Text))

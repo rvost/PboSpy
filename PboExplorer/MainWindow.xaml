@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PboExplorer"
+        xmlns:views="clr-namespace:PboExplorer.Views"
         xmlns:converters="clr-namespace:PboExplorer.Converters"
         mc:Ignorable="d"
         Title="PBO Explorer" Height="450" Width="800">
@@ -125,69 +126,7 @@
                       ResizeDirection="Rows"
                       Height="5"/>
                 <Grid Background="LightGray" Grid.Row="1" Margin="0 5 0 0">
-                    <ScrollViewer Name="AboutBox" Margin="10">
-                        <TextBlock>
-                            <Bold>
-                            Remarks: If your are not the author of the files, you have to ensure that files<LineBreak /> 
-                            licence allows you to manipulate them (extract, re-use or edit them). If your<LineBreak /> 
-                            are not sure about this, you must get approval from the author of the files.</Bold><LineBreak />
-                            <LineBreak />
-                            PBO Explorer version 0.4<LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/jetelain/PboExplorer" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/jetelain/PboExplorer</Hyperlink>
-                            <LineBreak />
-                            <LineBreak />
-                            MIT License<LineBreak />
-                            <LineBreak />
-                            Copyright (c) 2021-2022 Julien Etelain (aka GrueArbre)<LineBreak />
-                            <LineBreak />
-                            Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
-                            of this software and associated documentation files (the "Software"), to deal<LineBreak />
-                            in the Software without restriction, including without limitation the rights<LineBreak />
-                            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
-                            copies of the Software, and to permit persons to whom the Software is<LineBreak />
-                            furnished to do so, subject to the following conditions:<LineBreak />
-                            <LineBreak />
-                            The above copyright notice and this permission notice shall be included in all<LineBreak />
-                            copies or substantial portions of the Software.<LineBreak />
-                            <LineBreak />
-                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
-                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
-                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
-                            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
-                            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
-                            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
-                            SOFTWARE.
-                            <LineBreak />
-                            <LineBreak />
-                            Includes a modified version of "ArmA File Format Library"<LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/Braini01/bis-file-formats" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/Braini01/bis-file-formats</Hyperlink><LineBreak />
-                            <Hyperlink NavigateUri="https://github.com/jetelain/bis-file-formats" RequestNavigate="Hyperlink_RequestNavigate">https://github.com/jetelain/bis-file-formats</Hyperlink>
-                            <LineBreak />
-                            <LineBreak />
-                            MIT License<LineBreak />
-                            <LineBreak />
-                            Copyright (c) 2017 Braini01<LineBreak />
-                            Copyright (c) 2021-2022 Julien Etelain (aka GrueArbre)<LineBreak />
-                            <LineBreak />
-                            Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
-                            of this software and associated documentation files (the "Software"), to deal<LineBreak />
-                            in the Software without restriction, including without limitation the rights<LineBreak />
-                            to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
-                            copies of the Software, and to permit persons to whom the Software is<LineBreak />
-                            furnished to do so, subject to the following conditions:<LineBreak />
-                            <LineBreak />
-                            The above copyright notice and this permission notice shall be included in all<LineBreak />
-                            copies or substantial portions of the Software.<LineBreak />
-                            <LineBreak />
-                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
-                            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
-                            FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
-                            AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
-                            LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
-                            OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
-                            SOFTWARE.
-                        </TextBlock>
-                    </ScrollViewer>
+                    <views:AboutView x:Name="AboutBox"/>
                     <TextBox Name="TextPreview" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Visibility="Hidden" FontFamily="Consolas" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
                     <local:ZoomBorder x:Name="ImagePreviewBorder" ClipToBounds="True">
                         <Image Name="ImagePreview"  />
