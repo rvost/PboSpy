@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,7 +15,7 @@ using BIS.PBO;
 using BIS.WRP;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using SixLabors.ImageSharp.PixelFormats;
+using PboExplorer.Helpers;
 
 namespace PboExplorer
 {
@@ -306,7 +305,7 @@ namespace PboExplorer
             var infos = new List<PropertyItem>()
             {
                 new PropertyItem("PBO File", file.PBO.PBOFilePath),
-                new PropertyItem("Size", FormatSize(new FileInfo(file.PBO.PBOFilePath).Length)),
+                new PropertyItem("Size", Formatters.FormatSize(new FileInfo(file.PBO.PBOFilePath).Length)),
                 new PropertyItem("Entries", file.PBO.Files.Count.ToString()),
                 new PropertyItem("Prefix", file.PBO.Prefix),
             };
@@ -340,12 +339,12 @@ namespace PboExplorer
 
             if (entry.Entry.IsCompressed)
             {
-                infos.Add(new PropertyItem("Size uncompressed", FormatSize(entry.Entry.Size)));
-                infos.Add(new PropertyItem("Size in PBO", FormatSize(entry.Entry.DiskSize)));
+                infos.Add(new PropertyItem("Size uncompressed", Formatters.FormatSize(entry.Entry.Size)));
+                infos.Add(new PropertyItem("Size in PBO", Formatters.FormatSize(entry.Entry.DiskSize)));
             }
             else
             {
-                infos.Add(new PropertyItem("Size", FormatSize(entry.Entry.Size)));
+                infos.Add(new PropertyItem("Size", Formatters.FormatSize(entry.Entry.Size)));
             }
 
             Show(entry, infos);
@@ -466,53 +465,9 @@ namespace PboExplorer
                 infos.Add(new PropertyItem("TerrainRange", $"{wrp.TerrainRangeX}x{wrp.TerrainRangeY}"));
                 infos.Add(new PropertyItem("Objects.Count", wrp.ObjectsCount.ToString()));
                 infos.Add(new PropertyItem("Materials.Count", wrp.MatNames.Length.ToString()));
-                ImagePreview.Source = PreviewElevation(wrp);
+                ImagePreview.Source = wrp.PreviewElevation();
                 ImagePreviewBorder.Visibility = Visibility.Visible;
             }
-        }
-
-        public BitmapSource PreviewElevation(AnyWrp wrp)
-        {
-            var min = 4000d;
-
-            var max = -1000d;
-
-            for (int y = 0; y < wrp.TerrainRangeY; y++)
-            {
-                for (int x = 0; x < wrp.TerrainRangeX; x++)
-                {
-                    max = Math.Max(wrp.Elevation[x + (y * wrp.TerrainRangeY)], max);
-                    min = Math.Min(wrp.Elevation[x + (y * wrp.TerrainRangeY)], min);
-                }
-            }
-
-            var min0 = Math.Min(-1, min);
-            min = Math.Max(0, min);
-            var legend = new[]
-            {
-                new { E = min0, Color = SixLabors.ImageSharp.Color.DarkBlue.ToPixel<Rgb24>().ToScaledVector4() },
-                new { E = min, Color = SixLabors.ImageSharp.Color.LightBlue.ToPixel<Rgb24>().ToScaledVector4() },
-                new { E = min + (max - min) * 0.10, Color = SixLabors.ImageSharp.Color.DarkGreen.ToPixel<Rgb24>().ToScaledVector4() },
-                new { E = min + (max - min) * 0.15, Color = SixLabors.ImageSharp.Color.Green.ToPixel<Rgb24>().ToScaledVector4() },
-                new { E = min + (max - min) * 0.40, Color = SixLabors.ImageSharp.Color.Yellow.ToPixel<Rgb24>().ToScaledVector4() },
-                new { E = min + (max - min) * 0.70, Color = SixLabors.ImageSharp.Color.Red.ToPixel<Rgb24>().ToScaledVector4() },
-                new { E = max, Color = SixLabors.ImageSharp.Color.Maroon.ToPixel<Rgb24>().ToScaledVector4() }
-            };
-            var img = new SixLabors.ImageSharp.Image<Bgra32>(wrp.TerrainRangeX, wrp.TerrainRangeY);
-            for (int y = 0; y < wrp.TerrainRangeY; y++)
-            {
-                for (int x = 0; x < wrp.TerrainRangeX; x++)
-                {
-                    var elevation = wrp.Elevation[x + (y * wrp.TerrainRangeY)];
-                    var before = legend.Where(e => e.E <= elevation).Last();
-                    var after = legend.FirstOrDefault(e => e.E > elevation) ?? legend.Last();
-                    var scale = (float)((elevation - before.E) / (after.E - before.E));
-                    Bgra32 rgb = new Bgra32();
-                    rgb.FromScaledVector4(Vector4.Lerp(before.Color, after.Color, scale));
-                    img[x, wrp.TerrainRangeY - y - 1] = rgb;
-                }
-            }
-            return new ImageSharpImageSource(img);
         }
 
         private void ShowPAA(FileBase entry, List<PropertyItem> infos)
@@ -573,8 +528,8 @@ namespace PboExplorer
         {
             PropertiesGrid.ItemsSource = new List<PropertyItem>()
             {
-                new PropertyItem("Size uncompressed", FormatSize(directory.UncompressedSize)),
-                new PropertyItem("Size in PBO", FormatSize(directory.DataSize)),
+                new PropertyItem("Size uncompressed", Formatters.FormatSize(directory.UncompressedSize)),
+                new PropertyItem("Size in PBO", Formatters.FormatSize(directory.DataSize)),
             };
         }
 
@@ -582,18 +537,6 @@ namespace PboExplorer
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
-        }
-
-        private static string FormatSize(double size)
-        {
-            string[] sizes = { "Bytes", "KiB", "MiB", "GiB", "TiB" };
-            int order = 0;
-            while (size >= 1024 && order < sizes.Length - 1)
-            {
-                order++;
-                size = size / 1024;
-            }
-            return string.Format("{0:0.##} {1}", size, sizes[order]);
         }
 
         private void CopyToClipboard(object sender, RoutedEventArgs e)
