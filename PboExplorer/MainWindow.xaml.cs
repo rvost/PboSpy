@@ -43,7 +43,7 @@ namespace PboExplorer
                 }
                 else if (Directory.Exists(arg))
                 {
-                    list.AddRange(Directory.GetFiles(arg, "*.pbo", SearchOption.AllDirectories));
+                    list.AddRange(DirectoryExtensions.GetSupportedFiles(arg));
                 }
             }
             if (list.Count > 0)
@@ -71,7 +71,7 @@ namespace PboExplorer
             dialog.IsFolderPicker = true;
             if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                LoadPboList(Directory.GetFiles(dialog.FileName, "*.pbo", SearchOption.AllDirectories));
+                LoadPboList(DirectoryExtensions.GetSupportedFiles(dialog.FileName));
             }
         }
 
@@ -578,7 +578,7 @@ namespace PboExplorer
 
                 // Load files from folders
                 lookup[true].ToList().ForEach(
-                    dir => LoadPboList(Directory.GetFiles(dir, "*.pbo", SearchOption.AllDirectories))
+                    dir => LoadPboList(DirectoryExtensions.GetSupportedFiles(dir))
                     );
 
                 // Load other files
