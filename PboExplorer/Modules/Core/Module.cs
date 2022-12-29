@@ -22,5 +22,6 @@ public class Module: ModuleBase
     {
         await Shell.OpenDocumentAsync(IoC.Get<AboutViewModel>());
         Shell.ShowTool(IoC.Get<ExplorerViewModel>());
+        Shell.ShowTool(IoC.Get<ConfigViewModel>());
     }
 }

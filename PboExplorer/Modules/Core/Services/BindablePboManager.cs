@@ -3,6 +3,7 @@ using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,13 +11,15 @@ using System.Threading.Tasks;
 namespace PboExplorer.Modules.Core.Services;
 
 [Export(typeof(IPboManager))]
-public class BindablePboManager: IPboManager
+public class BindablePboManager : IPboManager
 {
     public ICollection<ITreeItem> FileTree { get; }
+    public ICollection<ITreeItem> ConfigTree { get; }
 
     public BindablePboManager()
     {
-         FileTree = new BindableCollection<ITreeItem>();
+        FileTree = new BindableCollection<ITreeItem>();
+        ConfigTree = new BindableCollection<ITreeItem>();
     }
 
     // TODO: Refactor
@@ -35,6 +38,7 @@ public class BindablePboManager: IPboManager
                 {
                     FileTree.Add(e);
                 }
+                GenerateMergedConfig(FileTree.OfType<PboFile>());
             }, TaskScheduler.FromCurrentSynchronizationContext());
 
         var filesToAdd = nonPbos
@@ -56,6 +60,15 @@ public class BindablePboManager: IPboManager
             {
                 openedFiles.AddEntry(file);
             }
+        }
+    }
+
+    private void GenerateMergedConfig(IEnumerable<PboFile> files)
+    {
+        var configClasses = ConfigClassItem.MergedView(files);
+        foreach (var configClass in configClasses)
+        {
+            ConfigTree.Add(configClass);
         }
     }
 }
