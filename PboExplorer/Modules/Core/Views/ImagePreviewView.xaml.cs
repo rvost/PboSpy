@@ -13,27 +13,32 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PboExplorer.Views
+namespace PboExplorer.Modules.Core.Views
 {
     /// <summary>
     /// Interaction logic for ImageView.xaml
     /// </summary>
-    public partial class ImageView : UserControl
+    public partial class ImagePreviewView : UserControl
     {
-        public ImageView()
+        public ImagePreviewView()
         {
             InitializeComponent();
         }
-
+        
+        // TODO: Remove
         public ImageSource Source
         {
             get { return (ImageSource)GetValue(SourceProperty); }
             set { SetValue(SourceProperty, value); }
         }
-
+        // TODO: Remove
         public static readonly DependencyProperty SourceProperty =
-            DependencyProperty.Register("Source", typeof(ImageSource), typeof(ImageView), new PropertyMetadata(default));
+            DependencyProperty.Register("Source", typeof(ImageSource), typeof(ImagePreviewView), new PropertyMetadata(default));
 
         public void Reset() => PART_Border.Reset();
+        
+        //  TODO: Replace with VM command
+        private void OnResetClick(object sender, RoutedEventArgs e)
+            => PART_Border.Reset();
     }
 }

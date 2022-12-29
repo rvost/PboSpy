@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PboExplorer"
-        xmlns:views="clr-namespace:PboExplorer.Views"
+        xmlns:views="clr-namespace:PboExplorer.Modules.Core.Views"
         xmlns:converters="clr-namespace:PboExplorer.Converters"
         mc:Ignorable="d"
         Title="PBO Explorer" Height="450" Width="800">
@@ -126,9 +126,10 @@
                       ResizeDirection="Rows"
                       Height="5"/>
                 <Grid Background="LightGray" Grid.Row="1" Margin="0 5 0 0">
-                    <views:AboutView x:Name="AboutBox"/>
+                    <!--<views:AboutView x:Name="AboutBox"/>-->
+                    <Label x:Name="AboutBox"/>
                     <TextBox Name="TextPreview" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Visibility="Hidden" FontFamily="Consolas" IsReadOnly="True" IsReadOnlyCaretVisible="True" />
-                    <views:ImageView x:Name="ImagePreview" ClipToBounds="True"/>
+                    <views:ImagePreviewView x:Name="ImagePreview" ClipToBounds="True"/>
                 </Grid>
 
             </Grid>

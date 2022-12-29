@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,23 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PboExplorer.Views
+namespace PboExplorer.Modules.Core.Views
 {
     /// <summary>
-    /// Interaction logic for AboutView.xaml
+    /// Interaction logic for ExplorerView.xaml
     /// </summary>
-    public partial class AboutView : UserControl
+    public partial class ExplorerView : UserControl
     {
-        public AboutView()
+        public ExplorerView()
         {
             InitializeComponent();
         }
-
-        private void OnHyperLinkRequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-            e.Handled = true;
-        }
-
     }
 }
