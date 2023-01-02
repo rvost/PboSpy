@@ -1,5 +1,7 @@
 ﻿using BIS.PBO;
 using Caliburn.Micro;
+using PboExplorer.Interfaces;
+using PboExplorer.Modules.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;

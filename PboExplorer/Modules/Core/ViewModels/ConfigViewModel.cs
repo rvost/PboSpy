@@ -1,5 +1,6 @@
 ﻿using Gemini.Framework;
 using Gemini.Framework.Services;
+using PboExplorer.Interfaces;
 using PboExplorer.Modules.Core.Factories;
 using PboExplorer.Modules.Core.Services;
 using System.Collections.Generic;

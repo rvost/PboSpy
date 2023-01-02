@@ -25,7 +25,8 @@
                     ToolTip="Extract selected PBO"/>
         </ToolBar>
 
-        <TreeView Grid.Row="1" x:Name="Items">
+        <TreeView Grid.Row="1" x:Name="Items"
+                  cal:Message.Attach="[SelectedItemChanged] = [Action OnSelectedItemChanged($eventArgs)]">
             <e:Interaction.Behaviors>
                 <behaviors:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </e:Interaction.Behaviors>

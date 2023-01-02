@@ -1,11 +1,17 @@
 ﻿using Gemini.Framework;
 using Gemini.Framework.Services;
+using Gemini.Modules.PropertyGrid;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using PboExplorer.Helpers;
+using PboExplorer.Interfaces;
 using PboExplorer.Modules.Core.Factories;
+using PboExplorer.Modules.Core.Models;
 using PboExplorer.Modules.Core.Services;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PboExplorer.Modules.Core.ViewModels;
 
@@ -15,13 +21,16 @@ public class ExplorerViewModel : Tool
 {
     private readonly DocumentFactory _documentFactory;
     private ITreeItem _selectedItem;
-    
+
     // TODO: Use Constructor DI
     [Import]
     public IShell Shell { get; set; }
     // TODO: Use Constructor DI
     [Import]
     public IPboManager PboManager { get; set; }
+    // TODO: Use Constructor DI
+    [Import]
+    public IPropertyGrid PropertyGrid { get; set; }
 
     public ICollection<ITreeItem> Items { get => PboManager.FileTree; }
 
@@ -83,4 +92,11 @@ public class ExplorerViewModel : Tool
         }
     }
 
+    public void OnSelectedItemChanged(RoutedPropertyChangedEventArgs<object> args)
+    {
+        if (args.NewValue is ITreeItem item)
+        {
+            PropertyGrid.SelectedObject = item.Metadata;
+        }
+    }
 }

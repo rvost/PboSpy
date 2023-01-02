@@ -1,4 +1,5 @@
 ﻿using BIS.Core.Config;
+using PboExplorer.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
-namespace PboExplorer
+namespace PboExplorer.Modules.Core.Models
 {
     internal class ConfigClassItem : ITreeItem
     {
@@ -43,6 +44,8 @@ namespace PboExplorer
             }
         }
 
+        public IMetadata Metadata => null;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private IEnumerable<ITreeItem> GetAllChildren()
@@ -62,7 +65,7 @@ namespace PboExplorer
             if (baseClass != null)
             {
                 var merged = new Dictionary<string, T>(baseClass.Merged(get), StringComparer.OrdinalIgnoreCase);
-                foreach(var pair in thisData)
+                foreach (var pair in thisData)
                 {
                     if (pair.Value == null)
                     {
@@ -109,7 +112,7 @@ namespace PboExplorer
         public ConfigClassItem ResolveClassDirectThenDeep(string className)
         {
             var resolved = ResolveClassDirect(className);
-            if (resolved != null )
+            if (resolved != null)
             {
                 return resolved;
             }
@@ -121,7 +124,7 @@ namespace PboExplorer
             var paramFiles = new List<Tuple<ParamFile, PboEntry>>();
             foreach (var pbo in files)
             {
-                foreach(var file in pbo.AllEntries.OfType<PboEntry>().Where(f => f.IsBinaryConfig() && !f.Name.EndsWith(".rvmat", StringComparison.OrdinalIgnoreCase)))
+                foreach (var file in pbo.AllEntries.OfType<PboEntry>().Where(f => f.IsBinaryConfig() && !f.Name.EndsWith(".rvmat", StringComparison.OrdinalIgnoreCase)))
                 {
                     try
                     {
@@ -139,7 +142,7 @@ namespace PboExplorer
             }
 
             var root = new ConfigClassItem();
-            foreach(var file in paramFiles) // TODO: gracefully sort using CfgPatches
+            foreach (var file in paramFiles) // TODO: gracefully sort using CfgPatches
             {
                 root.Apply(file.Item1.Root, file.Item2);
             }
@@ -152,7 +155,7 @@ namespace PboExplorer
 
             Definitions.Add(new Tuple<PboEntry, ParamClass>(file, definition));
 
-            foreach(var entry in definition.Entries.OfType<ParamClass>())
+            foreach (var entry in definition.Entries.OfType<ParamClass>())
             {
                 if (ChildrenClasses.TryGetValue(entry.Name, out var existing))
                 {

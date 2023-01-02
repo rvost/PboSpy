@@ -16,6 +16,8 @@ using BIS.WRP;
 using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PboExplorer.Helpers;
+using PboExplorer.Interfaces;
+using PboExplorer.Modules.Core.Models;
 
 namespace PboExplorer
 {

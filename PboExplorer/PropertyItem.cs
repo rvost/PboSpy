@@ -1,6 +1,6 @@
 ﻿namespace PboExplorer
 {
-    internal class PropertyItem
+    public class PropertyItem
     {
         public PropertyItem(string name, string value)
         {
