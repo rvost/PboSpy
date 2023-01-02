@@ -1,5 +1,4 @@
-﻿using Gemini.Framework;
-using Gemini.Framework.Commands;
+﻿using Gemini.Framework.Commands;
 using PboExplorer.Modules.Core.Commands;
 using System;
 using System.Collections.Generic;
@@ -10,15 +9,15 @@ using System.Windows;
 
 namespace PboExplorer.Modules.Core.ViewModels;
 
-public class TextPreviewViewModel : Document, ICommandHandler<CopyToClipboardCommandDefinition>
+// TODO: Move ICommandHandler<CopyToClipboardCommandDefinition> to base class
+public class TextPreviewViewModel : PreviewViewModel, ICommandHandler<CopyToClipboardCommandDefinition>
 {
     public string Text { get; }
 
-	public TextPreviewViewModel(string name, string text)
-	{
-		DisplayName= name;
-		Text= text;
-	}
+    public TextPreviewViewModel(FileBase model, string text) : base(model)
+    {
+        Text = text;
+    }
 
     void ICommandHandler<CopyToClipboardCommandDefinition>.Update(Command command)
     {

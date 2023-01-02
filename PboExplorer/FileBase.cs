@@ -12,7 +12,7 @@ using BIS.PBO;
 
 namespace PboExplorer
 {
-    abstract class FileBase
+    public abstract class FileBase
     {
         public abstract Stream GetStream();
 

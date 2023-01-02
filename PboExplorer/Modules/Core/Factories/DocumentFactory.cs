@@ -31,8 +31,7 @@ class DocumentFactory
     private Document ShowGenericText(FileBase entry)
     {
         var text = entry.GetText();
-        var name = entry.FullPath;
-        return new TextPreviewViewModel(name, text);
+        return new TextPreviewViewModel(entry, text);
     }
 
     private Document ShowGenericBinary(FileBase entry)
@@ -40,8 +39,7 @@ class DocumentFactory
         if (entry.IsBinaryConfig())
         {
             var text = entry.GetBinaryConfigAsText();
-            var name = entry.FullPath;
-            return new TextPreviewViewModel(name, text);
+            return new TextPreviewViewModel(entry, text);
         }
         else
         {
@@ -101,41 +99,35 @@ class DocumentFactory
             sb.AppendLine();
         }
         var text = sb.ToString();
-        var name = entry.FullPath;
-        return new TextPreviewViewModel(name, text);
+        return new TextPreviewViewModel(entry, text);
     }
 
     private Document ShowWRP(FileBase entry)
     {
         using var stream = entry.GetStream();
         var wrp = StreamHelper.Read<AnyWrp>(stream);
-        var name = entry.FullPath;
         var image = wrp.PreviewElevation();
-        return new ImagePreviewViewModel(name, image);
+        return new ImagePreviewViewModel(entry, image);
     }
 
     private Document ShowDetectConfig(FileBase entry)
     {
         var text = entry.GetDetectConfigAsText(out _);
-        var name = entry.FullPath;
-        return new TextPreviewViewModel(name, text);
+        return new TextPreviewViewModel(entry, text);
     }
 
     private Document ShowImage(FileBase entry)
     {
-        var name = entry.FullPath;
-
         using var stream = entry.GetStream();
         var image = BitmapFrame.Create(stream,
             BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-        return new ImagePreviewViewModel(name, image);
+        return new ImagePreviewViewModel(entry, image);
     }
 
     private Document ShowPAA(FileBase entry)
     {
-        var name = entry.FullPath;
         var paa = entry.GetPaaImage();
         var image = paa.Bitmap;
-        return new ImagePreviewViewModel(name, image);
+        return new ImagePreviewViewModel(entry, image);
     }
 }

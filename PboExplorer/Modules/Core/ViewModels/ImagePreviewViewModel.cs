@@ -1,11 +1,6 @@
-﻿using Gemini.Framework;
-using Gemini.Framework.Commands;
+﻿using Gemini.Framework.Commands;
 using PboExplorer.Modules.Core.Commands;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -13,13 +8,13 @@ using System.Windows.Media.Imaging;
 
 namespace PboExplorer.Modules.Core.ViewModels;
 
-public class ImagePreviewViewModel : Document, ICommandHandler<CopyToClipboardCommandDefinition>
+// TODO: Move ICommandHandler<CopyToClipboardCommandDefinition> to base class
+public class ImagePreviewViewModel : PreviewViewModel, ICommandHandler<CopyToClipboardCommandDefinition>
 {
     public ImageSource Image { get; }
 
-    public ImagePreviewViewModel(string name, ImageSource image)
+    public ImagePreviewViewModel(FileBase model, ImageSource image) : base(model)
     {
-        DisplayName = name;
         Image = image;
     }
 
@@ -35,7 +30,7 @@ public class ImagePreviewViewModel : Document, ICommandHandler<CopyToClipboardCo
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bmp));
             using var pngMemStream = new MemoryStream();
-            
+
             encoder.Save(pngMemStream);
             var data = new DataObject();
             data.SetImage(bmp); // For applications that does not support PNG data

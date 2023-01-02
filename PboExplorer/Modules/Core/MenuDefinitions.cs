@@ -26,6 +26,10 @@ public static class MenuDefinitions
     [Export]
     public static readonly MenuItemGroupDefinition EditMenuGroup = new(
         Gemini.Modules.MainMenu.MenuDefinitions.EditMenu, 0);
+    
+    [Export]
+    public static readonly MenuItemDefinition ExtractCurrentMenuItem = new CommandMenuItemDefinition<ExtractCurrentCommandDefinition>(
+       EditMenuGroup, 1);
 
     [Export]
     public static readonly MenuItemDefinition CopyToClipboardMenuItem = new CommandMenuItemDefinition<CopyToClipboardCommandDefinition>(

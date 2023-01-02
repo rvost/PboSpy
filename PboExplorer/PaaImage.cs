@@ -3,7 +3,7 @@ using BIS.PAA;
 
 namespace PboExplorer
 {
-    internal class PaaImage
+    public class PaaImage
     {
         public PaaImage()
         {
