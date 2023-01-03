@@ -1,11 +1,13 @@
 ﻿using Gemini.Framework;
 using Gemini.Framework.Services;
+using Gemini.Modules.PropertyGrid;
 using PboExplorer.Interfaces;
 using PboExplorer.Modules.Core.Factories;
 using PboExplorer.Modules.Core.Services;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PboExplorer.Modules.Core.ViewModels;
 
@@ -21,8 +23,11 @@ public class ConfigViewModel : Tool
     // TODO: Use Constructor DI
     [Import]
     public IPboManager PboManager { get; set; }
+    // TODO: Use Constructor DI
+    [Import]
+    public IPropertyGrid PropertyGrid { get; set; }
 
-    public ICollection<ITreeItem> Items { get => PboManager.FileTree; }
+    public ICollection<ITreeItem> Items { get => PboManager.ConfigTree; }
 
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
@@ -48,6 +53,14 @@ public class ConfigViewModel : Tool
             {
                 //TODO: Show error in status bar
             }
+        }
+    }
+
+    public void OnSelectedItemChanged(RoutedPropertyChangedEventArgs<object> args)
+    {
+        if (args.NewValue is ITreeItem item)
+        {
+            PropertyGrid.SelectedObject = item.Metadata;
         }
     }
 }
