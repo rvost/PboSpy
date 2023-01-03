@@ -64,8 +64,8 @@ class PaaEntryMetadata : PboEntryMetadata
     public PaaEntryMetadata(PboEntry entry) : base(entry)
     {
         var paa = entry.GetPaaImage();
-        ImageSize = $"{paa.Paa.Width}x{paa.Paa.Height}";
-        ImageType = paa.Paa.Type.ToString();
+        ImageSize = $"{paa.Width}x{paa.Height}";
+        ImageType = paa.Type.ToString();
     }
 }
 

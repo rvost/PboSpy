@@ -1,6 +1,7 @@
 ﻿using Gemini.Framework.Commands;
 using Microsoft.Win32;
 using PboExplorer.Modules.Core.Commands;
+using PboExplorer.Modules.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

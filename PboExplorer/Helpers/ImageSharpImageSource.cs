@@ -7,7 +7,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Color = System.Windows.Media.Color;
 
-namespace PboExplorer
+namespace PboExplorer.Helpers
 {
     public sealed class ImageSharpImageSource : BitmapSource
     {
@@ -25,13 +25,13 @@ namespace PboExplorer
 
         public override PixelFormat Format => PixelFormats.Bgra32;
 
-        public override int PixelHeight => this.source.Height;
+        public override int PixelHeight => source.Height;
 
-        public override int PixelWidth => this.source.Width;
+        public override int PixelWidth => source.Width;
 
-        public override double DpiX => this.source.Metadata.HorizontalResolution;
+        public override double DpiX => source.Metadata.HorizontalResolution;
 
-        public override double DpiY => this.source.Metadata.VerticalResolution;
+        public override double DpiY => source.Metadata.VerticalResolution;
 
         public override BitmapPalette Palette => null;
 
@@ -48,7 +48,7 @@ namespace PboExplorer
             int stride,
             int offset)
         {
-            this.ValidateArrayAndGetInfo(
+            ValidateArrayAndGetInfo(
                 pixels,
                 out var elementSize,
                 out var bufferSize,
@@ -79,7 +79,7 @@ namespace PboExplorer
                 {
                     // Adjust the buffer and bufferSize to account for the offset.
                     IntPtr buffer = arrayHandle.AddrOfPinnedObject();
-                    buffer = new IntPtr(((long)buffer) + (long)offsetInBytes);
+                    buffer = new IntPtr((long)buffer + offsetInBytes);
                     bufferSize -= offsetInBytes;
 
                     CopyPixels(sourceRect, buffer, bufferSize, stride);
@@ -129,7 +129,7 @@ namespace PboExplorer
                 }
 
                 uint minStrideInBits = (uint)(sourceRect.Width * Format.BitsPerPixel);
-                uint minStrideInBytes = ((minStrideInBits + 7) / 8);
+                uint minStrideInBytes = (minStrideInBits + 7) / 8;
                 if (stride < minStrideInBytes)
                 {
                     throw new ArgumentOutOfRangeException(nameof(stride));

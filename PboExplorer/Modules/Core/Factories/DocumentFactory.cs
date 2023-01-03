@@ -130,8 +130,7 @@ class DocumentFactory
 
     private Document ShowPAA(FileBase entry)
     {
-        var paa = entry.GetPaaImage();
-        var image = paa.Bitmap;
+        var image = entry.GetPaaAsBitmapSource();
         return new ImagePreviewViewModel(entry, image);
     }
 }
