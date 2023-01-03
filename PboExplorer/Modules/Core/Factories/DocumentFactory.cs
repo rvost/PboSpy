@@ -2,6 +2,7 @@
 using BIS.WRP;
 using Gemini.Framework;
 using PboExplorer.Helpers;
+using PboExplorer.Modules.Core.Models;
 using PboExplorer.Modules.Core.ViewModels;
 using System;
 using System.Linq;
@@ -27,6 +28,9 @@ class DocumentFactory
             _ => ShowGenericText(entry),
         };
     }
+
+    public Document CreatePreview(ConfigClassItem entry)
+        => new ConfigClassViewModel(entry);
 
     private Document ShowGenericText(FileBase entry)
     {

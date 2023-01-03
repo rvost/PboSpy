@@ -76,6 +76,11 @@ public class ExplorerViewModel : Tool
 
     public async Task OpenPreview(ITreeItem item)
     {
+        if (item != SelectedItem)
+        {
+            return; // Handle bubbling
+        }
+
         if (item is FileBase file)
         {
             try

@@ -3,6 +3,7 @@ using Gemini.Framework.Services;
 using Gemini.Modules.PropertyGrid;
 using PboExplorer.Interfaces;
 using PboExplorer.Modules.Core.Factories;
+using PboExplorer.Modules.Core.Models;
 using PboExplorer.Modules.Core.Services;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -16,6 +17,7 @@ namespace PboExplorer.Modules.Core.ViewModels;
 public class ConfigViewModel : Tool
 {
     private readonly DocumentFactory _documentFactory;
+    private ITreeItem _selectedItem;
 
     // TODO: Use Constructor DI
     [Import]
@@ -29,6 +31,16 @@ public class ConfigViewModel : Tool
 
     public ICollection<ITreeItem> Items { get => PboManager.ConfigTree; }
 
+    public ITreeItem SelectedItem
+    {
+        get => _selectedItem;
+        set
+        {
+            _selectedItem = value;
+            NotifyOfPropertyChange(nameof(SelectedItem));
+        }
+    }
+
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     public ConfigViewModel()
@@ -39,11 +51,16 @@ public class ConfigViewModel : Tool
 
     public async Task OpenPreview(ITreeItem item)
     {
-        if (item is FileBase file)
+        if(item != SelectedItem)
+        {
+            return; // Handle bubbling
+        }
+
+        if (item is ConfigClassItem classItem)
         {
             try
             {
-                var document = _documentFactory.CreatePreview(file);
+                var document = _documentFactory.CreatePreview(classItem);
                 if (document != null)
                 {
                     await Shell.OpenDocumentAsync(document);
