@@ -10,6 +10,7 @@ using PboExplorer.Modules.Core.Services;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -97,6 +98,28 @@ public class ExplorerViewModel : Tool
         if (args.NewValue is ITreeItem item)
         {
             PropertyGrid.SelectedObject = item.Metadata;
+        }
+    }
+
+    // TODO: Refactor
+    public void OnDrop(DragEventArgs args)
+    {
+        if (args.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            string[] paths = (string[])args.Data.GetData(DataFormats.FileDrop);
+
+            // Split folders and files
+            var lookup = paths.ToLookup(
+                (path) => File.GetAttributes(path).HasFlag(FileAttributes.Directory)
+                );
+
+            // Load files from folders
+            lookup[true].ToList().ForEach(
+                dir => PboManager.LoadSupportedFiles(DirectoryExtensions.GetSupportedFiles(dir))
+                );
+
+            // Load other files
+            PboManager.LoadSupportedFiles(lookup[false]);
         }
     }
 }

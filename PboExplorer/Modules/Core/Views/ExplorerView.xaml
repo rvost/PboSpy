@@ -13,7 +13,8 @@
     <UserControl.Resources>
         <converters:TreeItemToIconConverter x:Key="IconConverter"/>
     </UserControl.Resources>
-    <Grid>
+    <Grid cal:Message.Attach="[Drop] = [Action OnDrop($eventArgs)]"
+          AllowDrop="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
