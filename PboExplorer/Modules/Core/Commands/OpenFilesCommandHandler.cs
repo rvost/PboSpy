@@ -1,15 +1,15 @@
 ﻿using Gemini.Framework.Commands;
-using Gemini.Framework.Menus;
+using Gemini.Modules.Shell.Commands;
 using Microsoft.Win32;
 using PboExplorer.Modules.Core.Services;
-using System;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 
 namespace PboExplorer.Modules.Core.Commands;
 
 [CommandHandler]
-public class OpenFilesCommandHandler : CommandHandlerBase<OpenFilesCommandDefinition>
+public class OpenFilesCommandHandler : CommandHandlerBase<OpenFilesCommandDefinition>,
+    ICommandHandler<OpenFileCommandDefinition>
 {
     private readonly IPboManager _explorer;
 

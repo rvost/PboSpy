@@ -57,16 +57,15 @@ public static class MenuDefinitions
     public static readonly MenuItemDefinition ViewAboutMenuItem = new CommandMenuItemDefinition<ViewAboutCommandDefinition>(
         ViewMenuGroup, 0);
 
-    // Exclude default menu options
     [Export]
-    public static readonly ExcludeMenuItemDefinition ExcludeOpenMenuItem =
-        new(Gemini.Modules.Shell.MenuDefinitions.FileOpenMenuItem);
+    public static readonly MenuItemGroupDefinition ViewToolsMenuGroup = new(
+        Gemini.Modules.MainMenu.MenuDefinitions.ViewMenu, 0);
 
     [Export]
-    public static readonly ExcludeMenuItemDefinition ExcludeNewMenuItem =
-       new(Gemini.Modules.Shell.MenuDefinitions.FileNewMenuItem);
+    public static readonly MenuItemDefinition ViewExplorerMenuItem = new CommandMenuItemDefinition<ViewExplorerCommandDefinition>(
+       ViewToolsMenuGroup, 0);
 
     [Export]
-    public static readonly ExcludeMenuItemGroupDefinition ExcludeNewMenuGroup =
-        new(Gemini.Modules.Shell.MenuDefinitions.FileNewCascadeGroup);
+    public static readonly MenuItemDefinition ViewConfigMenuItem = new CommandMenuItemDefinition<ViewConfigCommandDefinition>(
+       ViewToolsMenuGroup, 1);
 }
