@@ -1,4 +1,5 @@
 ﻿using Gemini.Framework.Commands;
+using System;
 
 namespace PboExplorer.Modules.Core.Commands;
 
@@ -12,4 +13,7 @@ public class ExtractAsTextCommandDefinition: CommandDefinition
     public override string Text => "Extract As Text";
 
     public override string ToolTip => "Extract current file as text";
+
+    public override Uri IconSource
+        => new("pack://application:,,,/PboExplorer;component/Resources/Icons/ExtractText.png");
 }

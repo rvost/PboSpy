@@ -1,4 +1,5 @@
 ﻿using Gemini.Framework.Commands;
+using System;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 
@@ -11,10 +12,12 @@ public class OpenFilesCommandDefinition : CommandDefinition
 
     public override string Name => CommandName;
 
-    public override string Text => "Files...";
+    public override string Text => "Files";
 
     public override string ToolTip => "Open one or multiple files";
 
+    public override Uri IconSource 
+        => new("pack://application:,,,/PboExplorer;component/Resources/Icons/OpenFiles.png");
 
     [Export]
     public static CommandKeyboardShortcut KeyGesture = 

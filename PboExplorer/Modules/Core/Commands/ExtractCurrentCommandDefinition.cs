@@ -1,4 +1,5 @@
 ﻿using Gemini.Framework.Commands;
+using System;
 using System.ComponentModel.Composition;
 using System.Windows.Input;
 
@@ -14,6 +15,9 @@ public class ExtractCurrentCommandDefinition: CommandDefinition
     public override string Text => "Extract";
 
     public override string ToolTip => "Extract current file";
+
+    public override Uri IconSource
+        => new("pack://application:,,,/PboExplorer;component/Resources/Icons/ExtractFile.png");
 
     [Export]
     public static CommandKeyboardShortcut KeyGesture =

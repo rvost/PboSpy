@@ -21,6 +21,8 @@ public class CopyToClipboardCommandDefinition: CommandDefinition
 
     public override string ToolTip => "Copy current file to clipboard";
 
+    public override Uri IconSource
+        => new("pack://application:,,,/PboExplorer;component/Resources/Icons/Copy.png");
 
     [Export]
     public static CommandKeyboardShortcut KeyGesture =

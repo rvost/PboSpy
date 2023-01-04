@@ -19,6 +19,7 @@
     <Compile Remove="Views\**" />
     <EmbeddedResource Remove="Views\**" />
     <None Remove="Resources\Icons\*.svg" />
+	<None Remove="Resources\Icons\*.png" />
     <None Remove="Views\**" />
     <Page Remove="Views\**" />
   </ItemGroup>
@@ -40,6 +41,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\Icons\*.svg" />
+	  <Resource Include="Resources\Icons\*.png" />
   </ItemGroup>
 
 </Project>
