@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Data;
 
 using PboExplorer.Helpers;
+using PboExplorer.Interfaces;
 
 namespace PboExplorer.Converters
 {

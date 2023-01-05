@@ -16,10 +16,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\**" />
+    <EmbeddedResource Remove="Views\**" />
     <None Remove="Resources\Icons\*.svg" />
+	<None Remove="Resources\Icons\*.png" />
+    <None Remove="Views\**" />
+    <Page Remove="Views\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Gemini.Modules.PropertyGrid" Version="1.0.60-beta" />
+    <PackageReference Include="GeminiWpf" Version="1.0.60-beta" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
@@ -34,6 +41,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\Icons\*.svg" />
+	  <Resource Include="Resources\Icons\*.png" />
   </ItemGroup>
 
 </Project>
