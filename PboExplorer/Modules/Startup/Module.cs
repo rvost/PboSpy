@@ -22,5 +22,7 @@ public class Module : ModuleBase
         _mainWindow.WindowState = WindowState.Maximized;
         _mainWindow.Title = "PboExplorer";
         _mainWindow.Icon = new IconService().GetIcon("WindowIcon"); // TODO: Fix this
+
+        _mainWindow.Shell.ToolBars.Visible = true;
     }
 }

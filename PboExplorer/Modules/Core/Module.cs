@@ -1,6 +1,7 @@
 ﻿using Caliburn.Micro;
 using Gemini.Framework;
 using PboExplorer.Modules.Core.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -18,10 +19,17 @@ public class Module: ModuleBase
         }
     }
 
+    public override IEnumerable<Type> DefaultTools
+    {
+        get
+        {
+            yield return typeof(ExplorerViewModel);
+            yield return typeof(ConfigViewModel);
+        }
+    }
+
     public override async Task PostInitializeAsync()
     {
-        await Shell.OpenDocumentAsync(IoC.Get<AboutViewModel>());
-        Shell.ShowTool(IoC.Get<ExplorerViewModel>());
-        Shell.ShowTool(IoC.Get<ConfigViewModel>());
+        Shell.ActiveLayoutItem= IoC.Get<ExplorerViewModel>();
     }
 }
