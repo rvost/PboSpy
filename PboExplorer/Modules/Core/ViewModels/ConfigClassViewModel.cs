@@ -1,4 +1,5 @@
 ﻿using Gemini.Framework;
+using PboExplorer.Interfaces;
 using PboExplorer.Modules.Core.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace PboExplorer.Modules.Core.ViewModels;
 class ConfigClassViewModel : Document
 {
     private readonly ConfigClassItem _model;
+
+    public ITreeItem Model => _model;
 
     public ICollection<ConfigClassDefinitionViewModel> Definitions { get; }
 

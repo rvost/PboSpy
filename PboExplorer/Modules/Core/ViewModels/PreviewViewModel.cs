@@ -12,6 +12,8 @@ public abstract class PreviewViewModel : Document, ICommandHandler<ExtractCurren
 {
     protected FileBase _model;
 
+    public FileBase Model => _model;
+
     public PreviewViewModel(FileBase model)
     {
         _model = model;
