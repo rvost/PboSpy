@@ -10,9 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace PboExplorer.Modules.Core.ViewModels;
 
-// TODO: Move ICommandHandler<CopyToClipboardCommandDefinition> to base class
-public class ImagePreviewViewModel : PreviewViewModel, ICommandHandler<CopyToClipboardCommandDefinition>,
-    ICommandHandler<ExtractAsPngCommandDefinition>
+public class ImagePreviewViewModel : PreviewViewModel, ICommandHandler<ExtractAsPngCommandDefinition>
 {
     public ImageSource Image { get; }
 
@@ -21,12 +19,12 @@ public class ImagePreviewViewModel : PreviewViewModel, ICommandHandler<CopyToCli
         Image = image;
     }
 
-    void ICommandHandler<CopyToClipboardCommandDefinition>.Update(Command command)
+    protected override void CanExecuteCopy(Command command)
     {
         command.Enabled = Image is BitmapSource;
     }
 
-    Task ICommandHandler<CopyToClipboardCommandDefinition>.Run(Command command)
+    protected override Task ExecuteCopy(Command command)
     {
         if (Image is BitmapSource bmp)
         {
@@ -71,4 +69,5 @@ public class ImagePreviewViewModel : PreviewViewModel, ICommandHandler<CopyToCli
 
         return Task.CompletedTask;
     }
+
 }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace PboExplorer.Modules.Core.Services;
 
 [Export(typeof(IPboManager))]
+[PartCreationPolicy(CreationPolicy.Shared)]
 public class BindablePboManager : IPboManager
 {
     public ICollection<ITreeItem> FileTree { get; }

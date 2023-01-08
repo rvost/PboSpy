@@ -2,19 +2,13 @@
 using Microsoft.Win32;
 using PboExplorer.Modules.Core.Commands;
 using PboExplorer.Modules.Core.Models;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace PboExplorer.Modules.Core.ViewModels;
 
-// TODO: Move ICommandHandler<CopyToClipboardCommandDefinition> to base class
-public class TextPreviewViewModel : PreviewViewModel, ICommandHandler<CopyToClipboardCommandDefinition>,
-    ICommandHandler<ExtractAsTextCommandDefinition>
+public class TextPreviewViewModel : PreviewViewModel, ICommandHandler<ExtractAsTextCommandDefinition>
 {
     public string Text { get; }
 
@@ -23,12 +17,12 @@ public class TextPreviewViewModel : PreviewViewModel, ICommandHandler<CopyToClip
         Text = text;
     }
 
-    void ICommandHandler<CopyToClipboardCommandDefinition>.Update(Command command)
+    protected override void CanExecuteCopy(Command command)
     {
         command.Enabled = true;
     }
 
-    Task ICommandHandler<CopyToClipboardCommandDefinition>.Run(Command command)
+    protected override Task ExecuteCopy(Command command)
     {
         Clipboard.SetText(Text);
         return Task.CompletedTask;
@@ -56,4 +50,5 @@ public class TextPreviewViewModel : PreviewViewModel, ICommandHandler<CopyToClip
 
         return Task.CompletedTask;
     }
+
 }

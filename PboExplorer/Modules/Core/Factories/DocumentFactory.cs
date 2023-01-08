@@ -18,27 +18,27 @@ class DocumentFactory
     {
         return entry.Extension switch
         {
-            ".paa" or ".pac" => ShowPAA(entry),
-            ".jpg" or ".jpeg" or ".png" => ShowImage(entry),
-            ".rvmat" or ".sqm" => ShowDetectConfig(entry),
-            ".wrp" => ShowWRP(entry),
-            ".p3d" => ShowP3D(entry),
+            ".paa" or ".pac" => PreviewPAA(entry),
+            ".jpg" or ".jpeg" or ".png" => PreviewImage(entry),
+            ".rvmat" or ".sqm" => PreviewDetectConfig(entry),
+            ".wrp" => PreviewWRP(entry),
+            ".p3d" => PreviewP3D(entry),
             ".rtm" or ".wss" or ".ogg" or ".bin" or ".fxy" or ".wsi" or
-            ".shp" or ".dbf" or ".shx" or ".bisurf" => ShowGenericBinary(entry),
-            _ => ShowGenericText(entry),
+            ".shp" or ".dbf" or ".shx" or ".bisurf" => PreviewGenericBinary(entry),
+            _ => PreviewGenericText(entry),
         };
     }
 
-    public Document CreatePreview(ConfigClassItem entry)
+    public static Document CreatePreview(ConfigClassItem entry)
         => new ConfigClassViewModel(entry);
 
-    private Document ShowGenericText(FileBase entry)
+    private static Document PreviewGenericText(FileBase entry)
     {
         var text = entry.GetText();
         return new TextPreviewViewModel(entry, text);
     }
 
-    private Document ShowGenericBinary(FileBase entry)
+    private static Document PreviewGenericBinary(FileBase entry)
     {
         if (entry.IsBinaryConfig())
         {
@@ -51,7 +51,7 @@ class DocumentFactory
         }
     }
 
-    private Document ShowP3D(FileBase entry)
+    private static Document PreviewP3D(FileBase entry)
     {
         using var stream = entry.GetStream();
         var p3d = StreamHelper.Read<BIS.P3D.P3D>(stream);
@@ -106,7 +106,7 @@ class DocumentFactory
         return new TextPreviewViewModel(entry, text);
     }
 
-    private Document ShowWRP(FileBase entry)
+    private static Document PreviewWRP(FileBase entry)
     {
         using var stream = entry.GetStream();
         var wrp = StreamHelper.Read<AnyWrp>(stream);
@@ -114,13 +114,13 @@ class DocumentFactory
         return new ImagePreviewViewModel(entry, image);
     }
 
-    private Document ShowDetectConfig(FileBase entry)
+    private static Document PreviewDetectConfig(FileBase entry)
     {
         var text = entry.GetDetectConfigAsText(out _);
         return new TextPreviewViewModel(entry, text);
     }
 
-    private Document ShowImage(FileBase entry)
+    private static Document PreviewImage(FileBase entry)
     {
         using var stream = entry.GetStream();
         var image = BitmapFrame.Create(stream,
@@ -128,7 +128,7 @@ class DocumentFactory
         return new ImagePreviewViewModel(entry, image);
     }
 
-    private Document ShowPAA(FileBase entry)
+    private static Document PreviewPAA(FileBase entry)
     {
         var image = entry.GetPaaAsBitmapSource();
         return new ImagePreviewViewModel(entry, image);

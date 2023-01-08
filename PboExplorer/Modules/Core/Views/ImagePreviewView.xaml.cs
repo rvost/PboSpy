@@ -24,17 +24,7 @@ namespace PboExplorer.Modules.Core.Views
         {
             InitializeComponent();
         }
-        
-        // TODO: Remove
-        public ImageSource Source
-        {
-            get { return (ImageSource)GetValue(SourceProperty); }
-            set { SetValue(SourceProperty, value); }
-        }
-        // TODO: Remove
-        public static readonly DependencyProperty SourceProperty =
-            DependencyProperty.Register("Source", typeof(ImageSource), typeof(ImagePreviewView), new PropertyMetadata(default));
-
+       
         public void Reset() => PART_Border.Reset();
         
         //  TODO: Replace with VM command

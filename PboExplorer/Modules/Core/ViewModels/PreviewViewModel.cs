@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace PboExplorer.Modules.Core.ViewModels;
 
-public abstract class PreviewViewModel : Document, ICommandHandler<ExtractCurrentCommandDefinition>
+public abstract class PreviewViewModel : Document, ICommandHandler<ExtractCurrentCommandDefinition>,
+    ICommandHandler<CopyToClipboardCommandDefinition>
 {
     protected FileBase _model;
 
@@ -16,6 +17,9 @@ public abstract class PreviewViewModel : Document, ICommandHandler<ExtractCurren
         _model = model;
         DisplayName = _model.Name;
     }
+
+    protected abstract void CanExecuteCopy(Command command);
+    protected abstract Task ExecuteCopy(Command command);
 
     void ICommandHandler<ExtractCurrentCommandDefinition>.Update(Command command)
     {
@@ -40,4 +44,10 @@ public abstract class PreviewViewModel : Document, ICommandHandler<ExtractCurren
         }
         return Task.CompletedTask;
     }
+
+    void ICommandHandler<CopyToClipboardCommandDefinition>.Update(Command command)
+        => CanExecuteCopy(command);
+
+    Task ICommandHandler<CopyToClipboardCommandDefinition>.Run(Command command) 
+        => ExecuteCopy(command);
 }

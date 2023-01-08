@@ -1,12 +1,14 @@
 ﻿using Gemini.Framework;
 using Gemini.Framework.Services;
 using Gemini.Modules.PropertyGrid;
+using Gemini.Modules.StatusBar;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PboExplorer.Helpers;
 using PboExplorer.Interfaces;
 using PboExplorer.Modules.Core.Factories;
 using PboExplorer.Modules.Core.Models;
 using PboExplorer.Modules.Core.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
@@ -21,19 +23,14 @@ namespace PboExplorer.Modules.Core.ViewModels;
 public class ExplorerViewModel : Tool
 {
     private readonly DocumentFactory _documentFactory;
+    private readonly IPboManager _pboManager;
+    private readonly IPropertyGrid _propertyGrid;
+    private readonly IShell _shell;
+    private readonly IStatusBar _statusBar;
+
     private ITreeItem _selectedItem;
 
-    // TODO: Use Constructor DI
-    [Import]
-    public IShell Shell { get; set; }
-    // TODO: Use Constructor DI
-    [Import]
-    public IPboManager PboManager { get; set; }
-    // TODO: Use Constructor DI
-    [Import]
-    public IPropertyGrid PropertyGrid { get; set; }
-
-    public ICollection<ITreeItem> Items { get => PboManager.FileTree; }
+    public ICollection<ITreeItem> Items { get => _pboManager.FileTree; }
 
     public ITreeItem SelectedItem
     {
@@ -52,9 +49,16 @@ public class ExplorerViewModel : Tool
 
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
-    public ExplorerViewModel()
+    [ImportingConstructor]
+    public ExplorerViewModel(IShell shell, IPboManager pboManager, IPropertyGrid propertyGrid,
+        IStatusBar statusBar)
     {
-        _documentFactory = new DocumentFactory();
+        _shell = shell;
+        _pboManager = pboManager;
+        _propertyGrid = propertyGrid;
+        _statusBar = statusBar;
+        _documentFactory = new DocumentFactory(); // TODO: consider injection
+
         DisplayName = "PBO Explorer";
     }
 
@@ -88,12 +92,14 @@ public class ExplorerViewModel : Tool
                 var document = _documentFactory.CreatePreview(file);
                 if (document != null)
                 {
-                    await Shell.OpenDocumentAsync(document);
+                    await _shell.OpenDocumentAsync(document);
                 }
             }
-            catch
+            catch (Exception ex) 
             {
-                //TODO: Show error in status bar
+                _statusBar.Items.Clear();
+                _statusBar.AddItem($"ERROR: {ex.Message}", new GridLength(1, GridUnitType.Star));
+                _statusBar.AddItem(file.Name, new GridLength(1, GridUnitType.Auto));
             }
         }
     }
@@ -102,7 +108,7 @@ public class ExplorerViewModel : Tool
     {
         if (args.NewValue is ITreeItem item)
         {
-            PropertyGrid.SelectedObject = item.Metadata;
+            _propertyGrid.SelectedObject = item.Metadata;
         }
     }
 
@@ -120,11 +126,11 @@ public class ExplorerViewModel : Tool
 
             // Load files from folders
             lookup[true].ToList().ForEach(
-                dir => PboManager.LoadSupportedFiles(DirectoryExtensions.GetSupportedFiles(dir))
+                dir => _pboManager.LoadSupportedFiles(DirectoryExtensions.GetSupportedFiles(dir))
                 );
 
             // Load other files
-            PboManager.LoadSupportedFiles(lookup[false]);
+            _pboManager.LoadSupportedFiles(lookup[false]);
         }
     }
 }
