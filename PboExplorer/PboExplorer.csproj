@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Gemini.Modules.CodeEditor" Version="1.0.60-beta" />
     <PackageReference Include="Gemini.Modules.PropertyGrid" Version="1.0.60-beta" />
     <PackageReference Include="GeminiWpf" Version="1.0.60-beta" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />

@@ -14,4 +14,8 @@ public static class ToolBarDefinitions
     [Export]
     public static readonly ExcludeToolBarItemGroupDefinition StandardUndoRedoToolBarGroup =
        new(Gemini.Modules.UndoRedo.ToolBarDefinitions.StandardUndoRedoToolBarGroup);
+
+    [Export]
+    public static readonly ExcludeToolBarItemGroupDefinition CodeEditorToolBarGroup =
+       new(Gemini.Modules.CodeEditor.CodeEditorToolBarDefinitions.CodeEditorToolBarGroup);
 }
