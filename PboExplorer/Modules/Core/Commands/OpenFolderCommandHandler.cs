@@ -1,6 +1,5 @@
 ﻿using Gemini.Framework.Commands;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using PboExplorer.Helpers;
 using PboExplorer.Modules.Core.Services;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -28,7 +27,7 @@ public class OpenFolderCommandHandler : CommandHandlerBase<OpenFolderCommandDefi
 
         if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
         {
-            _explorer.LoadSupportedFiles(DirectoryExtensions.GetSupportedFiles(dialog.FileName));
+            _explorer.LoadSupportedFiles(dialog.FileNames);
         }
 
         return Task.CompletedTask;

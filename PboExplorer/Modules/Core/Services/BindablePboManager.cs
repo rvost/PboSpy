@@ -25,15 +25,37 @@ public class BindablePboManager : IPboManager
         ConfigTree = new BindableCollection<ITreeItem>();
     }
 
-    // TODO: Refactor
-    public void LoadSupportedFiles(IEnumerable<string> fileNames)
+    public void LoadSupportedFiles(IEnumerable<string> paths)
+    {
+        // Split folders and files
+        var lookup = paths.ToLookup(
+            (path) => File.GetAttributes(path).HasFlag(FileAttributes.Directory)
+            );
+
+        // Load files from folders
+        lookup[true].ToList().ForEach(
+            dir => LoadFiles(GetSupportedFiles(dir))
+            );
+
+        // Load other files
+        LoadFiles(lookup[false]);
+    }
+
+    private void LoadFiles(IEnumerable<string> fileNames)
     {
         var lookup = fileNames.ToLookup(f => string.Equals(Path.GetExtension(f), ".pbo", StringComparison.OrdinalIgnoreCase));
         var pbos = lookup[true];
         var nonPbos = lookup[false];
 
+        LoadPbos(pbos);
+
+        LoadPhysicalFiles(nonPbos);
+    }
+
+    private void LoadPbos(IEnumerable<string> paths)
+    {
         Task.Factory
-            .StartNew(() => pbos.OrderBy(f => Path.GetFileName(f), StringComparer.OrdinalIgnoreCase)
+            .StartNew(() => paths.OrderBy(f => Path.GetFileName(f), StringComparer.OrdinalIgnoreCase)
             .Select(fileName => new PboFile(new PBO(fileName, false))))
             .ContinueWith((r) =>
             {
@@ -42,12 +64,15 @@ public class BindablePboManager : IPboManager
                     FileTree.Add(e);
                 }
                 GenerateMergedConfig(FileTree.OfType<PboFile>());
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            });
+    }
 
-        var filesToAdd = nonPbos
+    private void LoadPhysicalFiles(IEnumerable<string> paths)
+    {
+        var filesToAdd = paths
             .Where(file => File.Exists(file))
             .Select(file => new PhysicalFile(Path.GetFullPath(file)))
-        .ToList();
+            .ToList();
 
         if (filesToAdd.Any())
         {
@@ -73,5 +98,14 @@ public class BindablePboManager : IPboManager
         {
             ConfigTree.Add(configClass);
         }
+    }
+
+    private static IEnumerable<string> GetSupportedFiles(string arg)
+    {
+        HashSet<string> _supportedExtensions = new() { ".pbo", ".paa", ".rvmat", ".bin",
+        ".pac", "*.p3d", "*.wrp", "*.sqm" };
+
+        return Directory.EnumerateFiles(arg, "*.*", SearchOption.AllDirectories)
+            .Where(path => _supportedExtensions.Contains(Path.GetExtension(path)));
     }
 }

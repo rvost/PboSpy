@@ -3,7 +3,6 @@ using Gemini.Framework.Services;
 using Gemini.Modules.PropertyGrid;
 using Gemini.Modules.StatusBar;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using PboExplorer.Helpers;
 using PboExplorer.Interfaces;
 using PboExplorer.Modules.Core.Factories;
 using PboExplorer.Modules.Core.Models;
@@ -11,8 +10,6 @@ using PboExplorer.Modules.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -112,25 +109,13 @@ public class ExplorerViewModel : Tool
         }
     }
 
-    // TODO: Refactor
     public void OnDrop(DragEventArgs args)
     {
         if (args.Data.GetDataPresent(DataFormats.FileDrop))
         {
             string[] paths = (string[])args.Data.GetData(DataFormats.FileDrop);
 
-            // Split folders and files
-            var lookup = paths.ToLookup(
-                (path) => File.GetAttributes(path).HasFlag(FileAttributes.Directory)
-                );
-
-            // Load files from folders
-            lookup[true].ToList().ForEach(
-                dir => _pboManager.LoadSupportedFiles(DirectoryExtensions.GetSupportedFiles(dir))
-                );
-
-            // Load other files
-            _pboManager.LoadSupportedFiles(lookup[false]);
+            _pboManager.LoadSupportedFiles(paths);
         }
     }
 }
