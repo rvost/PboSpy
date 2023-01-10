@@ -118,34 +118,34 @@ class ConfigClassItem : ITreeItem
         return Parent?.ResolveClassDirectThenDeep(className);
     }
 
-    internal static ICollection<ConfigClassItem> MergedView(IEnumerable<PboFile> files)
+    internal ICollection<ConfigClassItem> MergedView(IEnumerable<PboFile> files)
     {
-        var paramFiles = new List<Tuple<ParamFile, PboEntry>>();
+        var paramFiles = new List<(ParamFile, PboEntry)>();
         foreach (var pbo in files)
         {
-            foreach (var file in pbo.AllEntries.OfType<PboEntry>().Where(f => f.IsBinaryConfig() && !f.Name.EndsWith(".rvmat", StringComparison.OrdinalIgnoreCase)))
+            IEnumerable<PboEntry> configFiles = pbo.AllEntries
+                .Where(f => f.IsBinaryConfig() && !f.Name.EndsWith(".rvmat", StringComparison.OrdinalIgnoreCase));
+
+            foreach (var file in configFiles)
             {
                 try
                 {
-                    using (var stream = file.GetStream())
-                    {
-                        paramFiles.Add(new Tuple<ParamFile, PboEntry>(new ParamFile(stream), file));
-
-                    }
+                    using var stream = file.GetStream();
+                    paramFiles.Add((new ParamFile(stream), file));
                 }
                 catch (Exception e)
                 {
-                    Trace.TraceWarning("Unable to parse config: {0}", e);
+                    Trace.TraceWarning("Unable to parse config: {0}", e); // TODO: Log or report error to user
                 }
             }
         }
 
-        var root = new ConfigClassItem();
-        foreach (var file in paramFiles) // TODO: gracefully sort using CfgPatches
+        foreach ((var paramClass, var entry) in paramFiles) // TODO: gracefully sort using CfgPatches
         {
-            root.Apply(file.Item1.Root, file.Item2);
+            Apply(paramClass.Root, entry);
         }
-        return root.ChildrenClasses.Values.OrderBy(c => c.Name).ToList();
+
+        return ChildrenClasses.Values.OrderBy(c => c.Name).ToList();
     }
 
     private void Apply(ParamClass definition, PboEntry file)

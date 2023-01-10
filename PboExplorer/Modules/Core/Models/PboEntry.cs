@@ -52,8 +52,4 @@ class PboEntry : FileBase, ITreeItem
         }
     }
 
-    internal void Refresh(IPBOFileEntry newEntry)
-    {
-        Entry = newEntry;
-    }
 }

@@ -18,7 +18,6 @@ namespace PboExplorer.Modules.Core.ViewModels;
 [Export]
 public class ConfigViewModel : Tool
 {
-    private readonly DocumentFactory _documentFactory;
     private readonly IPboManager _pboManager;
     private readonly IPropertyGrid _propertyGrid;
     private readonly IShell _shell;
@@ -48,7 +47,6 @@ public class ConfigViewModel : Tool
         _pboManager = pboManager;
         _propertyGrid = propertyGrid;
         _statusBar = statusBar;
-        _documentFactory = new DocumentFactory(); // TODO: consider injection
 
         DisplayName = "Config";
     }

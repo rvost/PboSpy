@@ -14,15 +14,17 @@ namespace PboExplorer.Modules.Core.Services;
 
 [Export(typeof(IPboManager))]
 [PartCreationPolicy(CreationPolicy.Shared)]
-public class BindablePboManager : IPboManager
+class BindablePboManager : IPboManager
 {
     public ICollection<ITreeItem> FileTree { get; }
     public ICollection<ITreeItem> ConfigTree { get; }
+    public ConfigClassItem ConfigRoot { get; }
 
     public BindablePboManager()
     {
         FileTree = new BindableCollection<ITreeItem>();
         ConfigTree = new BindableCollection<ITreeItem>();
+        ConfigRoot = new();
     }
 
     public void LoadSupportedFiles(IEnumerable<string> paths)
@@ -56,14 +58,16 @@ public class BindablePboManager : IPboManager
     {
         Task.Factory
             .StartNew(() => paths.OrderBy(f => Path.GetFileName(f), StringComparer.OrdinalIgnoreCase)
-            .Select(fileName => new PboFile(new PBO(fileName, false))))
+            .Select(fileName => new PboFile(new PBO(fileName, false)))
+            .ToList())
             .ContinueWith((r) =>
             {
                 foreach (var e in r.Result)
                 {
                     FileTree.Add(e);
                 }
-                GenerateMergedConfig(FileTree.OfType<PboFile>());
+
+                GenerateMergedConfig(r.Result);
             });
     }
 
@@ -93,7 +97,10 @@ public class BindablePboManager : IPboManager
 
     private void GenerateMergedConfig(IEnumerable<PboFile> files)
     {
-        var configClasses = ConfigClassItem.MergedView(files);
+        var configClasses = ConfigRoot.MergedView(files);
+
+        // TODO: Refactor ConfigTree update
+        ConfigTree.Clear();
         foreach (var configClass in configClasses)
         {
             ConfigTree.Add(configClass);

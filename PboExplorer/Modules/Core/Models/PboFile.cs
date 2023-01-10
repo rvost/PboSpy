@@ -79,21 +79,6 @@ class PboFile : ITreeItem
 
     internal IEnumerable<PboEntry> AllEntries => root.AllFiles;
 
-    internal void RefreshEntries()
-    {
-        foreach (var view in AllEntries)
-        {
-            var newEntry = pbo.Files.FirstOrDefault(e => string.Equals(e.FileName, view.Entry.FileName, StringComparison.OrdinalIgnoreCase));
-            if (newEntry != null)
-            {
-                view.Refresh(newEntry);
-            }
-            else
-            {
-                // TODO !
-            }
-        }
-    }
 }
 
 class PboMetadata : IMetadata
