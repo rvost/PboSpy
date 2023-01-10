@@ -52,4 +52,15 @@ class PboEntry : FileBase, ITreeItem
         }
     }
 
+    public override bool Equals(object obj)
+    {
+        return obj is PboEntry entry &&
+               FullPath == entry.FullPath;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(FullPath);
+    }
+
 }

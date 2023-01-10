@@ -20,7 +20,7 @@ class ConfigClassViewModel : Document
         DisplayName = _model.Name;
 
         Definitions = _model.Definitions
-            .Select(tuple => new ConfigClassDefinitionViewModel(tuple.Item1, tuple.Item2.ToString(0)))
+            .Select(kvp => new ConfigClassDefinitionViewModel(kvp.Key, kvp.Value.ToString(0)))
             .ToList();
     }
 }

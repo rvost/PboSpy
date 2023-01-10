@@ -33,7 +33,7 @@ class ConfigClassItem : ITreeItem
 
     private Dictionary<string, object> Properties { get; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-    public List<Tuple<PboEntry, ParamClass>> Definitions { get; } = new List<Tuple<PboEntry, ParamClass>>();
+    public Dictionary<PboEntry, ParamClass> Definitions { get; } = new();
 
     public ICollection<ITreeItem> Children
     {
@@ -152,31 +152,32 @@ class ConfigClassItem : ITreeItem
     {
         BaseClassName = definition.BaseClassName;
 
-        Definitions.Add(new Tuple<PboEntry, ParamClass>(file, definition));
-
-        foreach (var entry in definition.Entries.OfType<ParamClass>())
+        if (Definitions.TryAdd(file, definition))
         {
-            if (ChildrenClasses.TryGetValue(entry.Name, out var existing))
+            foreach (var entry in definition.Entries.OfType<ParamClass>())
             {
-                existing.Apply(entry, file);
+                if (ChildrenClasses.TryGetValue(entry.Name, out var existing))
+                {
+                    existing.Apply(entry, file);
+                }
+                else
+                {
+                    ChildrenClasses.Add(entry.Name, new ConfigClassItem(this, entry, file));
+                }
             }
-            else
+            foreach (var entry in definition.Entries.OfType<ParamValue>())
             {
-                ChildrenClasses.Add(entry.Name, new ConfigClassItem(this, entry, file));
+                Properties[entry.Name] = entry.Value;
             }
+            foreach (var entry in definition.Entries.OfType<ParamArray>())
+            {
+                Properties[entry.Name] = entry.Array;
+            }
+            foreach (var entry in definition.Entries.OfType<ParamDeleteClass>())
+            {
+                ChildrenClasses[entry.Name] = null;
+            }
+            // TODO: Consider ParamExternClass
         }
-        foreach (var entry in definition.Entries.OfType<ParamValue>())
-        {
-            Properties[entry.Name] = entry.Value;
-        }
-        foreach (var entry in definition.Entries.OfType<ParamArray>())
-        {
-            Properties[entry.Name] = entry.Array;
-        }
-        foreach (var entry in definition.Entries.OfType<ParamDeleteClass>())
-        {
-            ChildrenClasses[entry.Name] = null;
-        }
-        // TODO: Consider ParamExternClass
     }
 }
