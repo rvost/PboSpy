@@ -1,13 +1,10 @@
 ﻿using Gemini.Framework;
 using Gemini.Framework.Services;
 using Gemini.Modules.PropertyGrid;
-using Gemini.Modules.StatusBar;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PboExplorer.Interfaces;
-using PboExplorer.Modules.Core.Factories;
 using PboExplorer.Modules.Core.Models;
 using PboExplorer.Modules.Core.Services;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -19,11 +16,9 @@ namespace PboExplorer.Modules.Core.ViewModels;
 [Export]
 public class ExplorerViewModel : Tool
 {
-    private readonly DocumentFactory _documentFactory;
     private readonly IPboManager _pboManager;
+    private readonly IPreviewManager _previewManager;
     private readonly IPropertyGrid _propertyGrid;
-    private readonly IShell _shell;
-    private readonly IStatusBar _statusBar;
 
     private ITreeItem _selectedItem;
 
@@ -47,14 +42,11 @@ public class ExplorerViewModel : Tool
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
-    public ExplorerViewModel(IShell shell, IPboManager pboManager, IPropertyGrid propertyGrid,
-        IStatusBar statusBar)
+    public ExplorerViewModel(IPboManager pboManager, IPropertyGrid propertyGrid, IPreviewManager previewManager)
     {
-        _shell = shell;
         _pboManager = pboManager;
+        _previewManager = previewManager;
         _propertyGrid = propertyGrid;
-        _statusBar = statusBar;
-        _documentFactory = new DocumentFactory(); // TODO: consider injection
 
         DisplayName = "PBO Explorer";
     }
@@ -84,20 +76,7 @@ public class ExplorerViewModel : Tool
 
         if (item is FileBase file)
         {
-            try
-            {
-                var document = _documentFactory.CreatePreview(file);
-                if (document != null)
-                {
-                    await _shell.OpenDocumentAsync(document);
-                }
-            }
-            catch (Exception ex) 
-            {
-                _statusBar.Items.Clear();
-                _statusBar.AddItem($"ERROR: {ex.Message}", new GridLength(1, GridUnitType.Star));
-                _statusBar.AddItem(file.Name, new GridLength(1, GridUnitType.Auto));
-            }
+            await _previewManager.ShowPreviewAsync(file);
         }
     }
 

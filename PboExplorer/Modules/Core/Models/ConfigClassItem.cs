@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace PboExplorer.Modules.Core.Models;
 
-class ConfigClassItem : ITreeItem
+public class ConfigClassItem : ITreeItem
 {
     public ConfigClassItem()
     {

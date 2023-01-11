@@ -81,4 +81,10 @@ public abstract class FileBase
         }
         return false;
     }
+
+    public override bool Equals(object obj)
+    {
+        return obj is FileBase @base &&
+               FullPath == @base.FullPath;
+    }
 }

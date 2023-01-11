@@ -6,7 +6,7 @@ using PboExplorer.Interfaces;
 using PboExplorer.Modules.Core.Factories;
 
 namespace PboExplorer.Modules.Core.Models;
-class PboEntry : FileBase, ITreeItem
+public class PboEntry : FileBase, ITreeItem
 {
     private readonly PBO pbo;
     private readonly Lazy<PboEntryMetadata> metadata;

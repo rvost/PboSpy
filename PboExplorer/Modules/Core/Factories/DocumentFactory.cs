@@ -14,7 +14,7 @@ namespace PboExplorer.Modules.Core.Factories;
 // TODO: Refactor
 class DocumentFactory
 {
-    public Document CreatePreview(FileBase entry)
+    public static Document CreatePreview(FileBase entry)
     {
         return entry.Extension switch
         {

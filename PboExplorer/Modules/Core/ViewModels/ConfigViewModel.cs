@@ -1,12 +1,9 @@
 ﻿using Gemini.Framework;
 using Gemini.Framework.Services;
 using Gemini.Modules.PropertyGrid;
-using Gemini.Modules.StatusBar;
 using PboExplorer.Interfaces;
-using PboExplorer.Modules.Core.Factories;
 using PboExplorer.Modules.Core.Models;
 using PboExplorer.Modules.Core.Services;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading.Tasks;
@@ -19,9 +16,8 @@ namespace PboExplorer.Modules.Core.ViewModels;
 public class ConfigViewModel : Tool
 {
     private readonly IPboManager _pboManager;
+    private readonly IPreviewManager _previewManager;
     private readonly IPropertyGrid _propertyGrid;
-    private readonly IShell _shell;
-    private readonly IStatusBar _statusBar;
 
     private ITreeItem _selectedItem;
 
@@ -40,13 +36,11 @@ public class ConfigViewModel : Tool
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
-    public ConfigViewModel(IShell shell, IPboManager pboManager, IPropertyGrid propertyGrid,
-        IStatusBar statusBar)
+    public ConfigViewModel(IPboManager pboManager, IPropertyGrid propertyGrid, IPreviewManager previewManager)
     {
-        _shell = shell;
         _pboManager = pboManager;
+        _previewManager= previewManager;
         _propertyGrid = propertyGrid;
-        _statusBar = statusBar;
 
         DisplayName = "Config";
     }
@@ -60,20 +54,7 @@ public class ConfigViewModel : Tool
 
         if (item is ConfigClassItem classItem)
         {
-            try
-            {
-                var document = DocumentFactory.CreatePreview(classItem);
-                if (document != null)
-                {
-                    await _shell.OpenDocumentAsync(document);
-                }
-            }
-            catch (Exception ex)
-            {
-                _statusBar.Items.Clear();
-                _statusBar.AddItem($"ERROR: {ex.Message}", new GridLength(1, GridUnitType.Star));
-                _statusBar.AddItem(classItem.Name, new GridLength(1, GridUnitType.Auto));
-            }
+            await _previewManager.ShowPreviewAsync(classItem);
         }
     }
 
