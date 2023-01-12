@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PboExplorer.Interfaces;
 
 namespace PboExplorer.Modules.Core.Models;
 
-class PhysicalFiles : ITreeItem
+class PhysicalDirectory : ITreeItem
 {
     private readonly ObservableCollection<ITreeItem> files = new ObservableCollection<ITreeItem>();
 
-    public PhysicalFiles()
-    {
-    }
+    public string Name { get; }
 
-    public string Name => "Other";
+    public PhysicalDirectory(string name)
+    {
+        Name = name;
+    }
 
     public string FullPath { get; }
 
@@ -27,9 +23,4 @@ class PhysicalFiles : ITreeItem
     }
 
     public IMetadata Metadata => null;
-
-    internal void AddEntry(PhysicalFile file)
-    {
-        files.Add(file);
-    }
 }

@@ -8,10 +8,10 @@ using System.ComponentModel.Composition;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PboExplorer.Modules.Core.Services;
 
+// TODO: Consider moving tree building to separate utility class
 [Export(typeof(IPboManager))]
 [PartCreationPolicy(CreationPolicy.Shared)]
 class BindablePboManager : IPboManager
@@ -30,69 +30,60 @@ class BindablePboManager : IPboManager
     public void LoadSupportedFiles(IEnumerable<string> paths)
     {
         // Split folders and files
-        var lookup = paths.ToLookup(
-            (path) => File.GetAttributes(path).HasFlag(FileAttributes.Directory)
-            );
+        var lookup = paths
+            .Select(path => Path.GetFullPath(path))
+            .ToLookup(path => File.GetAttributes(path).HasFlag(FileAttributes.Directory));
 
-        // Load files from folders
-        lookup[true].ToList().ForEach(
-            dir => LoadFiles(GetSupportedFiles(dir))
-            );
+        // Load folders
+        lookup[true]
+            .Select(path => LoadDirectory(path))
+            .Apply(dir => FileTree.Add(dir));
 
-        // Load other files
-        LoadFiles(lookup[false]);
+        // Load files
+        lookup[false]
+            .Select(path => LoadFile(path))
+            .Apply(file => FileTree.Add(file));
+
     }
 
-    private void LoadFiles(IEnumerable<string> fileNames)
+    private ITreeItem LoadFile(string path)
     {
-        var lookup = fileNames.ToLookup(f => string.Equals(Path.GetExtension(f), ".pbo", StringComparison.OrdinalIgnoreCase));
-        var pbos = lookup[true];
-        var nonPbos = lookup[false];
-
-        LoadPbos(pbos);
-
-        LoadPhysicalFiles(nonPbos);
-    }
-
-    private void LoadPbos(IEnumerable<string> paths)
-    {
-        Task.Factory
-            .StartNew(() => paths.OrderBy(f => Path.GetFileName(f), StringComparer.OrdinalIgnoreCase)
-            .Select(fileName => new PboFile(new PBO(fileName, false)))
-            .ToList())
-            .ContinueWith((r) =>
-            {
-                foreach (var e in r.Result)
-                {
-                    FileTree.Add(e);
-                }
-
-                GenerateMergedConfig(r.Result);
-            });
-    }
-
-    private void LoadPhysicalFiles(IEnumerable<string> paths)
-    {
-        var filesToAdd = paths
-            .Where(file => File.Exists(file))
-            .Select(file => new PhysicalFile(Path.GetFullPath(file)))
-            .ToList();
-
-        if (filesToAdd.Any())
+        if (IsPboFile(path))
         {
-            var openedFiles = FileTree.OfType<PhysicalFiles>().FirstOrDefault();
-
-            if (openedFiles is null)
-            {
-                openedFiles = new PhysicalFiles();
-                FileTree.Add(openedFiles);
-            }
-
-            foreach (var file in filesToAdd)
-            {
-                openedFiles.AddEntry(file);
-            }
+            return LoadPbo(path);
         }
+        else
+        {
+            return LoadPhysicalFile(path);
+        }
+    }
+
+    private PboFile LoadPbo(string path)
+    {
+        var pbo = new PboFile(new PBO(path, false));
+        // TODO: Implement GenerateMergedConfig override which takes one file
+        GenerateMergedConfig(new[] { pbo });
+        return pbo;
+    }
+
+    private static PhysicalFile LoadPhysicalFile(string path)
+        => new PhysicalFile(Path.GetFullPath(path));
+
+    private PhysicalDirectory LoadDirectory(string path)
+    {
+        var dirInfo = new DirectoryInfo(path);
+
+        var dir = new PhysicalDirectory(dirInfo.Name);
+
+        dirInfo.EnumerateDirectories()
+            .Select(inf => LoadDirectory(inf.FullName))
+            .Apply(d => dir.Children.Add(d));
+
+        GetSupportedFiles(dirInfo.FullName)
+            .Select(file => LoadFile(file))
+            .Apply(file => dir.Children.Add(file));
+
+        return dir;
     }
 
     private void GenerateMergedConfig(IEnumerable<PboFile> files)
@@ -107,12 +98,15 @@ class BindablePboManager : IPboManager
         }
     }
 
+    private static bool IsPboFile(string path)
+        => string.Equals(Path.GetExtension(path), ".pbo", StringComparison.OrdinalIgnoreCase);
+
     private static IEnumerable<string> GetSupportedFiles(string arg)
     {
         HashSet<string> _supportedExtensions = new() { ".pbo", ".paa", ".rvmat", ".bin",
         ".pac", "*.p3d", "*.wrp", "*.sqm" };
 
-        return Directory.EnumerateFiles(arg, "*.*", SearchOption.AllDirectories)
+        return Directory.EnumerateFiles(arg, "*.*", SearchOption.TopDirectoryOnly)
             .Where(path => _supportedExtensions.Contains(Path.GetExtension(path)));
     }
 }
