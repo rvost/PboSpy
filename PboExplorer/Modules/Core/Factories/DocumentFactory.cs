@@ -25,8 +25,14 @@ class DocumentFactory
             ".p3d" => PreviewP3D(entry),
             ".rtm" or ".wss" or ".ogg" or ".bin" or ".fxy" or ".wsi" or
             ".shp" or ".dbf" or ".shx" or ".bisurf" => PreviewGenericBinary(entry),
+            ".bisign" => PreviewSignature(entry),
             _ => PreviewGenericText(entry),
         };
+    }
+
+    private static Document PreviewSignature(FileBase entry)
+    {
+        return new SignaturePreviewViewModel(entry);
     }
 
     public static Document CreatePreview(ConfigClassItem entry)

@@ -38,4 +38,7 @@ public static class ToolBarDefinitions
     [Export]
     public static ToolBarItemDefinition ExtractAsPngToolBarItem =
         new CommandToolBarItemDefinition<ExtractAsPngCommandDefinition>(ExtractToolBarGroup, 2);
+    [Export]
+    public static ToolBarItemDefinition ExtractBiKeyToolBarItem =
+        new CommandToolBarItemDefinition<ExtractBiKeyCommandDefinition>(ExtractToolBarGroup, 3);
 }

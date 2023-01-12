@@ -26,6 +26,8 @@ namespace PboExplorer.Converters
             {".sqf", "script" },
             {".sqm", "script" },
             {".wrp", "wrp" },
+            {".bikey", "key" },
+            {".bisign", "bisign" }
         };
 
         public TreeItemToIconConverter(IIconService iconService)
