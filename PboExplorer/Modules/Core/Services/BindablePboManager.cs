@@ -104,7 +104,7 @@ class BindablePboManager : IPboManager
     private static IEnumerable<string> GetSupportedFiles(string arg)
     {
         HashSet<string> _supportedExtensions = new() { ".pbo", ".paa", ".rvmat", ".bin",
-        ".pac", ".p3d", ".wrp", ".sqm", ".bisign", ".bikey" };
+        ".pac", ".p3d", ".wrp", ".sqm", ".bisign", ".bikey", ".cpp", ".hpp" };
 
         return Directory.EnumerateFiles(arg, "*.*", SearchOption.TopDirectoryOnly)
             .Where(path => _supportedExtensions.Contains(Path.GetExtension(path)));
