@@ -3,7 +3,6 @@ using System.Windows.Controls;
 using System.Windows;
 using System.Reflection;
 using System.Windows.Media;
-using System;
 using PboExplorer.Helpers;
 
 namespace PboExplorer.Behaviors;

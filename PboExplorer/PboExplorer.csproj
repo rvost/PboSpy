@@ -1,48 +1,66 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-	<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Views\**" />
-    <EmbeddedResource Remove="Views\**" />
-    <None Remove="Resources\Icons\*.svg" />
-	<None Remove="Resources\Icons\*.png" />
-    <None Remove="Views\**" />
-    <Page Remove="Views\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Views\**" />
+		<EmbeddedResource Remove="Views\**" />
+		<None Remove="Resources\Icons\*.svg" />
+		<None Remove="Resources\Icons\*.png" />
+		<None Remove="Views\**" />
+		<Page Remove="Views\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Gemini.Modules.CodeEditor" Version="1.0.60-beta" />
-    <PackageReference Include="Gemini.Modules.PropertyGrid" Version="1.0.60-beta" />
-    <PackageReference Include="GeminiWpf" Version="1.0.60-beta" />
-    <PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
-    <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<Using Include="System.Collections.ObjectModel"/>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\bis-file-formats\BIS.P3D\BIS.P3D.csproj" />
-    <ProjectReference Include="..\bis-file-formats\BIS.PAA\BIS.PAA.csproj" />
-    <ProjectReference Include="..\bis-file-formats\BIS.PBO\BIS.PBO.csproj" />
-    <ProjectReference Include="..\bis-file-formats\BIS.WRP\BIS.WRP.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="GeminiWpf" Version="1.0.60-beta" />
+		<Using Include="System.ComponentModel.Composition"/>
+		<Using Include="Caliburn.Micro"/>
+		<Using Include="Gemini.Framework"/>
+		<Using Include="Gemini.Framework.Services"/>
+		<Using Include="Gemini.Framework.Menus"/>
+		<Using Include="Gemini.Framework.ToolBars"/>
+		<Using Include="Gemini.Framework.Commands"/>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="Resources\Icons\*.svg" />
-	  <Resource Include="Resources\Icons\*.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Gemini.Modules.CodeEditor" Version="1.0.60-beta" />
+		<PackageReference Include="Gemini.Modules.PropertyGrid" Version="1.0.60-beta" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
+		<PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\bis-file-formats\BIS.P3D\BIS.P3D.csproj" />
+		<ProjectReference Include="..\bis-file-formats\BIS.PAA\BIS.PAA.csproj" />
+		<ProjectReference Include="..\bis-file-formats\BIS.PBO\BIS.PBO.csproj" />
+		<ProjectReference Include="..\bis-file-formats\BIS.WRP\BIS.WRP.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Resources\Icons\*.svg" />
+		<Resource Include="Resources\Icons\*.png" />
+	</ItemGroup>
 
 </Project>

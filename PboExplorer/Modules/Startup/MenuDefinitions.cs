@@ -1,11 +1,6 @@
-﻿using Gemini.Framework.Commands;
-using Gemini.Framework.Menus;
-using Gemini.Modules.Shell.Commands;
-using System.ComponentModel.Composition;
+﻿namespace PboExplorer.Modules.Startup;
 
-namespace PboExplorer.Modules.Startup;
-
-public static class MenuDefinitions
+internal static class MenuDefinitions
 {
     // Exclude default menu options
 

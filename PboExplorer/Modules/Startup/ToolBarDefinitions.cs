@@ -1,9 +1,6 @@
-﻿using Gemini.Framework.ToolBars;
-using System.ComponentModel.Composition;
+﻿namespace PboExplorer.Modules.Startup;
 
-namespace PboExplorer.Modules.Startup;
-
-public static class ToolBarDefinitions
+internal static class ToolBarDefinitions
 {
     // Exclude default toolbar items
 

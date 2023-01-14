@@ -1,7 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Media;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PboExplorer.Helpers;
 
