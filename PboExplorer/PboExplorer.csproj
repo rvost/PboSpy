@@ -26,18 +26,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Using Include="System.Collections.ObjectModel"/>
+		<Using Include="System.Collections.ObjectModel" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="GeminiWpf" Version="1.0.60-beta" />
-		<Using Include="System.ComponentModel.Composition"/>
-		<Using Include="Caliburn.Micro"/>
-		<Using Include="Gemini.Framework"/>
-		<Using Include="Gemini.Framework.Services"/>
-		<Using Include="Gemini.Framework.Menus"/>
-		<Using Include="Gemini.Framework.ToolBars"/>
-		<Using Include="Gemini.Framework.Commands"/>
+		<Using Include="System.ComponentModel.Composition" />
+		<Using Include="Caliburn.Micro" />
+		<Using Include="Gemini.Framework" />
+		<Using Include="Gemini.Framework.Services" />
+		<Using Include="Gemini.Framework.Menus" />
+		<Using Include="Gemini.Framework.ToolBars" />
+		<Using Include="Gemini.Framework.Commands" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -49,6 +49,7 @@
 		<PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
 		<PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+		<PackageReference Include="WPFHexaEditor" Version="2.1.7" />
 	</ItemGroup>
 
 	<ItemGroup>

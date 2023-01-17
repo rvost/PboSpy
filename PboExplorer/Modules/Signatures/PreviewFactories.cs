@@ -11,4 +11,11 @@ internal static class PreviewFactories
     {
         return new SignaturePreviewViewModel(entry);
     }
+
+    [Export("FilePreviewFactory")]
+    [ExportMetadata("Extensions", new[] { ".bikey" })]
+    public static Document PreviewKey(FileBase entry)
+    {
+        return new KeyPreviewViewModel(entry);
+    }
 }
