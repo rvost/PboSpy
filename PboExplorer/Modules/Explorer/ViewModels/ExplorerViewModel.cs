@@ -80,6 +80,7 @@ public class ExplorerViewModel : Tool, IPboExplorer
     {
         if (args.NewValue is ITreeItem item)
         {
+            SelectedItem = item;
             _propertyGrid.SelectedObject = item.Metadata;
         }
     }

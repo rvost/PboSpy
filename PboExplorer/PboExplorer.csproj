@@ -64,4 +64,8 @@
 		<Resource Include="Resources\Icons\*.png" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Behaviors\" />
+	</ItemGroup>
+
 </Project>

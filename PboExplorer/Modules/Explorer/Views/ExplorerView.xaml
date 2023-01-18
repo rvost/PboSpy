@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://caliburnmicro.com"
-             xmlns:e="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:behaviors="clr-namespace:PboExplorer.Behaviors"
              xmlns:converters="clr-namespace:PboExplorer.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -25,12 +23,8 @@
                     ToolTip="Extract selected PBO"/>
         </ToolBar>
 
-        <TreeView Grid.Row="1" x:Name="Items"
+        <TreeView Grid.Row="1" x:Name="Items" VirtualizingStackPanel.VirtualizationMode="Recycling"
                   cal:Message.Attach="[SelectedItemChanged] = [Action OnSelectedItemChanged($eventArgs)]">
-            <e:Interaction.Behaviors>
-                <behaviors:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
-            </e:Interaction.Behaviors>
-            
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
                     <Setter Property="cal:Message.Attach" 

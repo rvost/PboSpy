@@ -59,6 +59,7 @@ internal class ConfigViewModel : Tool, IConfigExplorer
     {
         if (args.NewValue is ITreeItem item)
         {
+            SelectedItem = item;
             _propertyGrid.SelectedObject = item.Metadata;
         }
     }
