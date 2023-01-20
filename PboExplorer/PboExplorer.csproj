@@ -43,6 +43,7 @@
 	<ItemGroup>
 		<PackageReference Include="Gemini.Modules.CodeEditor" Version="1.0.60-beta" />
 		<PackageReference Include="Gemini.Modules.PropertyGrid" Version="1.0.60-beta" />
+		<PackageReference Include="Gemini.Modules.Output" Version="1.0.60-beta" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -63,9 +64,5 @@
 		<Resource Include="Resources\Icons\*.svg" />
 		<Resource Include="Resources\Icons\*.png" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Behaviors\" />
-	</ItemGroup>
-
+	
 </Project>

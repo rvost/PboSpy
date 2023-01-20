@@ -16,6 +16,7 @@ public class ImagePreviewViewModel : PreviewViewModel, ICommandHandler<ExtractAs
     public ImagePreviewViewModel(FileBase model, ImageSource image) : base(model)
     {
         Image = image;
+        Image.Freeze();
     }
 
     protected override void CanExecuteCopy(Command command)
