@@ -1,9 +1,8 @@
 ﻿using Gemini.Modules.Output;
-using Gemini.Modules.StatusBar;
 using PboExplorer.Models;
 using PboExplorer.Modules.Preview.Factories;
 using PboExplorer.Modules.Preview.ViewModels;
-using System.Windows;
+using PboExplorer.Modules.StatusBar;
 using System.Windows.Input;
 
 namespace PboExplorer.Modules.Preview.Services;
@@ -12,12 +11,12 @@ namespace PboExplorer.Modules.Preview.Services;
 public class PreviewManager : IPreviewManager
 {
     private readonly IShell _shell;
-    private readonly IStatusBar _statusBar;
+    private readonly IStatusBarManager _statusBar;
     private readonly IOutput _output;
     private readonly PreviewFactory _previewFactory;
 
     [ImportingConstructor]
-    public PreviewManager(IShell shell, IStatusBar statusBar, IOutput output, PreviewFactory previewFactory)
+    public PreviewManager(IShell shell, IStatusBarManager statusBar, IOutput output, PreviewFactory previewFactory)
     {
         _shell = shell;
         _statusBar = statusBar;
@@ -41,16 +40,15 @@ public class PreviewManager : IPreviewManager
     {
         try
         {
-            _statusBar.Items.Clear();
-            _statusBar.AddItem($"Opening preview...", new GridLength(1, GridUnitType.Star));
-            _statusBar.AddItem(model.Name, new GridLength(1, GridUnitType.Auto));
-
+            _statusBar.SetStatus($"Opening preview...", model.Name);
             Mouse.OverrideCursor = Cursors.Wait;
 
             var document = await Task.Run(
                 () => _previewFactory.CreatePreview(model)
                 );
 
+            _statusBar.Reset();
+           
             return document;
         }
         catch (Exception ex)
@@ -60,7 +58,6 @@ public class PreviewManager : IPreviewManager
         }
         finally
         {
-            _statusBar.Items.Clear();
             Mouse.OverrideCursor = null;
         }
     }
@@ -68,8 +65,7 @@ public class PreviewManager : IPreviewManager
     private void ReportError(string source, Exception ex)
     {
         _output.AppendLine($"ERROR: \"{ex.Message}\" while opening {source}");
-        _statusBar.Items.Clear();
-        _statusBar.AddItem($"ERROR: {ex.Message}", new GridLength(1, GridUnitType.Star));
-        _statusBar.AddItem(source, new GridLength(1, GridUnitType.Auto));
+
+        _statusBar.SetTemporaryStatus($"ERROR: {ex.Message}. See output for details.", duration: 3000);
     }
 }

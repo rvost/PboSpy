@@ -1,8 +1,7 @@
 ﻿using Gemini.Modules.Output;
-using Gemini.Modules.StatusBar;
 using PboExplorer.Models;
 using PboExplorer.Modules.ConfigExplorer.ViewModels;
-using System.Windows;
+using PboExplorer.Modules.StatusBar;
 using System.Windows.Input;
 
 namespace PboExplorer.Modules.ConfigExplorer.Services;
@@ -12,10 +11,10 @@ internal class ConfigPreviewManager
 {
     private readonly IOutput _output;
     private readonly IShell _shell;
-    private readonly IStatusBar _statusBar;
+    private readonly IStatusBarManager _statusBar;
 
     [ImportingConstructor]
-    public ConfigPreviewManager(IOutput output, IShell shell, IStatusBar statusBar)
+    public ConfigPreviewManager(IOutput output, IShell shell, IStatusBarManager statusBar)
     {
         _output = output;
         _shell = shell;
@@ -32,11 +31,9 @@ internal class ConfigPreviewManager
     {
         try
         {
-            _statusBar.Items.Clear();
-            _statusBar.AddItem($"Opening preview...", new GridLength(1, GridUnitType.Star));
-            _statusBar.AddItem(model.Name, new GridLength(1, GridUnitType.Auto));
-
+            _statusBar.SetStatus($"Opening preview...", model.Name);
             Mouse.OverrideCursor = Cursors.Wait;
+
             return new ConfigClassViewModel(model);
         }
         catch (Exception ex)
@@ -46,7 +43,7 @@ internal class ConfigPreviewManager
         }
         finally
         {
-            _statusBar.Items.Clear();
+            _statusBar.Reset();
             Mouse.OverrideCursor = null;
         }
     }
@@ -54,8 +51,6 @@ internal class ConfigPreviewManager
     private void ReportError(string source, Exception ex)
     {
         _output.AppendLine($"ERROR: \"{ex.Message}\" while opening {source}");
-        _statusBar.Items.Clear();
-        _statusBar.AddItem($"ERROR: {ex.Message}", new GridLength(1, GridUnitType.Star));
-        _statusBar.AddItem(source, new GridLength(1, GridUnitType.Auto));
+        _statusBar.SetTemporaryStatus($"ERROR: {ex.Message}. See output for details.", duration: 3000);
     }
 }
