@@ -1,16 +1,19 @@
 ﻿using Microsoft.Win32;
+using PboExplorer.Interfaces;
 using PboExplorer.Models;
 using PboExplorer.Modules.Extraction.Commands;
 
 namespace PboExplorer.Modules.Preview.ViewModels;
 
 [Export]
-public abstract class PreviewViewModel : Document, ICommandHandler<ExtractCurrentCommandDefinition>,
-    ICommandHandler<CopyToClipboardCommandDefinition>
+public abstract class PreviewViewModel : Document, IModelWrapper<ITreeItem>,
+    ICommandHandler<ExtractCurrentCommandDefinition>, ICommandHandler<CopyToClipboardCommandDefinition>
 {
     protected FileBase _model;
 
     public FileBase Model => _model;
+
+    ITreeItem IModelWrapper<ITreeItem>.Model => Model as ITreeItem;
 
     public PreviewViewModel(FileBase model)
     {

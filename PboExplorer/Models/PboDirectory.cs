@@ -1,23 +1,18 @@
-﻿using System.ComponentModel;
-using BIS.PBO;
-using PboExplorer.Helpers;
+﻿using BIS.PBO;
 using PboExplorer.Interfaces;
 
 namespace PboExplorer.Models;
 
-class PboDirectory : ITreeItem
+public class PboDirectory : ITreeItem
 {
     private readonly List<PboDirectory> directories = new List<PboDirectory>();
     private readonly List<PboEntry> files = new List<PboEntry>();
-    private readonly Lazy<PboDirectoryMeatdata> metadata;
     private List<ITreeItem> merged;
 
     public PboDirectory(string name)
     {
         Name = name;
-        metadata = new Lazy<PboDirectoryMeatdata>(() => new(this));
     }
-    public IMetadata Metadata => metadata.Value;
 
     public string Name { get; }
 
@@ -60,21 +55,8 @@ class PboDirectory : ITreeItem
         return existing;
     }
 
+    public T Reduce<T>(ITreeItemTransformer<T> transformer) 
+        => transformer.Transform(this);
+
     internal IEnumerable<PboEntry> AllFiles => directories.SelectMany(d => d.AllFiles).Concat(files);
-}
-
-class PboDirectoryMeatdata : IMetadata
-{
-    [Description("Uncompressed size")]
-    public string Size { get; set; }
-
-    [DisplayName("Size In PBO")]
-    [Description("Actual size in PBO file")]
-    public string SizeInPbo { get; set; }
-
-    public PboDirectoryMeatdata(PboDirectory directory)
-    {
-        Size = Formatters.FormatSize(directory.UncompressedSize);
-        SizeInPbo = Formatters.FormatSize(directory.DataSize);
-    }
 }

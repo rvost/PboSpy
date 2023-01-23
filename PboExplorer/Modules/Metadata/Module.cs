@@ -1,7 +1,5 @@
 ﻿using Gemini.Modules.PropertyGrid;
 using PboExplorer.Interfaces;
-using PboExplorer.Modules.ConfigExplorer.ViewModels;
-using PboExplorer.Modules.Preview.ViewModels;
 
 namespace PboExplorer.Modules.Metadata;
 
@@ -9,12 +7,13 @@ namespace PboExplorer.Modules.Metadata;
 public class Module : ModuleBase
 {
     private readonly IPropertyGrid _propertyGrid;
-    
+    private readonly ITreeItemTransformer<Task<IMetadata>> _metadataTransformer;
 
     [ImportingConstructor]
-    public Module(IPropertyGrid propertyGrid)
+    public Module(IPropertyGrid propertyGrid, ITreeItemTransformer<Task<IMetadata>> metadataTransformer)
     {
         _propertyGrid = propertyGrid;
+        _metadataTransformer = metadataTransformer;
     }
 
     public override void Initialize()
@@ -23,13 +22,15 @@ public class Module : ModuleBase
         RefreshPropertyGrid();
     }
 
-    private void RefreshPropertyGrid()
+    private async void RefreshPropertyGrid()
     {
-        _propertyGrid.SelectedObject = Shell.ActiveItem switch
+        if(Shell.ActiveItem is IModelWrapper<ITreeItem> treeItemWrapper)
         {
-            PreviewViewModel preview => (preview.Model as ITreeItem)?.Metadata, // TODO: Refactor PreviewViewModel
-            ConfigClassViewModel config => config.Model?.Metadata,
-            _ => null,
-        };
+            _propertyGrid.SelectedObject = await treeItemWrapper.Model?.Reduce(_metadataTransformer);
+        }
+        else
+        {
+            _propertyGrid.SelectedObject = null;
+        }
     }
 }

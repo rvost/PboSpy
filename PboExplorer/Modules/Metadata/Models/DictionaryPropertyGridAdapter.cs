@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
-using PboExplorer.Interfaces;
 
-namespace PboExplorer.Helpers;
+namespace PboExplorer.Modules.Metadata.Models;
 
 // https://support.xceed.com/portal/en/community/topic/propertygrid-dictionary-not-displaying-values-using-icustomtypedescriptor
 [RefreshProperties(RefreshProperties.All)]
@@ -28,13 +27,13 @@ public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
         }
     }
 
-    public AttributeCollection GetAttributes() 
+    public AttributeCollection GetAttributes()
         => TypeDescriptor.GetAttributes(this, true);
 
-    public string GetClassName() 
+    public string GetClassName()
         => TypeDescriptor.GetClassName(this, true);
 
-    public string GetComponentName() 
+    public string GetComponentName()
         => TypeDescriptor.GetComponentName(this, true);
 
     public TypeConverter GetConverter()
@@ -66,7 +65,7 @@ public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
 
     public object GetPropertyOwner(PropertyDescriptor pd) => this;
 
-    EventDescriptorCollection ICustomTypeDescriptor.GetEvents() 
+    EventDescriptorCollection ICustomTypeDescriptor.GetEvents()
         => TypeDescriptor.GetEvents(this, true);
 
     PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties()
@@ -76,7 +75,7 @@ public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
     {
         private readonly IDictionary<T, U> dictionary;
         private readonly T key;
-       
+
         internal DictionaryPropertyDescriptor(IDictionary<T, U> dictionary, T key)
             : base(key.ToString(), null)
         {
@@ -92,7 +91,7 @@ public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
 
         public override bool CanResetValue(object component) => false;
 
-        public override object GetValue(object component) 
+        public override object GetValue(object component)
             => dictionary[key];
 
         public override void ResetValue(object component) { }

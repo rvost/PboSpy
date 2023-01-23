@@ -1,4 +1,4 @@
-﻿namespace PboExplorer.Helpers;
+﻿namespace PboExplorer.Modules.Metadata.Utils;
 
 internal static class Formatters
 {
@@ -6,7 +6,7 @@ internal static class Formatters
 
     public static string FormatSize(double size)
     {
-        
+
         int order = 0;
         while (size >= 1024 && order < _sizes.Length - 1)
         {

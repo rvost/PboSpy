@@ -2,15 +2,16 @@
 
 namespace PboExplorer.Models;
 
-class PhysicalDirectory : ITreeItem
+public class PhysicalDirectory : ITreeItem
 {
     private readonly ObservableCollection<ITreeItem> files = new ObservableCollection<ITreeItem>();
 
     public string Name { get; }
 
-    public PhysicalDirectory(string name)
+    public PhysicalDirectory(string name, string fullPath)
     {
         Name = name;
+        FullPath = fullPath;
     }
 
     public string FullPath { get; }
@@ -19,6 +20,7 @@ class PhysicalDirectory : ITreeItem
     {
         get { return files; }
     }
-
-    public IMetadata Metadata => null;
+    
+    public T Reduce<T>(ITreeItemTransformer<T> transformer)
+        => transformer.Transform(this);
 }

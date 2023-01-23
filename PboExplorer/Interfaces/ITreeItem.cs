@@ -1,11 +1,10 @@
-﻿namespace PboExplorer.Interfaces
+﻿namespace PboExplorer.Interfaces;
+
+public interface ITreeItem
 {
-    public interface ITreeItem
-    {
-        string Name { get; }
+    string Name { get; }
 
-        ICollection<ITreeItem> Children { get; }
+    ICollection<ITreeItem> Children { get; }
 
-        IMetadata Metadata { get; }
-    }
+    T Reduce<T>(ITreeItemTransformer<T> transformer);
 }

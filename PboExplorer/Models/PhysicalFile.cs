@@ -1,17 +1,13 @@
-﻿using System.ComponentModel;
-using System.IO;
-using PboExplorer.Helpers;
+﻿using System.IO;
 using PboExplorer.Interfaces;
 
 namespace PboExplorer.Models;
 
-class PhysicalFile : FileBase, ITreeItem
+public class PhysicalFile : FileBase, ITreeItem
 {
-    private readonly Lazy<PhysicalFileMetadata> metadata;
     public PhysicalFile(string fullPath)
     {
         FullPath = fullPath;
-        metadata = new Lazy<PhysicalFileMetadata>(() => new(this));
     }
 
     public ICollection<ITreeItem> Children => null;
@@ -26,30 +22,11 @@ class PhysicalFile : FileBase, ITreeItem
 
     public override int DataSize => (int)new FileInfo(FullPath).Length;
 
-    public IMetadata Metadata => metadata.Value;
-
     public override Stream GetStream()
     {
         return File.OpenRead(FullPath);
     }
-}
 
-class PhysicalFileMetadata : IMetadata
-{
-    [DisplayName("Full Path")]
-    public string FullPath { get; set; }
-    [DisplayName("File Name")]
-    public string Name { get; set; }
-    public string Size { get; set; }
-    [DisplayName("Created At")]
-    public DateTime CreatedAt { get; set; }
-
-    public PhysicalFileMetadata(PhysicalFile file)
-    {
-        FullPath = file.FullPath;
-        var info = new FileInfo(file.FullPath);
-        Name = info.Name;
-        Size = Formatters.FormatSize(info.Length);
-        CreatedAt = info.CreationTime;
-    }
+    public T Reduce<T>(ITreeItemTransformer<T> transformer) 
+        => transformer.Transform(this);
 }

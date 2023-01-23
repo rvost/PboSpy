@@ -1,4 +1,4 @@
-﻿namespace PboExplorer.Interfaces
+﻿namespace PboExplorer.Modules.Metadata
 {
     public interface IMetadata
     {

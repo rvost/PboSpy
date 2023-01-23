@@ -3,7 +3,7 @@ using PboExplorer.Models;
 
 namespace PboExplorer.Modules.ConfigExplorer.ViewModels;
 
-class ConfigClassViewModel : Document
+class ConfigClassViewModel : Document, IModelWrapper<ITreeItem>
 {
     private readonly ConfigClassItem _model;
 

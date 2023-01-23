@@ -1,5 +1,4 @@
 ﻿using BIS.Core.Config;
-using PboExplorer.Helpers;
 using PboExplorer.Interfaces;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -28,7 +27,7 @@ public class ConfigClassItem : ITreeItem
 
     private Dictionary<string, ConfigClassItem> ChildrenClasses { get; } = new Dictionary<string, ConfigClassItem>(StringComparer.OrdinalIgnoreCase);
 
-    private Dictionary<string, object> Properties { get; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, object> Properties { get; } = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
     public Dictionary<PboEntry, ParamClass> Definitions { get; } = new();
 
@@ -39,8 +38,6 @@ public class ConfigClassItem : ITreeItem
             return GetAllChildren().OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList();
         }
     }
-
-    public IMetadata Metadata => new DictionaryPropertyGridAdapter<string, object>(Properties);
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -177,4 +174,7 @@ public class ConfigClassItem : ITreeItem
             // TODO: Consider ParamExternClass
         }
     }
+
+    public T Reduce<T>(ITreeItemTransformer<T> transformer) 
+        => transformer.Transform(this);
 }

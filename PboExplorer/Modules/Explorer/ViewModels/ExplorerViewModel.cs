@@ -2,6 +2,7 @@
 using Microsoft.WindowsAPICodePack.Dialogs;
 using PboExplorer.Interfaces;
 using PboExplorer.Models;
+using PboExplorer.Modules.Metadata;
 using PboExplorer.Modules.PboManager;
 using PboExplorer.Modules.Preview;
 using System.Windows;
@@ -14,6 +15,7 @@ public class ExplorerViewModel : Tool, IPboExplorer
 {
     private readonly IPboManager _pboManager;
     private readonly IPreviewManager _previewManager;
+    private readonly ITreeItemTransformer<Task<IMetadata>> _metadataTransformer;
     private readonly IPropertyGrid _propertyGrid;
 
     private ITreeItem _selectedItem;
@@ -38,10 +40,12 @@ public class ExplorerViewModel : Tool, IPboExplorer
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
-    public ExplorerViewModel(IPboManager pboManager, IPropertyGrid propertyGrid, IPreviewManager previewManager)
+    public ExplorerViewModel(IPboManager pboManager, IPropertyGrid propertyGrid, IPreviewManager previewManager,
+         ITreeItemTransformer<Task<IMetadata>> metadataTransformer)
     {
         _pboManager = pboManager;
         _previewManager = previewManager;
+        _metadataTransformer = metadataTransformer;
         _propertyGrid = propertyGrid;
 
         DisplayName = "PBO Explorer";
@@ -76,12 +80,12 @@ public class ExplorerViewModel : Tool, IPboExplorer
         }
     }
 
-    public void OnSelectedItemChanged(RoutedPropertyChangedEventArgs<object> args)
+    public async void OnSelectedItemChanged(RoutedPropertyChangedEventArgs<object> args)
     {
         if (args.NewValue is ITreeItem item)
         {
             SelectedItem = item;
-            _propertyGrid.SelectedObject = item.Metadata;
+            _propertyGrid.SelectedObject = await item.Reduce(_metadataTransformer);
         }
     }
 

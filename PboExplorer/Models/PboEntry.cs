@@ -1,13 +1,11 @@
 ﻿using System.IO;
 using BIS.PBO;
-using PboExplorer.Helpers;
 using PboExplorer.Interfaces;
 
 namespace PboExplorer.Models;
 public class PboEntry : FileBase, ITreeItem
 {
     private readonly PBO pbo;
-    private readonly Lazy<PboEntryMetadata> metadata;
 
     public PboEntry(PBO pbo, IPBOFileEntry entry)
     {
@@ -15,7 +13,6 @@ public class PboEntry : FileBase, ITreeItem
         Name = Path.GetFileName(entry.FileName);
         Extension = Path.GetExtension(entry.FileName).ToLowerInvariant();
         Entry = entry;
-        metadata = new Lazy<PboEntryMetadata>(() => EntryMetaDataFactory.Create(this));
     }
 
     public PBO PBO => pbo;
@@ -31,8 +28,6 @@ public class PboEntry : FileBase, ITreeItem
     public override string FullPath => pbo.Prefix + "\\" + Entry.FileName;
 
     public override int DataSize => Entry.Size;
-
-    public IMetadata Metadata => metadata.Value;
 
     public override Stream GetStream()
     {
@@ -61,4 +56,6 @@ public class PboEntry : FileBase, ITreeItem
         return HashCode.Combine(FullPath);
     }
 
+    public T Reduce<T>(ITreeItemTransformer<T> transformer)
+        => transformer.Transform(this);
 }

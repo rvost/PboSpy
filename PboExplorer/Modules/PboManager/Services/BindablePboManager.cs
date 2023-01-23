@@ -68,7 +68,7 @@ class BindablePboManager : IPboManager
     {
         var dirInfo = new DirectoryInfo(path);
 
-        var dir = new PhysicalDirectory(dirInfo.Name);
+        var dir = new PhysicalDirectory(dirInfo.Name, dirInfo.FullName);
 
         dirInfo.EnumerateDirectories()
             .Select(inf => LoadDirectory(inf.FullName))

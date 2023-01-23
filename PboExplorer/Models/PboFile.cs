@@ -1,28 +1,18 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using BIS.PBO;
-using PboExplorer.Helpers;
 using PboExplorer.Interfaces;
-using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 
 namespace PboExplorer.Models;
 
-class PboFile : ITreeItem
+public class PboFile : ITreeItem
 {
     private readonly PBO pbo;
     private readonly PboDirectory root;
-    private readonly Lazy<PboMetadata> metadata;
 
     public PboFile(PBO pbo)
     {
         this.pbo = pbo;
         root = GenerateRoot(pbo);
-        metadata = new Lazy<PboMetadata>(() => new(this));
-    }
-
-    public IMetadata Metadata
-    {
-        get => metadata.Value;
     }
 
     public PBO PBO => pbo;
@@ -76,31 +66,6 @@ class PboFile : ITreeItem
 
     internal IEnumerable<PboEntry> AllEntries => root.AllFiles;
 
-}
-
-class PboMetadata : IMetadata
-{
-    [Description("Number of files in PBO")]
-    public string Path { get; set; }
-
-    [Description("Size of PBO on disk")]
-    public string Size { get; set; }
-
-    [Description("Number of files in PBO")]
-    public int Entries { get; set; }
-
-    [Description("PBO Prefix")]
-    public string Prefix { get; set; }
-
-    [Editor(typeof(CollectionEditor), typeof(CollectionEditor))]
-    public ICollection<KeyValuePair<string, string>> Properties { get; }
-
-    public PboMetadata(PboFile file)
-    {
-        Path = file.PBO.PBOFilePath;
-        Size = Formatters.FormatSize(new FileInfo(file.PBO.PBOFilePath).Length);
-        Entries = file.PBO.Files.Count;
-        Prefix = file.PBO.Prefix;
-        Properties = file.PBO.PropertiesPairs;
-    }
+    public T Reduce<T>(ITreeItemTransformer<T> transformer)
+        => transformer.Transform(this);
 }
