@@ -1,5 +1,6 @@
 ﻿using PboExplorer.Models;
 using PboExplorer.Modules.Preview.ViewModels;
+using PboExplorer.Modules.PreviewBinary.ViewModels;
 
 namespace PboExplorer.Modules.PreviewBinary;
 
@@ -17,7 +18,7 @@ internal static class PreviewFactories
         }
         else
         {
-            throw new NotImplementedException();
+            return new BinaryPreviewViewModel(entry);
         }
     }
 
