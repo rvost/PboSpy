@@ -112,25 +112,23 @@ public class ConfigClassItem : ITreeItem
         return Parent?.ResolveClassDirectThenDeep(className);
     }
 
-    internal ICollection<ConfigClassItem> MergedView(IEnumerable<PboFile> files)
+    internal ICollection<ConfigClassItem> MergedView(PboFile pbo)
     {
         var paramFiles = new List<(ParamFile, PboEntry)>();
-        foreach (var pbo in files)
-        {
-            IEnumerable<PboEntry> configFiles = pbo.AllEntries
-                .Where(f => f.IsBinaryConfig() && !f.Name.EndsWith(".rvmat", StringComparison.OrdinalIgnoreCase));
 
-            foreach (var file in configFiles)
+        IEnumerable<PboEntry> configFiles = pbo.AllEntries
+            .Where(f => f.IsBinaryConfig() && !f.Name.EndsWith(".rvmat", StringComparison.OrdinalIgnoreCase));
+
+        foreach (var file in configFiles)
+        {
+            try
             {
-                try
-                {
-                    using var stream = file.GetStream();
-                    paramFiles.Add((new ParamFile(stream), file));
-                }
-                catch (Exception e)
-                {
-                    Trace.TraceWarning("Unable to parse config: {0}", e); // TODO: Log or report error to user
-                }
+                using var stream = file.GetStream();
+                paramFiles.Add((new ParamFile(stream), file));
+            }
+            catch (Exception e)
+            {
+                Trace.TraceWarning("Unable to parse config: {0}", e); // TODO: Log or report error to user
             }
         }
 
@@ -175,6 +173,6 @@ public class ConfigClassItem : ITreeItem
         }
     }
 
-    public T Reduce<T>(ITreeItemTransformer<T> transformer) 
+    public T Reduce<T>(ITreeItemTransformer<T> transformer)
         => transformer.Transform(this);
 }

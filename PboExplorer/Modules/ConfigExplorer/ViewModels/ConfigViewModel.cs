@@ -3,7 +3,6 @@ using PboExplorer.Interfaces;
 using PboExplorer.Models;
 using PboExplorer.Modules.ConfigExplorer.Services;
 using PboExplorer.Modules.Metadata;
-using PboExplorer.Modules.PboManager;
 using System.Windows;
 
 namespace PboExplorer.Modules.ConfigExplorer.ViewModels;
@@ -13,14 +12,14 @@ namespace PboExplorer.Modules.ConfigExplorer.ViewModels;
 [PartCreationPolicy(CreationPolicy.Shared)]
 internal class ConfigViewModel : Tool, IConfigExplorer
 {
-    private readonly IPboManager _pboManager;
+    private readonly IConfigManager _configManager;
     private readonly ConfigPreviewManager _previewManager;
     private readonly ITreeItemTransformer<Task<IMetadata>> _metadataTransformer;
     private readonly IPropertyGrid _propertyGrid;
 
     private ITreeItem _selectedItem;
 
-    public ICollection<ITreeItem> Items { get => _pboManager.ConfigTree; }
+    public ICollection<ITreeItem> Items => _configManager.Items;
 
     public ITreeItem SelectedItem
     {
@@ -35,15 +34,15 @@ internal class ConfigViewModel : Tool, IConfigExplorer
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
-    public ConfigViewModel(IPboManager pboManager, IPropertyGrid propertyGrid, ConfigPreviewManager previewManager,
+    public ConfigViewModel(IConfigManager configManager, IPropertyGrid propertyGrid, ConfigPreviewManager previewManager,
          ITreeItemTransformer<Task<IMetadata>> metadataTransformer)
     {
-        _pboManager = pboManager;
+        DisplayName = "Config";
+
+        _configManager = configManager;
         _previewManager = previewManager;
         _metadataTransformer = metadataTransformer;
         _propertyGrid = propertyGrid;
-
-        DisplayName = "Config";
     }
 
     public async Task OpenPreview(ITreeItem item)
@@ -67,4 +66,5 @@ internal class ConfigViewModel : Tool, IConfigExplorer
             _propertyGrid.SelectedObject = await item.Reduce(_metadataTransformer);
         }
     }
+
 }

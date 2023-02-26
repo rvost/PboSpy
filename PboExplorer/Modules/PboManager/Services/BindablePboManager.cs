@@ -6,20 +6,18 @@ using System.IO;
 
 namespace PboExplorer.Modules.PboManager.Services;
 
-// TODO: Consider moving tree building to separate utility class
 [Export(typeof(IPboManager))]
 [PartCreationPolicy(CreationPolicy.Shared)]
 class BindablePboManager : IPboManager
 {
     public ICollection<ITreeItem> FileTree { get; }
-    public ICollection<ITreeItem> ConfigTree { get; }
-    public ConfigClassItem ConfigRoot { get; }
+    
+    public event EventHandler<PboManagerEventArgs> PboLoaded;
+    public event EventHandler<PboManagerEventArgs> PboRemoved;
 
     public BindablePboManager()
     {
         FileTree = new BindableCollection<ITreeItem>();
-        ConfigTree = new BindableCollection<ITreeItem>();
-        ConfigRoot = new();
     }
 
     public void LoadSupportedFiles(IEnumerable<string> paths)
@@ -56,13 +54,14 @@ class BindablePboManager : IPboManager
     private PboFile LoadPbo(string path)
     {
         var pbo = new PboFile(new PBO(path, false));
-        // TODO: Implement GenerateMergedConfig override which takes one file
-        GenerateMergedConfig(new[] { pbo });
+        
+        PboLoaded?.Invoke(this, new(pbo));
+        
         return pbo;
     }
 
     private static PhysicalFile LoadPhysicalFile(string path)
-        => new PhysicalFile(Path.GetFullPath(path));
+        => new(Path.GetFullPath(path));
 
     private PhysicalDirectory LoadDirectory(string path)
     {
@@ -79,18 +78,6 @@ class BindablePboManager : IPboManager
             .Apply(file => dir.Children.Add(file));
 
         return dir;
-    }
-
-    private void GenerateMergedConfig(IEnumerable<PboFile> files)
-    {
-        var configClasses = ConfigRoot.MergedView(files);
-
-        // TODO: Refactor ConfigTree update
-        ConfigTree.Clear();
-        foreach (var configClass in configClasses)
-        {
-            ConfigTree.Add(configClass);
-        }
     }
 
     private static bool IsPboFile(string path)
