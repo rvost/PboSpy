@@ -10,15 +10,18 @@ public class ConfigClassItem : ITreeItem
     public ConfigClassItem()
     {
         Name = "(root)";
+        Id = Guid.Empty;
     }
 
     public ConfigClassItem(ConfigClassItem parent, ParamClass entry, PboEntry file)
     {
+        Id = Guid.NewGuid();
         Parent = parent;
         Name = entry.Name;
         Apply(entry, file);
     }
 
+    public Guid Id { get; }
     public ConfigClassItem Parent { get; }
 
     public string Name { get; }

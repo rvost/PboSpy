@@ -30,6 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Dirkster.TreeLib" Version="1.2.0" />
 		<PackageReference Include="GeminiWpf" Version="1.0.60-beta" />
 		<Using Include="System.ComponentModel.Composition" />
 		<Using Include="Caliburn.Micro" />

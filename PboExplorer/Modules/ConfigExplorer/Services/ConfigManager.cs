@@ -11,7 +11,7 @@ internal class ConfigManager : IConfigManager, IDisposable
     private readonly IPboManager _pboManager;
     private readonly ConfigClassItem _configRoot;
 
-    public ICollection<ITreeItem> Items { get; }
+    public ObservableCollection<ITreeItem> Items { get; }
 
     [ImportingConstructor]
     public ConfigManager(IPboManager pboManager)
