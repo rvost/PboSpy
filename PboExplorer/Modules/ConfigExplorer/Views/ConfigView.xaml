@@ -7,6 +7,7 @@
              xmlns:cal="http://caliburnmicro.com"
              xmlns:conv="clr-namespace:PboExplorer.Modules.ConfigExplorer.Converters"
              xmlns:behav="clr-namespace:PboExplorer.Modules.ConfigExplorer.Behaviors"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:local="clr-namespace:PboExplorer.Modules.ConfigExplorer.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -14,7 +15,7 @@
         <Grid.Resources>
             <conv:BoolToVisibilityConverter x:Key="boolToHiddenVisibilityConverter"
                                             False="Hidden" True="Visible" />
-            
+
             <Style x:Key="TreeViewStyle" TargetType="{x:Type TreeView}">
                 <Setter Property="TreeView.Background" Value="Transparent"/>
                 <Setter Property="VirtualizingStackPanel.IsVirtualizing" Value="True"/>
@@ -31,7 +32,9 @@
                 <Setter Property="TreeView.Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="TreeView">
-                            <ScrollViewer Focusable="False" CanContentScroll="True" Padding="3">
+                            <ScrollViewer Focusable="False" CanContentScroll="True" 
+                                          VerticalScrollBarVisibility="Auto"
+                                          Padding="2">
                                 <ItemsPresenter HorizontalAlignment="Stretch"/>
                             </ScrollViewer>
                         </ControlTemplate>
@@ -47,41 +50,40 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Margin="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+            <xctk:WatermarkTextBox x:Name="SearchString" Grid.Column="0" Watermark="Search Configuration"
+                                       cal:Message.Attach="[Event TextChanged] = [Action Search($this)]"
+                                       ToolTip="Enter at least 3 chracters"
+                                       VerticalContentAlignment="Center"/>
 
-                <TextBox x:Name="SearchString" Grid.Column="0" Margin="3" 
-                         cal:Message.Attach="[Event TextChanged] = [Action Search($this)]"
-                         ToolTip="Enter at least 3 chracters"
-                         VerticalContentAlignment="Center"/>
+            <xctk:SplitButton Grid.Column="1"
+                              IsEnabled="{Binding CanSearch}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <cal:ActionMessage MethodName="Search">
+                            <cal:Parameter Value="{Binding ElementName=SearchString, Path=Text}" />
+                        </cal:ActionMessage>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
 
-                <Button Content="Search" Grid.Column="1" Margin="3"
-                        IsEnabled="{Binding CanSearch}">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="Click">
-                            <cal:ActionMessage MethodName="Search">
-                                <cal:Parameter Value="{Binding ElementName=SearchString, Path=Text}" />
-                            </cal:ActionMessage>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </Button>
-            </Grid>
-
-            <Grid Grid.Row="1">
-                <CheckBox Content="String is contained"
-                          IsChecked="{Binding IsStringContained}"
-                          IsEnabled="{Binding CanSearch}"
-                          Margin="3"/>
-            </Grid>
+                <xctk:SplitButton.Content>
+                    <Image Source="pack://application:,,,/PboExplorer;component/Resources/Icons/Search.png"/>
+                </xctk:SplitButton.Content>
+                
+                <xctk:SplitButton.DropDownContent>
+                    <Grid>
+                        <CheckBox Content="String is contained" 
+                                  IsChecked="{Binding IsStringContained}"
+                                  IsEnabled="{Binding CanSearch}" 
+                                  Margin="3"/>
+                    </Grid>
+                </xctk:SplitButton.DropDownContent>
+            </xctk:SplitButton>
         </Grid>
 
         <ProgressBar Height="6" Grid.Row="1" IsIndeterminate="True"
@@ -93,7 +95,6 @@
                   VerticalAlignment="Stretch"
                   DataContext="{Binding Root}"
                   ItemsSource="{Binding RootItems,Mode=OneWay}"
-                  
                   VirtualizingStackPanel.IsVirtualizing="True"
                   VirtualizingStackPanel.VirtualizationMode="Recycling"
                   Style="{StaticResource TreeViewStyle}"
