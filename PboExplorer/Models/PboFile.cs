@@ -4,15 +4,16 @@ using PboExplorer.Interfaces;
 
 namespace PboExplorer.Models;
 
-public class PboFile : ITreeItem
+public class PboFile : ITreeSubnode
 {
     private readonly PBO pbo;
     private readonly PboDirectory root;
 
-    public PboFile(PBO pbo)
+    public PboFile(PBO pbo, ITreeItem parent = null)
     {
         this.pbo = pbo;
         root = GenerateRoot(pbo);
+        Parent = parent;
     }
 
     public PBO PBO => pbo;
@@ -20,6 +21,7 @@ public class PboFile : ITreeItem
     public string Name => pbo.FileName;
 
     public ICollection<ITreeItem> Children => root.Children;
+    public ITreeItem Parent { get; }
 
     private static PboDirectory GenerateRoot(PBO pbo)
     {

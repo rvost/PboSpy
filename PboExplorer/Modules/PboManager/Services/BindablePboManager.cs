@@ -11,7 +11,7 @@ namespace PboExplorer.Modules.PboManager.Services;
 class BindablePboManager : IPboManager
 {
     public ICollection<ITreeItem> FileTree { get; }
-    
+
     public event EventHandler<PboManagerEventArgs> PboLoaded;
     public event EventHandler<PboManagerEventArgs> PboRemoved;
 
@@ -29,52 +29,80 @@ class BindablePboManager : IPboManager
 
         // Load folders
         lookup[true]
-            .Select(path => LoadDirectory(path))
+            .Select(path => LoadDirectory(path, null))
             .Apply(dir => FileTree.Add(dir));
 
         // Load files
         lookup[false]
-            .Select(path => LoadFile(path))
+            .Select(path => LoadFile(path, null))
             .Apply(file => FileTree.Add(file));
 
     }
 
-    private ITreeItem LoadFile(string path)
+    // TODO: Remove recursion
+    public void Close(ITreeSubnode file)
     {
-        if (IsPboFile(path))
+        var childrenToClose = file.Children?.OfType<ITreeSubnode>().ToList() ?? new();
+        childrenToClose.Apply(child => Close(child));
+
+        if (file.Parent is null)
         {
-            return LoadPbo(path);
+            FileTree.Remove(file);
         }
         else
         {
-            return LoadPhysicalFile(path);
+            file.Parent.Children.Remove(file);
+        }
+
+        if (file is PboFile pbo)
+        {
+            PboRemoved?.Invoke(this, new(pbo));
         }
     }
 
-    private PboFile LoadPbo(string path)
+    // TODO: Remove recursion
+    public void CloseAll()
     {
-        var pbo = new PboFile(new PBO(path, false));
-        
+        var toClose = FileTree.OfType<ITreeSubnode>().ToList() ?? new();
+        toClose.Apply(item => Close(item));
+    }
+
+    private ITreeItem LoadFile(string path, ITreeItem parent)
+    {
+        if (IsPboFile(path))
+        {
+            return LoadPbo(path, parent);
+        }
+        else
+        {
+            return LoadPhysicalFile(path, parent);
+        }
+    }
+
+    private PboFile LoadPbo(string path, ITreeItem parent)
+    {
+        var pbo = new PboFile(new PBO(path, false), parent);
+
         PboLoaded?.Invoke(this, new(pbo));
-        
+
         return pbo;
     }
 
-    private static PhysicalFile LoadPhysicalFile(string path)
-        => new(Path.GetFullPath(path));
+    private static PhysicalFile LoadPhysicalFile(string path, ITreeItem parent)
+        => new(Path.GetFullPath(path), parent);
 
-    private PhysicalDirectory LoadDirectory(string path)
+    private PhysicalDirectory LoadDirectory(string path, ITreeItem parent)
     {
         var dirInfo = new DirectoryInfo(path);
 
-        var dir = new PhysicalDirectory(dirInfo.Name, dirInfo.FullName);
+        var dir = new PhysicalDirectory(dirInfo.Name, dirInfo.FullName, parent);
 
         dirInfo.EnumerateDirectories()
-            .Select(inf => LoadDirectory(inf.FullName))
+            .Select(inf => LoadDirectory(inf.FullName, dir))
             .Apply(d => dir.Children.Add(d));
 
         GetSupportedFiles(dirInfo.FullName)
-            .Select(file => LoadFile(file))
+            .Select(file => LoadFile(file, dir))
             .Apply(file => dir.Children.Add(file));
 
         return dir;

@@ -3,11 +3,12 @@ using PboExplorer.Interfaces;
 
 namespace PboExplorer.Models;
 
-public class PhysicalFile : FileBase, ITreeItem
+public class PhysicalFile : FileBase, ITreeSubnode
 {
-    public PhysicalFile(string fullPath)
+    public PhysicalFile(string fullPath, ITreeItem parent = null)
     {
         FullPath = fullPath;
+        Parent = parent;
     }
 
     public ICollection<ITreeItem> Children => null;
@@ -19,6 +20,7 @@ public class PhysicalFile : FileBase, ITreeItem
     string ITreeItem.Name => FullPath;
 
     public override string FullPath { get; }
+    public ITreeItem Parent { get; }
 
     public override int DataSize => (int)new FileInfo(FullPath).Length;
 
@@ -27,6 +29,6 @@ public class PhysicalFile : FileBase, ITreeItem
         return File.OpenRead(FullPath);
     }
 
-    public T Reduce<T>(ITreeItemTransformer<T> transformer) 
+    public T Reduce<T>(ITreeItemTransformer<T> transformer)
         => transformer.Transform(this);
 }

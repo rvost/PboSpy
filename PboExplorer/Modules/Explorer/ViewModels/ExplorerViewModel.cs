@@ -30,12 +30,12 @@ public class ExplorerViewModel : Tool, IPboExplorer
             _selectedItem = value;
             NotifyOfPropertyChange(nameof(SelectedItem));
             NotifyOfPropertyChange(nameof(CanExtractSelectedPbo));
+            NotifyOfPropertyChange(nameof(CanCloseSelected));
         }
     }
-    public bool CanExtractSelectedPbo
-    {
-        get => SelectedItem is PboFile;
-    }
+    public bool CanExtractSelectedPbo => SelectedItem is PboFile;
+
+    public bool CanCloseSelected => SelectedItem is ITreeSubnode;
 
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
@@ -65,6 +65,22 @@ public class ExplorerViewModel : Tool, IPboExplorer
                 selectedPbo.Extract(dialog.FileName);
             }
         }
+    }
+
+    public void CloseSelected()
+    {
+        if (SelectedItem is ITreeSubnode itemToClose)
+        {
+            _pboManager.Close(itemToClose);
+        }
+
+        SelectedItem = null;
+    }
+
+    public void CloseAll()
+    {
+        _pboManager.CloseAll();
+        SelectedItem = null;
     }
 
     public async Task OpenPreview(ITreeItem item)

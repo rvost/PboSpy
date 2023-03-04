@@ -22,4 +22,6 @@ public interface IPboManager
     event EventHandler<PboManagerEventArgs> PboRemoved;
 
     void LoadSupportedFiles(IEnumerable<string> fileNames);
+    void Close(ITreeSubnode file);
+    void CloseAll();
 }
