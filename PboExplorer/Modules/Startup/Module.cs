@@ -2,6 +2,7 @@
 using PboExplorer.Modules.About;
 using PboExplorer.Modules.ConfigExplorer;
 using PboExplorer.Modules.Explorer;
+using PboExplorer.Properties;
 using System.Windows;
 
 namespace PboExplorer.Modules.Startup;
@@ -36,7 +37,7 @@ public class Module : ModuleBase
 
     public override void Initialize()
     {
-        _mainWindow.WindowState = WindowState.Maximized;
+        _mainWindow.WindowState = Settings.Default.OpenFullscreen ? WindowState.Maximized : WindowState.Normal;
         _mainWindow.Title = "PboExplorer";
         _mainWindow.Icon = new IconService().GetIcon("WindowIcon"); // TODO: Fix this
 
