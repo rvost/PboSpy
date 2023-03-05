@@ -1,11 +1,9 @@
 ﻿using Gemini.Modules.PropertyGrid;
 using PboExplorer.Interfaces;
-using PboExplorer.Models;
 using PboExplorer.Modules.ConfigExplorer.Services;
 using PboExplorer.Modules.ConfigExplorer.Utils;
 using PboExplorer.Modules.ConfigExplorer.ViewModels.Search;
 using PboExplorer.Modules.Metadata;
-using System.Collections.Specialized;
 using System.Windows;
 
 namespace PboExplorer.Modules.ConfigExplorer.ViewModels;
@@ -14,12 +12,11 @@ namespace PboExplorer.Modules.ConfigExplorer.ViewModels;
 [PartCreationPolicy(CreationPolicy.Shared)]
 internal class ConfigViewModel : Tool, IConfigExplorer
 {
-    private readonly IConfigManager _configManager;
     private readonly ConfigPreviewManager _previewManager;
     private readonly ITreeItemTransformer<Task<IMetadata>> _metadataTransformer;
     private readonly IPropertyGrid _propertyGrid;
     private readonly OneTaskProcessor _procesor = new();
-    private readonly ConfigTreeRootViewModel _root = new();
+    private readonly ConfigTreeRootViewModel _root;
 
     private ConfigTreeItemViewModel _selectedItem;
     private bool _isStringContained = true;
@@ -110,17 +107,15 @@ internal class ConfigViewModel : Tool, IConfigExplorer
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
-    public ConfigViewModel(IConfigManager configManager, IPropertyGrid propertyGrid, ConfigPreviewManager previewManager,
+    public ConfigViewModel(ConfigTreeRootViewModel configRoot, IPropertyGrid propertyGrid, ConfigPreviewManager previewManager,
          ITreeItemTransformer<Task<IMetadata>> metadataTransformer)
     {
         DisplayName = "Config";
 
-        _configManager = configManager;
+        _root = configRoot;
         _previewManager = previewManager;
         _metadataTransformer = metadataTransformer;
         _propertyGrid = propertyGrid;
-       
-        _configManager.Items.CollectionChanged += OnConfigCollectionChanged;
     }
 
     public async Task OpenPreview(ConfigTreeItemViewModel item)
@@ -171,34 +166,10 @@ internal class ConfigViewModel : Tool, IConfigExplorer
         }
     }
 
-    private void OnConfigCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        switch (e.Action)
-        {
-            case NotifyCollectionChangedAction.Add:
-                Root.AddItems(e.NewItems.Cast<ConfigClassItem>());
-                break;
-            case NotifyCollectionChangedAction.Remove:
-                e.NewItems.Cast<ConfigClassItem>().Apply(item => Root.RemoveItem(item));
-                break;
-            case NotifyCollectionChangedAction.Replace:
-                break;
-            case NotifyCollectionChangedAction.Move:
-                break;
-            case NotifyCollectionChangedAction.Reset:
-                Root.Clear();
-                break;
-            default:
-                break;
-        }
-        NotifyOfPropertyChange(nameof(CanSearch));
-    }
-
     protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
     {
         if (close)
         {
-            _configManager.Items.CollectionChanged -= OnConfigCollectionChanged;
             _procesor.Dispose();
         }
 

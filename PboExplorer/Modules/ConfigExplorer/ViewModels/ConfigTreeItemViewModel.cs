@@ -23,7 +23,6 @@ class ConfigTreeItemViewModel : PropertyChangedBase, IHasDummyChild
     {
         _model = model;
 
-        Id = model.Id;
         Parent = parent;
         Name = model.Name;
 
@@ -34,8 +33,6 @@ class ConfigTreeItemViewModel : PropertyChangedBase, IHasDummyChild
     {
         BindingOperations.EnableCollectionSynchronization(_children, _itemsLock);
     }
-
-    public Guid Id { get; }
 
     public string Name { get; }
 
@@ -139,24 +136,24 @@ class ConfigTreeItemViewModel : PropertyChangedBase, IHasDummyChild
 
         // TODO: Remove cast
         var srcItems = TreeLib.BreadthFirst.Traverse.LevelOrder(srcRoot, item => item.Children.Cast<ConfigClassItem>());
-        var IdToVmMap = new Dictionary<Guid, ConfigTreeItemViewModel>();
+        var IdToVmMap = new Dictionary<string, ConfigTreeItemViewModel>();
 
         ConfigTreeItemViewModel dstRoot = null;
 
         foreach (var node in srcItems.Select(i => i.Node))
         {
-            if (node.Parent.Id == Guid.Empty)
+            if (node.Parent.Name == ConfigClassItem.ROOT)
             {
                 dstRoot = new ConfigTreeItemViewModel(node, null);
-                IdToVmMap.TryAdd(dstRoot.Id, dstRoot);
+                IdToVmMap.TryAdd(dstRoot.Name, dstRoot);
             }
             else
             {
-                IdToVmMap.TryGetValue(node.Parent.Id, out var vmParent);
+                IdToVmMap.TryGetValue(node.Parent.Name, out var vmParent);
 
                 var dstNode = new ConfigTreeItemViewModel(node, vmParent);
                 vmParent.AddChild(dstNode);     // Insert converted ViewModel below ViewModel parent
-                IdToVmMap.TryAdd(dstNode.Id, dstNode);
+                IdToVmMap.TryAdd(dstNode.Name, dstNode);
             }
         }
         
@@ -299,7 +296,7 @@ class ConfigTreeItemViewModel : PropertyChangedBase, IHasDummyChild
         }
     }
 
-    private void RemoveChild(ConfigTreeItemViewModel child, bool removeBackup = true)
+    public void RemoveChild(ConfigTreeItemViewModel child, bool removeBackup = true)
     {
         lock (_itemsLock)
         {

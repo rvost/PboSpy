@@ -2,20 +2,29 @@
 using PboExplorer.Modules.ConfigExplorer.Commands;
 using PboExplorer.Modules.ConfigExplorer.Utils;
 using PboExplorer.Modules.ConfigExplorer.ViewModels.Search;
+using PboExplorer.Modules.PboManager;
 using System.Windows.Data;
 using System.Windows.Input;
 
 namespace PboExplorer.Modules.ConfigExplorer.ViewModels;
 
-class ConfigTreeRootViewModel : PropertyChangedBase
+[Export]
+[PartCreationPolicy(CreationPolicy.Shared)]
+class ConfigTreeRootViewModel : PropertyChangedBase, IDisposable
 {
+    private readonly IPboManager _pboManager;
+    private readonly ConfigClassItem _configRoot = new();
+
     protected readonly ObservableCollection<ConfigTreeItemViewModel> _rootItems = new();
     protected readonly List<ConfigTreeItemViewModel> _backUpRoots = new();
 
     private readonly object _itemsLock = new();
 
-    public ConfigTreeRootViewModel()
+    [ImportingConstructor]
+    public ConfigTreeRootViewModel(IPboManager pboManager)
     {
+        _pboManager = pboManager;
+
         BindingOperations.EnableCollectionSynchronization(_rootItems, _itemsLock);
 
         ExpandCommand = new RelayCommand<object>((p) =>
@@ -25,6 +34,15 @@ class ConfigTreeRootViewModel : PropertyChangedBase
 
             param.LoadChildren();
         });
+
+        _pboManager.PboLoaded += OnPboLoaded;
+        _pboManager.PboRemoved += OnPboRemoved;
+    }
+
+    public void Dispose()
+    {
+        _pboManager.PboLoaded -= OnPboLoaded;
+        _pboManager.PboRemoved -= OnPboRemoved;
     }
 
     public ObservableCollection<ConfigTreeItemViewModel> RootItems => _rootItems;
@@ -126,7 +144,7 @@ class ConfigTreeRootViewModel : PropertyChangedBase
         return matchCount;
     }
 
-    public void AddItems(IEnumerable<ConfigClassItem> models)
+    private void AddItems(IEnumerable<ConfigClassItem> models)
     {
         foreach (var model in models)
         {
@@ -140,7 +158,7 @@ class ConfigTreeRootViewModel : PropertyChangedBase
 
     public void RemoveItem(ConfigClassItem model)
     {
-        var vm = _backUpRoots.FirstOrDefault(x => x.Id == model.Id);
+        var vm = _backUpRoots.FirstOrDefault(x => x.Name == model.Name);
 
         if (vm != null)
         {
@@ -152,7 +170,7 @@ class ConfigTreeRootViewModel : PropertyChangedBase
         }
     }
 
-    public void Clear()
+    private void Clear()
     {
         lock (_itemsLock)
         {
@@ -211,5 +229,22 @@ class ConfigTreeRootViewModel : PropertyChangedBase
         }
 
         return MatchCount;
+    }
+
+    // TODO: Refactor ConfigTree update in OnPboLoaded and OnPboRemoved
+    private void OnPboLoaded(object sender, PboManagerEventArgs e)
+    {
+        var configClasses = _configRoot.MergePbo(e.File);
+
+        Clear();
+        AddItems(configClasses);
+    }
+
+    private void OnPboRemoved(object sender, PboManagerEventArgs e)
+    {
+        var configClasses = _configRoot.RemovePbo(e.File);
+
+        Clear();
+        AddItems(configClasses);
     }
 }

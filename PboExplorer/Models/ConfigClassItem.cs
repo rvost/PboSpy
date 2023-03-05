@@ -1,4 +1,5 @@
 ﻿using BIS.Core.Config;
+using BIS.PBO;
 using PboExplorer.Interfaces;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -7,22 +8,25 @@ namespace PboExplorer.Models;
 
 public class ConfigClassItem : ITreeItem
 {
+    public const string ROOT = "(root)";
+    
     public ConfigClassItem()
     {
-        Name = "(root)";
-        Id = Guid.Empty;
+        Name = ROOT;
     }
 
     public ConfigClassItem(ConfigClassItem parent, ParamClass entry, PboEntry file)
     {
-        Id = Guid.NewGuid();
         Parent = parent;
         Name = entry.Name;
+        PBO = file.PBO;
         Apply(entry, file);
     }
 
-    public Guid Id { get; }
     public ConfigClassItem Parent { get; }
+
+    // TODO: Refactor
+    public PBO PBO { get; }
 
     public string Name { get; }
 
@@ -115,7 +119,7 @@ public class ConfigClassItem : ITreeItem
         return Parent?.ResolveClassDirectThenDeep(className);
     }
 
-    internal ICollection<ConfigClassItem> MergedView(PboFile pbo)
+    public ICollection<ConfigClassItem> MergePbo(PboFile pbo)
     {
         var paramFiles = new List<(ParamFile, PboEntry)>();
 
@@ -138,6 +142,34 @@ public class ConfigClassItem : ITreeItem
         foreach ((var paramClass, var entry) in paramFiles) // TODO: gracefully sort using CfgPatches
         {
             Apply(paramClass.Root, entry);
+        }
+
+        return ChildrenClasses.Values.OrderBy(c => c.Name).ToList();
+    }
+
+    public ICollection<ConfigClassItem> RemovePbo(PboFile pbo)
+    {
+        var paramFiles = new List<(ParamFile, PboEntry)>();
+
+        IEnumerable<PboEntry> configFiles = pbo.AllEntries
+            .Where(f => f.IsBinaryConfig() && !f.Name.EndsWith(".rvmat", StringComparison.OrdinalIgnoreCase));
+
+        foreach (var file in configFiles)
+        {
+            try
+            {
+                using var stream = file.GetStream();
+                paramFiles.Add((new ParamFile(stream), file));
+            }
+            catch (Exception e)
+            {
+                Trace.TraceWarning("Unable to parse config: {0}", e); // TODO: Log or report error to user
+            }
+        }
+
+        foreach ((var paramClass, var entry) in paramFiles)
+        {
+            Remove(paramClass.Root, entry);
         }
 
         return ChildrenClasses.Values.OrderBy(c => c.Name).ToList();
@@ -173,6 +205,35 @@ public class ConfigClassItem : ITreeItem
                 ChildrenClasses[entry.Name] = null;
             }
             // TODO: Consider ParamExternClass
+        }
+    }
+
+    private void Remove(ParamClass definition, PboEntry file)
+    {
+        if (Definitions.Remove(file))
+        {
+            foreach (var entry in definition.Entries.OfType<ParamClass>())
+            {
+                if (ChildrenClasses.TryGetValue(entry.Name, out var existing))
+                {
+                    existing.Remove(entry, file);
+
+                    if (!existing.ChildrenClasses.Any())
+                    {
+                        ChildrenClasses.Remove(entry.Name);
+                    }
+                }
+            }
+            foreach (var entry in definition.Entries.OfType<ParamValue>())
+            {
+                Properties.Remove(entry.Name);
+            }
+            foreach (var entry in definition.Entries.OfType<ParamArray>())
+            {
+                Properties.Remove(entry.Name);
+            }
+
+            // TODO: Account for ParamDeleteClass
         }
     }
 
