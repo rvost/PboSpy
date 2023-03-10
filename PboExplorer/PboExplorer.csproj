@@ -6,6 +6,7 @@
 		<UseWPF>true</UseWPF>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,7 +31,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Dirkster.TreeLib" Version="1.2.0" />
 		<PackageReference Include="GeminiWpf" Version="1.0.60-beta" />
 		<Using Include="System.ComponentModel.Composition" />
 		<Using Include="Caliburn.Micro" />
@@ -48,6 +48,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Clowd.Squirrel" Version="2.9.42" />
+		<PackageReference Include="Dirkster.TreeLib" Version="1.2.0" />
 		<PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
 		<PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
