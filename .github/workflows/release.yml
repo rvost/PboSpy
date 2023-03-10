@@ -3,10 +3,10 @@ name: "Release"
 on:
   push:
     tags:
-      - "v*"
+      - "*.*.*"
 
 env:
-  PROJECT_PATH: PboExplorer/PboExplorer.csproj
+  PROJECT_PATH: PboSpy.sln
 
 jobs:
   release:
@@ -23,21 +23,35 @@ jobs:
           dotnet-version: 6.0.x
 
       - name: Restore
-        run: dotnet restore ${{ env.PROJECT_PATH }}
+        run: dotnet restore ${{ env.PROJECT_PATH }} --packages packages
 
       - name: Build
         run: >
-          dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore
-          --self-contained=false -r win-x64 -p:PublishSingleFile=true
+          dotnet build ${{ env.PROJECT_PATH }} -c Release -o ".\publish" --no-restore
+      
+      - name: Fetch previous release
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          packages\clowd.squirrel\2.9.42\tools\Squirrel.exe github-down`
+          --repoUrl "https://github.com/rvost/DayzServerTools"
 
       - name: Publish
-        run: >
-          dotnet publish ${{ env.PROJECT_PATH }} -c Release -o Releases --no-build
-          --self-contained=false -r win-x64 -p:PublishSingleFile=true
+        shell: pwsh
+        run: |
+          packages\clowd.squirrel\2.9.42\tools\Squirrel.exe  pack `
+          --framework net6 `
+          --packId "PboSpy" `
+          --packVersion "${{github.ref_name}}" `
+          --packAuthors "rvost" `
+          --packDir ".\publish"
 
       - name: Create release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           draft: true
-          files: Releases/*.exe
+          files: |
+            Releases/RELEASES
+            Releases/*.exe
+            Releases/*.nupkg
