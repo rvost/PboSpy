@@ -1,4 +1,5 @@
 ﻿using Gemini.Modules.PropertyGrid;
+using Microsoft.Extensions.Logging;
 using PboSpy.Interfaces;
 using PboSpy.Modules.ConfigExplorer.Services;
 using PboSpy.Modules.ConfigExplorer.Utils;
@@ -15,7 +16,7 @@ internal class ConfigViewModel : Tool, IConfigExplorer
     private readonly ConfigPreviewManager _previewManager;
     private readonly ITreeItemTransformer<Task<IMetadata>> _metadataTransformer;
     private readonly IPropertyGrid _propertyGrid;
-    private readonly OneTaskProcessor _procesor = new();
+    private readonly OneTaskProcessor _procesor;
     private readonly ConfigTreeRootViewModel _root;
 
     private ConfigTreeItemViewModel _selectedItem;
@@ -108,7 +109,7 @@ internal class ConfigViewModel : Tool, IConfigExplorer
 
     [ImportingConstructor]
     public ConfigViewModel(ConfigTreeRootViewModel configRoot, IPropertyGrid propertyGrid, ConfigPreviewManager previewManager,
-         ITreeItemTransformer<Task<IMetadata>> metadataTransformer)
+         ITreeItemTransformer<Task<IMetadata>> metadataTransformer, ILoggerFactory loggerFactory)
     {
         DisplayName = "Config";
 
@@ -116,6 +117,7 @@ internal class ConfigViewModel : Tool, IConfigExplorer
         _previewManager = previewManager;
         _metadataTransformer = metadataTransformer;
         _propertyGrid = propertyGrid;
+        _procesor = new(loggerFactory);
     }
 
     public async Task OpenPreview(ConfigTreeItemViewModel item)

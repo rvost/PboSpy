@@ -1,4 +1,6 @@
-﻿namespace PboSpy.Modules.ConfigExplorer.Utils;
+﻿using Microsoft.Extensions.Logging;
+
+namespace PboSpy.Modules.ConfigExplorer.Utils;
 
 /// <summary>
 /// Task Scheduler is based on LimitedConcurrencyLevelTaskScheduler from
@@ -143,6 +145,7 @@ public class OneTaskLimitedScheduler : TaskScheduler
 internal class OneTaskProcessor : IDisposable
 {
     #region fields
+    private readonly ILogger<OneTaskProcessor> _logger;
     private readonly OneTaskLimitedScheduler _myTaskScheduler;
     private readonly List<TaskItem> _myTaskList;
     private readonly SemaphoreSlim _Semaphore;
@@ -154,8 +157,9 @@ internal class OneTaskProcessor : IDisposable
     /// <summary>
     /// Class constructor
     /// </summary>
-    public OneTaskProcessor()
+    public OneTaskProcessor(ILoggerFactory loggerFactory)
     {
+        _logger = loggerFactory.CreateLogger<OneTaskProcessor>();
         _myTaskScheduler = new OneTaskLimitedScheduler();
         _myTaskList = new List<TaskItem>();
 
@@ -197,19 +201,23 @@ internal class OneTaskProcessor : IDisposable
                 }
             }
         }
+        // TODO: Improve logging
         catch (AggregateException e)
         {
-            Console.WriteLine("\nAggregateException thrown with the following inner exceptions:");
+            _logger.LogError(e, "AggregateException thrown with the following inner exceptions:");
             // Display information about each exception. 
-            foreach (var v in e.InnerExceptions)
+            foreach (var ex in e.InnerExceptions)
             {
-                if (v is TaskCanceledException)
-                    Console.WriteLine("   TaskCanceledException: Task {0}",
-                                      ((TaskCanceledException)v).Task.Id);
-                else
-                    Console.WriteLine("   Exception: {0}", v.GetType().Name);
+                switch (ex)
+                {
+                    case TaskCanceledException tce:
+                        _logger.LogInformation(tce, "Task canceled {Id}", tce.Task.Id);
+                        break;
+                    default:
+                        _logger.LogError(ex, "Inner Exception");
+                        break;
+                }
             }
-            Console.WriteLine();
         }
         finally
         {

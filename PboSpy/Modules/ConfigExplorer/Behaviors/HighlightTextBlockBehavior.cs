@@ -55,27 +55,19 @@ public static class HighlightTextBlockBehavior
         if (range.Start < 0 || range.End < 0) // Nothing to highlight
             return;
 
-        try
+        // Standard selection background color
+        Color selColor = (range.DarkSkin ? Color.FromArgb(255, 254, 252, 200) : Color.FromArgb(255, 252, 186, 3));
+
+        Brush selectionBackground = new SolidColorBrush(selColor);
+        if (range != null)
         {
-            // Standard selection background color
-            Color selColor = (range.DarkSkin ? Color.FromArgb(255, 254, 252, 200) : Color.FromArgb(255, 252, 186, 3));
-
-            Brush selectionBackground = new SolidColorBrush(selColor);
-            if (range != null)
-            {
-                if (range.SelectionBackground != default(Color))
-                    selectionBackground = new SolidColorBrush(range.SelectionBackground);
-            }
-
-            var txtrangel = new TextRange(txtblock.ContentStart.GetPositionAtOffset(range.Start + 1), 
-                txtblock.ContentStart.GetPositionAtOffset(range.End + 1));
-
-            txtrangel.ApplyPropertyValue(TextElement.BackgroundProperty, selectionBackground);
+            if (range.SelectionBackground != default(Color))
+                selectionBackground = new SolidColorBrush(range.SelectionBackground);
         }
-        catch (Exception exc)
-        {
-            Console.WriteLine(exc.Message);
-            Console.WriteLine(exc.StackTrace);
-        }
+
+        var txtrangel = new TextRange(txtblock.ContentStart.GetPositionAtOffset(range.Start + 1),
+            txtblock.ContentStart.GetPositionAtOffset(range.End + 1));
+
+        txtrangel.ApplyPropertyValue(TextElement.BackgroundProperty, selectionBackground);
     }
 }

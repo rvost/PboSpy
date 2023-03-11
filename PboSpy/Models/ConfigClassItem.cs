@@ -119,7 +119,7 @@ public class ConfigClassItem : ITreeItem
         return Parent?.ResolveClassDirectThenDeep(className);
     }
 
-    public ICollection<ConfigClassItem> MergePbo(PboFile pbo)
+    public ICollection<ConfigClassItem> MergePbo(PboFile pbo, Action<Exception> onError)
     {
         var paramFiles = new List<(ParamFile, PboEntry)>();
 
@@ -135,7 +135,7 @@ public class ConfigClassItem : ITreeItem
             }
             catch (Exception e)
             {
-                Trace.TraceWarning("Unable to parse config: {0}", e); // TODO: Log or report error to user
+                onError?.Invoke(e);
             }
         }
 
@@ -147,7 +147,7 @@ public class ConfigClassItem : ITreeItem
         return ChildrenClasses.Values.OrderBy(c => c.Name).ToList();
     }
 
-    public ICollection<ConfigClassItem> RemovePbo(PboFile pbo)
+    public ICollection<ConfigClassItem> RemovePbo(PboFile pbo, Action<Exception> onError)
     {
         var paramFiles = new List<(ParamFile, PboEntry)>();
 
@@ -163,7 +163,7 @@ public class ConfigClassItem : ITreeItem
             }
             catch (Exception e)
             {
-                Trace.TraceWarning("Unable to parse config: {0}", e); // TODO: Log or report error to user
+                onError?.Invoke(e);
             }
         }
 

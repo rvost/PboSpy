@@ -1,4 +1,5 @@
 ﻿using Gemini.Modules.Output;
+using Microsoft.Extensions.Logging;
 using PboSpy.Models;
 using PboSpy.Modules.ConfigExplorer.ViewModels;
 using PboSpy.Modules.StatusBar;
@@ -12,13 +13,16 @@ internal class ConfigPreviewManager
     private readonly IOutput _output;
     private readonly IShell _shell;
     private readonly IStatusBarManager _statusBar;
+    private readonly ILogger<ConfigPreviewManager> _logger;
 
     [ImportingConstructor]
-    public ConfigPreviewManager(IOutput output, IShell shell, IStatusBarManager statusBar)
+    public ConfigPreviewManager(IOutput output, IShell shell, IStatusBarManager statusBar,
+        ILoggerFactory loggerFactory)
     {
         _output = output;
         _shell = shell;
         _statusBar = statusBar;
+        _logger = loggerFactory.CreateLogger<ConfigPreviewManager>();
     }
 
     public async Task ShowPreviewAsync(ConfigClassItem model)
@@ -50,7 +54,8 @@ internal class ConfigPreviewManager
 
     private void ReportError(string source, Exception ex)
     {
-        _output.AppendLine($"ERROR: \"{ex.Message}\" while opening {source}");
+        _output.AppendLine($"ERROR: \"{ex.Message}\" opening {source}");
         _statusBar.SetTemporaryStatus($"ERROR: {ex.Message}. See output for details.", duration: 3000);
+        _logger.LogError(ex, "Error opening Config Preview for {source}", source);
     }
 }

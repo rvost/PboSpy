@@ -1,4 +1,5 @@
-﻿using PboSpy.Interfaces;
+﻿using Microsoft.Extensions.Logging;
+using PboSpy.Interfaces;
 using PboSpy.Models;
 using PboSpy.Modules.Metadata.Models;
 
@@ -7,6 +8,14 @@ namespace PboSpy.Modules.Metadata;
 [Export(typeof(ITreeItemTransformer<Task<IMetadata>>))]
 internal class MetadataTransformer : ITreeItemTransformer<Task<IMetadata>>
 {
+    private readonly ILogger<MetadataTransformer> _logger;
+
+    [ImportingConstructor]
+    public MetadataTransformer(ILoggerFactory loggerFactory)
+    {
+        _logger = loggerFactory.CreateLogger<MetadataTransformer>();
+    }
+
     public Task<IMetadata> Transform(PboDirectory entry)
         => Task.FromResult<IMetadata>(new PboDirectoryMeatdata(entry));
 
@@ -26,7 +35,10 @@ internal class MetadataTransformer : ITreeItemTransformer<Task<IMetadata>>
                     _ => new PboEntryMetadata(entry),
                 };
             }
-            catch { }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error when creating metadata for PBO entry {entry}", entry);
+            }
             return metadata;
         });
     }
