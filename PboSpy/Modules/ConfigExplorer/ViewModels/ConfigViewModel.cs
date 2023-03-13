@@ -1,6 +1,4 @@
-﻿using Gemini.Modules.PropertyGrid;
-using Microsoft.Extensions.Logging;
-using PboSpy.Interfaces;
+﻿using Microsoft.Extensions.Logging;
 using PboSpy.Modules.ConfigExplorer.Services;
 using PboSpy.Modules.ConfigExplorer.Utils;
 using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
@@ -14,8 +12,7 @@ namespace PboSpy.Modules.ConfigExplorer.ViewModels;
 internal class ConfigViewModel : Tool, IConfigExplorer
 {
     private readonly ConfigPreviewManager _previewManager;
-    private readonly ITreeItemTransformer<Task<IMetadata>> _metadataTransformer;
-    private readonly IPropertyGrid _propertyGrid;
+    private readonly IMetadataInspector _metadataInspector;
     private readonly OneTaskProcessor _procesor;
     private readonly ConfigTreeRootViewModel _root;
 
@@ -108,15 +105,14 @@ internal class ConfigViewModel : Tool, IConfigExplorer
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
-    public ConfigViewModel(ConfigTreeRootViewModel configRoot, IPropertyGrid propertyGrid, ConfigPreviewManager previewManager,
-         ITreeItemTransformer<Task<IMetadata>> metadataTransformer, ILoggerFactory loggerFactory)
+    public ConfigViewModel(ConfigTreeRootViewModel configRoot, ConfigPreviewManager previewManager,
+        IMetadataInspector metadataInspector, ILoggerFactory loggerFactory)
     {
         DisplayName = "Config";
 
         _root = configRoot;
         _previewManager = previewManager;
-        _metadataTransformer = metadataTransformer;
-        _propertyGrid = propertyGrid;
+        _metadataInspector = metadataInspector;
         _procesor = new(loggerFactory);
     }
 
@@ -139,7 +135,7 @@ internal class ConfigViewModel : Tool, IConfigExplorer
         {
             SelectedItem = item;
             // TODO: Encapsulate Model
-            _propertyGrid.SelectedObject = await item.Model.Reduce(_metadataTransformer);
+            await _metadataInspector.DispalyMetadataFor(item.Model);
         }
     }
 

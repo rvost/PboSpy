@@ -1,19 +1,16 @@
-﻿using Gemini.Modules.PropertyGrid;
-using PboSpy.Interfaces;
+﻿using PboSpy.Interfaces;
 
 namespace PboSpy.Modules.Metadata;
 
 [Export(typeof(IModule))]
 public class Module : ModuleBase
 {
-    private readonly IPropertyGrid _propertyGrid;
-    private readonly ITreeItemTransformer<Task<IMetadata>> _metadataTransformer;
+    private readonly IMetadataInspector _metadataInspector;
 
     [ImportingConstructor]
-    public Module(IPropertyGrid propertyGrid, ITreeItemTransformer<Task<IMetadata>> metadataTransformer)
+    public Module(IMetadataInspector metadataInspector)
     {
-        _propertyGrid = propertyGrid;
-        _metadataTransformer = metadataTransformer;
+        _metadataInspector = metadataInspector;
     }
 
     public override void Initialize()
@@ -26,11 +23,11 @@ public class Module : ModuleBase
     {
         if(Shell.ActiveItem is IModelWrapper<ITreeItem> treeItemWrapper)
         {
-            _propertyGrid.SelectedObject = await treeItemWrapper.Model?.Reduce(_metadataTransformer);
+            await _metadataInspector.DispalyMetadataFor(treeItemWrapper.Model);
         }
         else
         {
-            _propertyGrid.SelectedObject = null;
+            _metadataInspector.Clear();
         }
     }
 }

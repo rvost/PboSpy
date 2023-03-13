@@ -3,14 +3,12 @@ using PboSpy.Interfaces;
 using PboSpy.Models;
 using PboSpy.Modules.Metadata.Models;
 
-namespace PboSpy.Modules.Metadata;
+namespace PboSpy.Modules.Metadata.Utils;
 
-[Export(typeof(ITreeItemTransformer<Task<IMetadata>>))]
 internal class MetadataTransformer : ITreeItemTransformer<Task<IMetadata>>
 {
     private readonly ILogger<MetadataTransformer> _logger;
 
-    [ImportingConstructor]
     public MetadataTransformer(ILoggerFactory loggerFactory)
     {
         _logger = loggerFactory.CreateLogger<MetadataTransformer>();

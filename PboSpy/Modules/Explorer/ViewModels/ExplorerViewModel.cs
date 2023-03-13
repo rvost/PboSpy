@@ -1,5 +1,4 @@
-﻿using Gemini.Modules.PropertyGrid;
-using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using PboSpy.Interfaces;
 using PboSpy.Models;
 using PboSpy.Modules.Metadata;
@@ -15,8 +14,7 @@ public class ExplorerViewModel : Tool, IPboExplorer
 {
     private readonly IPboManager _pboManager;
     private readonly IPreviewManager _previewManager;
-    private readonly ITreeItemTransformer<Task<IMetadata>> _metadataTransformer;
-    private readonly IPropertyGrid _propertyGrid;
+    private readonly IMetadataInspector _metadataInspector;
 
     private ITreeItem _selectedItem;
 
@@ -40,13 +38,11 @@ public class ExplorerViewModel : Tool, IPboExplorer
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
-    public ExplorerViewModel(IPboManager pboManager, IPropertyGrid propertyGrid, IPreviewManager previewManager,
-         ITreeItemTransformer<Task<IMetadata>> metadataTransformer)
+    public ExplorerViewModel(IPboManager pboManager, IPreviewManager previewManager, IMetadataInspector metadataInspector)
     {
         _pboManager = pboManager;
         _previewManager = previewManager;
-        _metadataTransformer = metadataTransformer;
-        _propertyGrid = propertyGrid;
+        _metadataInspector = metadataInspector;
 
         DisplayName = "PBO Explorer";
     }
@@ -101,7 +97,7 @@ public class ExplorerViewModel : Tool, IPboExplorer
         if (args.NewValue is ITreeItem item)
         {
             SelectedItem = item;
-            _propertyGrid.SelectedObject = await item.Reduce(_metadataTransformer);
+            await _metadataInspector.DispalyMetadataFor(item);
         }
     }
 
