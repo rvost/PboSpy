@@ -5,6 +5,7 @@ using PboSpy.Modules.Metadata.Utils;
 
 namespace PboSpy.Modules.Metadata.Models;
 
+[DisplayName("Physical Directory")]
 class PhysicalDirectoryMetadata : IMetadata
 {
     [DisplayName("Full Path")]

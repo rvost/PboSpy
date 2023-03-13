@@ -3,6 +3,7 @@ using PboSpy.Models;
 
 namespace PboSpy.Modules.Metadata.Models;
 
+[DisplayName("PAA")]
 class PaaEntryMetadata : PboEntryMetadata
 {
     [Category("PAA")]

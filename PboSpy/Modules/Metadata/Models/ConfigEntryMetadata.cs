@@ -3,6 +3,7 @@ using PboSpy.Models;
 
 namespace PboSpy.Modules.Metadata.Models;
 
+[DisplayName("Config file")]
 class ConfigEntryMetadata : PboEntryMetadata
 {
     [Category("General")]

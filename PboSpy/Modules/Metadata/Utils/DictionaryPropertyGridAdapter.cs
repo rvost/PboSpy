@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.Metadata.Utils;
 
 // https://support.xceed.com/portal/en/community/topic/propertygrid-dictionary-not-displaying-values-using-icustomtypedescriptor
 [RefreshProperties(RefreshProperties.All)]

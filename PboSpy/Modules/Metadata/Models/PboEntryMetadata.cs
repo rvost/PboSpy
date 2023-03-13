@@ -5,15 +5,16 @@ using PboSpy.Modules.Metadata.Utils;
 
 namespace PboSpy.Modules.Metadata.Models;
 
+[DisplayName("PBO Entry")]
 class PboEntryMetadata : IMetadata
 {
     [Category("General")]
-    [DisplayName("PBO file")]
-    public string PboFile { get; set; }
+    [DisplayName("Entry Name")]
+    public string Name { get; set; }
 
     [Category("General")]
-    [DisplayName("Entry Name")]
-    public string EntryName { get; set; }
+    [DisplayName("PBO file")]
+    public string PboFile { get; set; }
 
     [Category("General")]
     [DisplayName("Entry Path")]
@@ -37,7 +38,7 @@ class PboEntryMetadata : IMetadata
     public PboEntryMetadata(PboEntry entry)
     {
         PboFile = entry.PBO.PBOFilePath;
-        EntryName = entry.Entry.FileName;
+        Name = entry.Entry.FileName;
         EntryPath = entry.FullPath;
         Timestamp = PBO.Epoch.AddSeconds(entry.Entry.TimeStamp);
 

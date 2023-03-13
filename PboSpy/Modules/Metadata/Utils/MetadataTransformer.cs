@@ -52,7 +52,7 @@ internal class MetadataTransformer : ITreeItemTransformer<Task<IMetadata>>
     public Task<IMetadata> Transform(ConfigClassItem entry)
     {
         var stringified = entry.Properties.ToDictionary(k => k.Key, k => k.Value.ToString());
-        var adapter = new DictionaryPropertyGridAdapter<string, string>(stringified);
-        return Task.FromResult<IMetadata>(adapter);
+        
+        return Task.FromResult<IMetadata>(new ConfigClassMetadata(stringified, entry.Name));
     }
 }

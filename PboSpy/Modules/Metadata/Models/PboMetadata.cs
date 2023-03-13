@@ -6,8 +6,12 @@ using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 
 namespace PboSpy.Modules.Metadata.Models;
 
+[DisplayName("PBO")]
 class PboMetadata : IMetadata
 {
+    [Browsable(false)]
+    public string Name => System.IO.Path.GetFileName(Path);
+
     [Description("Number of files in PBO")]
     public string Path { get; set; }
 

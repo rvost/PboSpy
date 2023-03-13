@@ -4,6 +4,7 @@ using PboSpy.Models;
 
 namespace PboSpy.Modules.Metadata.Models;
 
+[DisplayName("P3D")]
 class P3dEntryMetadata : PboEntryMetadata
 {
     [Category("P3D")]

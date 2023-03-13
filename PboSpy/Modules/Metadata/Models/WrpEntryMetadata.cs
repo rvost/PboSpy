@@ -5,6 +5,7 @@ using PboSpy.Models;
 
 namespace PboSpy.Modules.Metadata.Models;
 
+[DisplayName("WRP")]
 class WrpEntryMetadata : PboEntryMetadata
 {
     [Category("WRP")]
