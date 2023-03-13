@@ -7,11 +7,11 @@ namespace PboSpy.Modules.Metadata.Models;
 public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
     IMetadata // TODO: Fix this
 {
-    private readonly IDictionary<T, U> dictionary;
+    private readonly IDictionary<T, U> _dictionary;
 
     public DictionaryPropertyGridAdapter(IDictionary<T, U> dictionary)
     {
-        this.dictionary = dictionary;
+        _dictionary = dictionary;
     }
 
     [Browsable(false)]
@@ -19,11 +19,11 @@ public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
     {
         get
         {
-            return dictionary[key];
+            return _dictionary[key];
         }
         set
         {
-            dictionary[key] = value;
+            _dictionary[key] = value;
         }
     }
 
@@ -53,9 +53,9 @@ public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
     public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
     {
         var properties = new List<DictionaryPropertyDescriptor>();
-        foreach (var e in dictionary)
+        foreach (var e in _dictionary)
         {
-            properties.Add(new DictionaryPropertyDescriptor(dictionary, e.Key));
+            properties.Add(new DictionaryPropertyDescriptor(_dictionary, e.Key));
         }
 
         var props = properties.ToArray();
@@ -69,35 +69,35 @@ public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
         => TypeDescriptor.GetEvents(this, true);
 
     PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties()
-        => ((ICustomTypeDescriptor)this).GetProperties(new Attribute[0]);
+        => ((ICustomTypeDescriptor)this).GetProperties(Array.Empty<Attribute>());
 
-    public class DictionaryPropertyDescriptor : PropertyDescriptor
+    private class DictionaryPropertyDescriptor : PropertyDescriptor
     {
-        private readonly IDictionary<T, U> dictionary;
-        private readonly T key;
+        private readonly IDictionary<T, U> _dictionary;
+        private readonly T _key;
 
         internal DictionaryPropertyDescriptor(IDictionary<T, U> dictionary, T key)
             : base(key.ToString(), null)
         {
-            this.dictionary = dictionary;
-            this.key = key;
+            _dictionary = dictionary;
+            _key = key;
         }
 
         public override Type ComponentType => null;
 
         public override bool IsReadOnly => false;
 
-        public override Type PropertyType => dictionary[key].GetType();
+        public override Type PropertyType => _dictionary[_key].GetType();
 
         public override bool CanResetValue(object component) => false;
 
         public override object GetValue(object component)
-            => dictionary[key];
+            => _dictionary[_key];
 
         public override void ResetValue(object component) { }
 
         public override void SetValue(object component, object value)
-            => dictionary[key] = (U)value;
+            => _dictionary[_key] = (U)value;
 
         public override bool ShouldSerializeValue(object component) => false;
     }

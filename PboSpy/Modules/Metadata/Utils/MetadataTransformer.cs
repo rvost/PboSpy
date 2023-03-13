@@ -50,6 +50,9 @@ internal class MetadataTransformer : ITreeItemTransformer<Task<IMetadata>>
         => Task.FromResult<IMetadata>(new PhysicalDirectoryMetadata(entry));
 
     public Task<IMetadata> Transform(ConfigClassItem entry)
-        => Task.FromResult<IMetadata>(new DictionaryPropertyGridAdapter<string, object>(entry.Properties));
-
+    {
+        var stringified = entry.Properties.ToDictionary(k => k.Key, k => k.Value.ToString());
+        var adapter = new DictionaryPropertyGridAdapter<string, string>(stringified);
+        return Task.FromResult<IMetadata>(adapter);
+    }
 }
