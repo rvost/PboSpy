@@ -8,7 +8,9 @@
     <Grid>
         <ListView x:Name="Definitions"
                   VirtualizingPanel.ScrollUnit="Pixel"
-                  VirtualizingPanel.IsVirtualizing="False">
+                  VirtualizingPanel.IsVirtualizing="False"
+                  HorizontalAlignment="Stretch" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
