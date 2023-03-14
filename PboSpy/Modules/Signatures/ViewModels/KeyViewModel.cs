@@ -8,8 +8,7 @@ class KeyViewModel: IDisposable
     private readonly BiKey _biKey;
     private readonly Stream _data;
     
-    public string Authority => _biKey.Authority;
-    public uint Version => _biKey.Version;
+    public string Authority => _biKey.Name;
     public Stream Data => _data;
 
     public KeyViewModel(BiKey biKey)

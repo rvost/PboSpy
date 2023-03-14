@@ -9,6 +9,7 @@ namespace PboSpy.Modules.Signatures.ViewModels;
 
 internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<ExtractBiKeyCommandDefinition>
 {
+    private readonly BiSign _signModel;
     private readonly BiKey _keyModel;
 
     public KeyViewModel Key { get; private set; }
@@ -17,7 +18,8 @@ internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<Ext
     public SignaturePreviewViewModel(FileBase model) : base(model)
     {
         using var stream = model.GetStream();
-        _keyModel = BiKey.ReadFromSignature(stream);
+        _signModel = BiSign.ReadFromStream(stream);
+        _keyModel = BiKey.FromSignature(_signModel);
         Key = new KeyViewModel(_keyModel);
     }
 
@@ -41,7 +43,7 @@ internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<Ext
         var dlg = new SaveFileDialog
         {
             Title = "Extract",
-            FileName = $"{_keyModel.Authority}.bikey",
+            FileName = $"{_keyModel.Name}.bikey",
             Filter = "BiKey|*.bikey"
         };
 

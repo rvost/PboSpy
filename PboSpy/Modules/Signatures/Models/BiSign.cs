@@ -5,8 +5,9 @@ using PboSpy.Modules.Signatures.Utils;
 namespace PboSpy.Modules.Signatures.Models;
 
 // TODO: Use required modifier after update to C# 11 
-public record BiKey
+public record BiSign
 {
+    public BiSignVersion Version { get; init; }
     public string Name { get; init; }
 
     public UInt32 Length { get; init; }
@@ -15,7 +16,13 @@ public record BiKey
 
     public byte[] N { get; init; }
 
-    public static BiKey ReadFromStream(Stream input, bool leaveOpen = false)
+    public byte[] Sig1 { get; init; }
+
+    public byte[] Sig2 { get; init; }
+
+    public byte[] Sig3 { get; init; }
+
+    public static BiSign ReadFromStream(Stream input, bool leaveOpen = false)
     {
         using var reader = new BinaryReader(input, Encoding.UTF8, leaveOpen);
 
@@ -35,15 +42,29 @@ public record BiKey
         {
             throw new InvalidOperationException();
         }
-
+        
         var n = reader.ReadBytes((int)length / 8);
 
-        return new()
-        {
+        reader.ReadUInt32();
+        var sig1 = reader.ReadBytes((int)length / 8);
+
+        var version = (BiSignVersion)reader.ReadUInt32();
+
+        reader.ReadUInt32();
+        var sig2 = reader.ReadBytes((int)length / 8);
+
+        reader.ReadUInt32();
+        var sig3 = reader.ReadBytes((int)length / 8);
+
+        return new() { 
+            Version = version,
             Name = name,
             Length = length,
             Exponent = exponent,
-            N = n
+            N=n,
+            Sig1=sig1,
+            Sig2=sig2,
+            Sig3=sig3
         };
     }
 
@@ -63,16 +84,12 @@ public record BiKey
         writer.Write(Length);
         writer.Write(Exponent);
         writer.Write(N);
-    }
-
-    public static BiKey FromSignature(BiSign signature)
-    {
-        return new()
-        {
-            Name = signature.Name,
-            Length = signature.Length,
-            Exponent = signature.Exponent,
-            N = signature.N.ToArray()
-        };
+        writer.Write(Length/8);
+        writer.Write(Sig1);
+        writer.Write((UInt32)Version);
+        writer.Write(Length / 8);
+        writer.Write(Sig2);
+        writer.Write(Length / 8);
+        writer.Write(Sig3);
     }
 }
