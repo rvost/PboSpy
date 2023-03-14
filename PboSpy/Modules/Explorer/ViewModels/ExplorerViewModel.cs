@@ -4,7 +4,10 @@ using PboSpy.Models;
 using PboSpy.Modules.Metadata;
 using PboSpy.Modules.PboManager;
 using PboSpy.Modules.Preview;
+using System.Collections.Specialized;
+using System.IO;
 using System.Windows;
+using System.Windows.Input;
 
 namespace PboSpy.Modules.Explorer.ViewModels;
 
@@ -101,13 +104,51 @@ public class ExplorerViewModel : Tool, IPboExplorer
         }
     }
 
-    public void OnDrop(DragEventArgs args)
+    public void OnDragOver(DragEventArgs e)
     {
-        if (args.Data.GetDataPresent(DataFormats.FileDrop))
+        // Prevent drop of extracted files
+        // Drop from Explorer has Copy|Move|Link effects
+        // Drop from app has only Copy
+        if (e.Effects == DragDropEffects.Copy)
         {
-            string[] paths = (string[])args.Data.GetData(DataFormats.FileDrop);
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+        }
+    }
+
+    public void OnDrop(DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
             _pboManager.LoadSupportedFiles(paths);
         }
+    }
+
+    public void OnMoveItem(ITreeItem item, FrameworkElement sender, MouseEventArgs e)
+    {
+        if (e.LeftButton == MouseButtonState.Pressed)
+        {
+            if (item is PboEntry entry)
+            {
+                var tempPath = GetTempFilePath(entry);
+                var data = new DataObject();
+                data.SetFileDropList(new StringCollection() { tempPath });
+                DragDrop.DoDragDrop(sender, data, DragDropEffects.Copy);
+            }
+        }
+    }
+
+    private static string GetTempFilePath(PboEntry entry)
+    {
+        string tempFilePath = Path.Combine(Path.GetTempPath(), entry.Name);
+
+        if (!File.Exists(tempFilePath))
+        {
+            entry.Extract(tempFilePath);
+        }
+
+        return tempFilePath;
     }
 }

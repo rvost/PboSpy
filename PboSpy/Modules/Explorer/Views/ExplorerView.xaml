@@ -10,7 +10,8 @@
     <UserControl.Resources>
         <converters:TreeItemToIconConverter x:Key="IconConverter"/>
     </UserControl.Resources>
-    <Grid cal:Message.Attach="[Drop] = [Action OnDrop($eventArgs)]"
+    <Grid cal:Message.Attach="[Drop] = [Action OnDrop($eventArgs)];
+          [DragOver] = [Action OnDragOver($eventArgs)]"
           AllowDrop="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -33,7 +34,8 @@
             <TreeView.ItemContainerStyle>
                 <Style TargetType="TreeViewItem">
                     <Setter Property="cal:Message.Attach" 
-                            Value="[MouseDoubleClick] = [Action OpenPreview($dataContext)]"/>
+                            Value="[MouseDoubleClick] = [Action OpenPreview($dataContext)];
+                            [MouseMove]=[Action OnMoveItem($dataContext, $source, $eventArgs)]"/>
                 </Style>
             </TreeView.ItemContainerStyle>
             
