@@ -12,4 +12,8 @@ internal static class MenuDefinitions
     [Export]
     public static readonly MenuItemDefinition ExtractBiKeyMenuItem = 
         new CommandMenuItemDefinition<ExtractBiKeyCommandDefinition>(KeysMenuGroup, 1);
+
+    [Export]
+    public static readonly MenuItemDefinition SaveBiKeyMenuItem =
+        new CommandMenuItemDefinition<SaveBiKeyCommandDefinition>(KeysMenuGroup, 2);
 }

@@ -16,10 +16,10 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
 
-        <hex:HexEditor FileName="{Binding FilePath}" 
+        <hex:HexEditor Stream="{Binding SignatureStream}"
                        AllowDeleteByte="False"
                        AllowExtend="False"
                        AllowFileDrop="False"

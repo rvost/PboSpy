@@ -6,18 +6,16 @@ namespace PboSpy.Modules.Signatures.ViewModels;
 
 internal class KeyPreviewViewModel : PreviewViewModel
 {
-    public string FileNamePath => _model.FullPath;
     public KeyViewModel Key { get; }
 
-    public KeyPreviewViewModel(FileBase model) : base(model)
+    public KeyPreviewViewModel(FileBase model, KeyViewModel keyViewModel) : base(model)
     {
-        var keyModel = BiKey.ReadFromStream(model.GetStream());
-        Key = new KeyViewModel(keyModel);
+        Key = keyViewModel;
     }
 
     protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
     {
-        if(close)
+        if (close)
         {
             Key.Dispose();
         }
@@ -26,13 +24,9 @@ internal class KeyPreviewViewModel : PreviewViewModel
     }
 
     protected override void CanExecuteCopy(Command command)
-    {
-        command.Enabled = false;
-    }
+        => command.Enabled = false;
 
     protected override Task ExecuteCopy(Command command)
-    {
-        throw new NotImplementedException();
-    }
+        => throw new NotImplementedException();
 
 }

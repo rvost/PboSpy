@@ -7,20 +7,32 @@ using System.IO;
 
 namespace PboSpy.Modules.Signatures.ViewModels;
 
-internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<ExtractBiKeyCommandDefinition>
+internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<ExtractBiKeyCommandDefinition>,
+    ICommandHandler<SaveBiKeyCommandDefinition>
 {
     private readonly BiSign _signModel;
     private readonly BiKey _keyModel;
 
-    public KeyViewModel Key { get; private set; }
-    public string FilePath => _model.FullPath;
+    private KeyViewModel _key;
 
-    public SignaturePreviewViewModel(FileBase model) : base(model)
+    public KeyViewModel Key
     {
-        using var stream = model.GetStream();
-        _signModel = BiSign.ReadFromStream(stream);
+        get => _key;
+        private set
+        {
+            _key = value;
+            NotifyOfPropertyChange(nameof(Key));
+        }
+    }
+
+    public Stream SignatureStream { get; }
+
+    public SignaturePreviewViewModel(FileBase model, BiSign signModel, MemoryStream stream) : base(model)
+    {
+        _signModel = signModel;
         _keyModel = BiKey.FromSignature(_signModel);
-        Key = new KeyViewModel(_keyModel);
+
+        SignatureStream = stream;
     }
 
     protected override void CanExecuteCopy(Command command)
@@ -34,11 +46,18 @@ internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<Ext
     }
 
     void ICommandHandler<ExtractBiKeyCommandDefinition>.Update(Command command)
-    {
-        command.Enabled = true;
-    }
+        => command.Enabled = Key is null;
 
     Task ICommandHandler<ExtractBiKeyCommandDefinition>.Run(Command command)
+    {
+        Key = new KeyViewModel(_keyModel);
+        return Task.CompletedTask;
+    }
+
+    void ICommandHandler<SaveBiKeyCommandDefinition>.Update(Command command)
+        => command.Enabled = Key is not null;
+
+    Task ICommandHandler<SaveBiKeyCommandDefinition>.Run(Command command)
     {
         var dlg = new SaveFileDialog
         {
@@ -54,5 +73,16 @@ internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<Ext
         }
 
         return Task.CompletedTask;
+    }
+
+    protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
+    {
+        if(close)
+        {
+            SignatureStream.Dispose();
+            Key?.Dispose();
+        }
+
+        return base.OnDeactivateAsync(close, cancellationToken);
     }
 }

@@ -14,4 +14,8 @@ internal static class ToolBarDefinitions
     [Export]
     public static ToolBarItemDefinition ExtractBiKeyToolBarItem =
        new CommandToolBarItemDefinition<ExtractBiKeyCommandDefinition>(SignaturesToolBarGroup, 3);
+
+    [Export]
+    public static ToolBarItemDefinition SaveBiKeyToolBarItem =
+       new CommandToolBarItemDefinition<SaveBiKeyCommandDefinition>(SignaturesToolBarGroup, 4);
 }

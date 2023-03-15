@@ -12,5 +12,5 @@ public class ExtractBiKeyCommandDefinition : CommandDefinition
     public override string ToolTip => "Extract .bikey from signature";
 
     public override Uri IconSource
-        => new("pack://application:,,,/PboSpy;component/Resources/Icons/BiKey.png");
+        => new("pack://application:,,,/PboSpy;component/Resources/Icons/ExtractKey.png");
 }
