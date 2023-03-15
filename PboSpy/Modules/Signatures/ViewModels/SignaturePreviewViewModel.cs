@@ -3,7 +3,9 @@ using PboSpy.Models;
 using PboSpy.Modules.Preview.ViewModels;
 using PboSpy.Modules.Signatures.Commands;
 using PboSpy.Modules.Signatures.Models;
+using PboSpy.Modules.Signatures.Utils;
 using System.IO;
+using WpfHexaEditor.Core;
 
 namespace PboSpy.Modules.Signatures.ViewModels;
 
@@ -27,12 +29,15 @@ internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<Ext
 
     public Stream SignatureStream { get; }
 
+    public List<CustomBackgroundBlock> Highlighting { get; }
+
     public SignaturePreviewViewModel(FileBase model, BiSign signModel, MemoryStream stream) : base(model)
     {
         _signModel = signModel;
         _keyModel = BiKey.FromSignature(_signModel);
-
+        
         SignatureStream = stream;
+        Highlighting = _signModel.GetHighlighting();
     }
 
     protected override void CanExecuteCopy(Command command)

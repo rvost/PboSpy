@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PboSpy.Modules.Signatures.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,15 @@ namespace PboSpy.Modules.Signatures.Views
         public SignaturePreviewView()
         {
             InitializeComponent();
+        }
+
+        // TODO: Use beheviour instead
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is SignaturePreviewViewModel vm)
+            {
+                HexEditor.CustomBackgroundBlockItems = vm.Highlighting;
+            }
         }
     }
 }
