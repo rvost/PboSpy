@@ -1,21 +1,26 @@
-﻿using Microsoft.Win32;
+﻿using Gemini.Modules.Shell.Commands;
+using Microsoft.Win32;
 using PboSpy.Models;
 using PboSpy.Modules.Preview.ViewModels;
 using PboSpy.Modules.Signatures.Commands;
 using PboSpy.Modules.Signatures.Models;
 using PboSpy.Modules.Signatures.Utils;
+using PboSpy.Modules.Signatures.Views;
 using System.IO;
 using WpfHexaEditor.Core;
 
 namespace PboSpy.Modules.Signatures.ViewModels;
 
+// TODO: Refactor 
 internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<ExtractBiKeyCommandDefinition>,
+    ICommandHandler<SaveFileCommandDefinition>, ICommandHandler<SaveFileAsCommandDefinition>,
     ICommandHandler<SaveBiKeyCommandDefinition>
 {
     private readonly BiSign _signModel;
     private readonly BiKey _keyModel;
 
     private KeyViewModel _key;
+    private IHexEditorView _view;
 
     public KeyViewModel Key
     {
@@ -27,16 +32,15 @@ internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<Ext
         }
     }
 
-    public Stream SignatureStream { get; }
+    public string FileName => _model.FullPath;
 
     public List<CustomBackgroundBlock> Highlighting { get; }
 
-    public SignaturePreviewViewModel(FileBase model, BiSign signModel, MemoryStream stream) : base(model)
+    public SignaturePreviewViewModel(FileBase model, BiSign signModel) : base(model)
     {
         _signModel = signModel;
         _keyModel = BiKey.FromSignature(_signModel);
-        
-        SignatureStream = stream;
+
         Highlighting = _signModel.GetHighlighting();
     }
 
@@ -80,14 +84,58 @@ internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<Ext
         return Task.CompletedTask;
     }
 
+    void ICommandHandler<SaveFileCommandDefinition>.Update(Command command)
+        => command.Enabled = true;
+
+    Task ICommandHandler<SaveFileCommandDefinition>.Run(Command command)
+    {
+        try
+        {
+            _view.SubmitChanges();
+        }
+        catch (IOException)
+        {
+            //TODO: Log and report error to user
+        }
+        return Task.CompletedTask;
+    }
+
+    void ICommandHandler<SaveFileAsCommandDefinition>.Update(Command command)
+        => command.Enabled = true;
+
+    Task ICommandHandler<SaveFileAsCommandDefinition>.Run(Command command)
+    {
+        try
+        {
+            var dlg = new SaveFileDialog
+            {
+                Title = "Save As",
+                FileName = $"{_model.Name}.bisign",
+                Filter = "BiSign|*.bisign"
+            };
+
+            if (dlg.ShowDialog() == true)
+            {
+                _view.SubmitChanges(dlg.FileName);
+            }
+        }
+        catch (IOException)
+        {
+            //TODO: Log and report error to user
+        }
+        return Task.CompletedTask;
+    }
+
     protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
     {
-        if(close)
+        if (close)
         {
-            SignatureStream.Dispose();
             Key?.Dispose();
         }
 
         return base.OnDeactivateAsync(close, cancellationToken);
     }
+
+    protected override void OnViewLoaded(object view) 
+        => _view = (IHexEditorView)view;
 }

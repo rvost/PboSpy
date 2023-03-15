@@ -18,14 +18,6 @@ internal static class MenuDefinitions
         new(Gemini.Modules.Shell.MenuDefinitions.FileNewCascadeGroup);
 
     [Export]
-    public static readonly ExcludeMenuItemDefinition FileSaveMenuItem =
-       new(Gemini.Modules.Shell.MenuDefinitions.FileSaveMenuItem);
-
-    [Export]
-    public static readonly ExcludeMenuItemDefinition FileSaveAsMenuItem =
-       new(Gemini.Modules.Shell.MenuDefinitions.FileSaveAsMenuItem);
-
-    [Export]
     public static readonly ExcludeMenuItemDefinition FileSaveAllMenuItem =
    new(Gemini.Modules.Shell.MenuDefinitions.FileSaveAllMenuItem);
 
