@@ -1,9 +1,9 @@
-﻿using PboSpy.Helpers;
-using PboSpy.Modules.About;
+﻿using PboSpy.Modules.About;
 using PboSpy.Modules.ConfigExplorer;
 using PboSpy.Modules.Explorer;
 using PboSpy.Properties;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace PboSpy.Modules.Startup;
 
@@ -39,7 +39,7 @@ public class Module : ModuleBase
     {
         _mainWindow.WindowState = Settings.Default.OpenFullscreen ? WindowState.Maximized : WindowState.Normal;
         _mainWindow.Title = "PboSpy";
-        _mainWindow.Icon = new IconService().GetIcon("WindowIcon"); // TODO: Fix this
+        _mainWindow.Icon = new BitmapImage(new("pack://application:,,,/PboSpy;component/Resources/Icons/WindowIcon.png"));
 
         _mainWindow.Shell.ToolBars.Visible = true;
     }

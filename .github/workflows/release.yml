@@ -44,7 +44,9 @@ jobs:
           --packId "PboSpy" `
           --packVersion "${{github.ref_name}}" `
           --packAuthors "rvost" `
-          --packDir ".\publish"
+          --packDir ".\publish" `
+          --icon ".\images\PboSpy.ico" `
+          --splashImage ".\images\SplashScreen.png"
 
       - name: Create release
         uses: "marvinpinto/action-automatic-releases@latest"

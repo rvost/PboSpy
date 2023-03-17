@@ -7,6 +7,7 @@
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ApplicationIcon>Resources\PboSpy.ico</ApplicationIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -70,6 +71,10 @@
 	<ItemGroup>
 		<Resource Include="Resources\Icons\*.svg" />
 		<Resource Include="Resources\Icons\*.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Resources\PboSpy.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
