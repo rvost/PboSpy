@@ -8,28 +8,29 @@
     <Grid>
         <FlowDocumentScrollViewer VerticalScrollBarVisibility="Auto">
             <FlowDocument>
+                <Paragraph>
+                    <Run FontSize="18" FontWeight="SemiBold">PboSpy</Run>
+                    <LineBreak/>
+                    <Hyperlink NavigateUri="https://github.com/rvost/PboSpy" 
+                                   RequestNavigate="OnHyperLinkRequestNavigate">
+                        https://github.com/rvost/PboSpy
+                    </Hyperlink>
+                </Paragraph>
+
                 <Paragraph FontWeight="Bold">
                     Remarks: If your are not the author of the files, you have to ensure that files
                     licence allows you to manipulate them (extract, re-use or edit them). If your
                     are not sure about this, you must get approval from the author of the files.
                 </Paragraph>
 
-                <Paragraph>
-                    PBO Explorer version 0.4
-                </Paragraph>
-
                 <Section>
                     <Paragraph>
-                        <Hyperlink NavigateUri="https://github.com/jetelain/PboExplorer" 
-                                   RequestNavigate="OnHyperLinkRequestNavigate">
-                            https://github.com/jetelain/PboExplorer
-                        </Hyperlink>
-                    </Paragraph>
-                    <Paragraph>
-                         MIT License
+                        MIT License
                     </Paragraph>
                     <Paragraph>
                         Copyright (c) 2021-2022 Julien Etelain (aka GrueArbre)
+                        <LineBreak/>
+                        Copyright (c) 2023 Roman Vostrikov
                     </Paragraph>
                     <Paragraph>
                         Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -55,7 +56,7 @@
                 </Section>
                 <Section>
                     <Paragraph>
-                         Includes a modified version of "ArmA File Format Library"
+                        Includes a modified version of "ArmA File Format Library"
                     </Paragraph>
                     <Paragraph>
                         <Hyperlink NavigateUri="https://github.com/Braini01/bis-file-formats" 

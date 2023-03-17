@@ -38,7 +38,7 @@ public class Module : ModuleBase
     public override void Initialize()
     {
         _mainWindow.WindowState = Settings.Default.OpenFullscreen ? WindowState.Maximized : WindowState.Normal;
-        _mainWindow.Title = "PboExplorer";
+        _mainWindow.Title = "PboSpy";
         _mainWindow.Icon = new IconService().GetIcon("WindowIcon"); // TODO: Fix this
 
         _mainWindow.Shell.ToolBars.Visible = true;
