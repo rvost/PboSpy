@@ -21,7 +21,7 @@ public class OpenFilesCommandHandler : CommandHandlerBase<OpenFilesCommandDefini
         {
             Title = "Load PBO archive",
             DefaultExt = ".pbo",
-            Filter = "PBO File|*.pbo|Preview BI Files|*.paa;*.rvmat;*.bin;*.pac;*.p3d;*.wrp;*.sqm",
+            Filter = "PBO File|*.pbo|Preview BI Files|*.paa;*.rvmat;*.bin;*.pac;*.p3d;*.wrp;*.sqm;*.bisign;*.bikey",
             Multiselect = true
         };
 
