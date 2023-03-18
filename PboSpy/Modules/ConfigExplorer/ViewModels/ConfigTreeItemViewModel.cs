@@ -122,45 +122,22 @@ class ConfigTreeItemViewModel : PropertyChangedBase, IHasDummyChild
     public virtual bool HasDummyChild
         => _children?.Count == 1 && _children[0] == DummyChild;
 
-    ///<summary>
-    /// Convert a Model into a ViewModel using
-    /// a LevelOrderTraversal Algorithm via TreeLib library.
-    ///</summary>
-    /// TODO: Refactor
-    public static ConfigTreeItemViewModel GetViewModelFromModel(ConfigClassItem srcRoot)
+    /// TODO: Use non-recursive implementation
+    public static ConfigTreeItemViewModel GetViewModelFromModel(ConfigClassItem model, ConfigTreeItemViewModel parent = null)
     {
-        if (srcRoot == null)
+        if (model == null)
         {
-            throw new ArgumentNullException(nameof(srcRoot));
-        }
-
-        // TODO: Remove cast
-        var srcItems = TreeLib.BreadthFirst.Traverse.LevelOrder(srcRoot, item => item.Children.Cast<ConfigClassItem>());
-        var IdToVmMap = new Dictionary<string, ConfigTreeItemViewModel>();
-
-        ConfigTreeItemViewModel dstRoot = null;
-
-        foreach (var node in srcItems.Select(i => i.Node))
-        {
-            if (node.Parent.Name == ConfigClassItem.ROOT)
-            {
-                dstRoot = new ConfigTreeItemViewModel(node, null);
-                IdToVmMap.TryAdd(dstRoot.Name, dstRoot);
-            }
-            else
-            {
-                IdToVmMap.TryGetValue(node.Parent.Name, out var vmParent);
-
-                var dstNode = new ConfigTreeItemViewModel(node, vmParent);
-                vmParent.AddChild(dstNode);     // Insert converted ViewModel below ViewModel parent
-                IdToVmMap.TryAdd(dstNode.Name, dstNode);
-            }
+            throw new ArgumentNullException(nameof(model));
         }
         
-        // Destroy temp ID look-up structure
-        IdToVmMap.Clear();
+        var vm = new ConfigTreeItemViewModel(model, parent);
+        
+        model.Children
+            .Cast<ConfigClassItem>() // TODO: Remove cast
+            .Select(child => GetViewModelFromModel(child, vm))
+            .Apply(childVm => vm.AddChild(childVm));
 
-        return dstRoot;
+        return vm;
     }
 
     public int LoadChildren()
