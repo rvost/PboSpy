@@ -1,6 +1,8 @@
-﻿using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Gemini.Modules.Shell.Commands;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using PboSpy.Interfaces;
 using PboSpy.Models;
+using PboSpy.Modules.Explorer.Commands;
 using PboSpy.Modules.Metadata;
 using PboSpy.Modules.PboManager;
 using PboSpy.Modules.Preview;
@@ -13,7 +15,8 @@ namespace PboSpy.Modules.Explorer.ViewModels;
 
 [Export(typeof(IPboExplorer))]
 [PartCreationPolicy(CreationPolicy.Shared)]
-public class ExplorerViewModel : Tool, IPboExplorer
+public class ExplorerViewModel : Tool, IPboExplorer, ICommandHandler<CloseFileCommandDefinition>,
+    ICommandHandler<CloseAllFilesCommandDefinition>
 {
     private readonly IPboManager _pboManager;
     private readonly IPreviewManager _previewManager;
@@ -73,12 +76,6 @@ public class ExplorerViewModel : Tool, IPboExplorer
             _pboManager.Close(itemToClose);
         }
 
-        SelectedItem = null;
-    }
-
-    public void CloseAll()
-    {
-        _pboManager.CloseAll();
         SelectedItem = null;
     }
 
@@ -150,5 +147,24 @@ public class ExplorerViewModel : Tool, IPboExplorer
         }
 
         return tempFilePath;
+    }
+
+    void ICommandHandler<CloseFileCommandDefinition>.Update(Command command) 
+        => command.Enabled = CanCloseSelected;
+
+    Task ICommandHandler<CloseFileCommandDefinition>.Run(Command command)
+    {
+        CloseSelected();
+        return Task.CompletedTask;
+    }
+
+    void ICommandHandler<CloseAllFilesCommandDefinition>.Update(Command command) 
+        => command.Enabled = true;
+
+    Task ICommandHandler<CloseAllFilesCommandDefinition>.Run(Command command)
+    {
+        _pboManager.CloseAll();
+        SelectedItem = null;
+        return Task.CompletedTask;
     }
 }
