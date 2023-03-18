@@ -59,7 +59,6 @@
             <xctk:WatermarkTextBox x:Name="SearchString" Grid.Column="0" Watermark="Search Configuration" 
                                    cal:Message.Attach="[Event TextChanged] = [Action Search($this)]" 
                                    ToolTip="Enter at least 3 chracters"
-                                   IsEnabled="{Binding CanSearch}"
                                    VerticalContentAlignment="Center"/>
 
             <xctk:SplitButton Grid.Column="1"

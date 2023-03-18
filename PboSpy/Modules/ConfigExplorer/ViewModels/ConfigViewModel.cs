@@ -100,8 +100,6 @@ internal class ConfigViewModel : Tool, IConfigExplorer
 
     public ConfigTreeRootViewModel Root => _root;
 
-    public bool CanSearch => Root.BackUpRootsCount > 0;
-
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
