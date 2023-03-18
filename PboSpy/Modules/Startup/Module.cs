@@ -1,7 +1,9 @@
 ﻿using PboSpy.Modules.About;
 using PboSpy.Modules.ConfigExplorer;
 using PboSpy.Modules.Explorer;
+using PboSpy.Modules.PboManager;
 using PboSpy.Properties;
+using System.IO;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -11,6 +13,7 @@ namespace PboSpy.Modules.Startup;
 public class Module : ModuleBase
 {
     private readonly IMainWindow _mainWindow;
+    private readonly IPboManager _pboManager;
 
     public override IEnumerable<IDocument> DefaultDocuments
     {
@@ -30,9 +33,10 @@ public class Module : ModuleBase
     }
 
     [ImportingConstructor]
-    public Module(IMainWindow mainWindow)
+    public Module(IMainWindow mainWindow, IPboManager pboManager)
     {
         _mainWindow = mainWindow;
+        _pboManager = pboManager;
     }
 
     public override void Initialize()
@@ -46,7 +50,26 @@ public class Module : ModuleBase
 
     public override Task PostInitializeAsync()
     {
+        LoadFromArguments();//TODO: Make async
+
         Shell.ActiveLayoutItem = IoC.Get<IPboExplorer>();
         return Task.CompletedTask;
+    }
+
+    private void LoadFromArguments()
+    {
+        var args = Environment.GetCommandLineArgs();
+        if (args.Length > 1)
+        {
+            var paths = args
+                .Skip(1)
+                .Where(str => File.Exists(str) || Directory.Exists(str))
+                .ToList();
+
+            if (paths.Any())
+            {
+                _pboManager.LoadSupportedFiles(paths);
+            }
+        }
     }
 }

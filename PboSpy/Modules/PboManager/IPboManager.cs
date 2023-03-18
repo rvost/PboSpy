@@ -21,6 +21,7 @@ public interface IPboManager
     event EventHandler<PboManagerEventArgs> PboLoaded;
     event EventHandler<PboManagerEventArgs> PboRemoved;
 
+    // TODO: Make async
     void LoadSupportedFiles(IEnumerable<string> fileNames);
     void Close(ITreeSubnode file);
     void CloseAll();
