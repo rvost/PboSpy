@@ -30,7 +30,7 @@ class ConfigTreeRootViewModel : PropertyChangedBase, IDisposable
 
         BindingOperations.EnableCollectionSynchronization(_rootItems, _itemsLock);
 
-        ExpandCommand = new RelayCommand<object>((p) =>
+        ExpandCommand = new RelayCommand((p) =>
         {
             if (p is not ConfigTreeItemViewModel param)
                 return;
