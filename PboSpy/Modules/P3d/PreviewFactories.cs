@@ -13,7 +13,7 @@ internal static class PreviewFactories
     {
         using var stream = entry.GetStream();
         var p3d = StreamHelper.Read<P3D>(stream);
-        
+
         return new P3dPreviewViewModel(entry, p3d);
     }
 }

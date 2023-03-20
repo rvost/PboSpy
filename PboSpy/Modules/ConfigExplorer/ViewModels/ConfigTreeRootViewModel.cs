@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using PboSpy.Models;
-using PboSpy.Modules.ConfigExplorer.Commands;
 using PboSpy.Modules.ConfigExplorer.Utils;
 using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
 using PboSpy.Modules.PboManager;
@@ -226,7 +225,7 @@ class ConfigTreeRootViewModel : PropertyChangedBase, IDisposable
                 MatchCount++;
             }
 
-            node.SetExpand(node.Match == MatchType.SubnodeMatch || node.Match == MatchType.Node_AND_SubnodeMatch);
+            node.SetExpand(node.Match is MatchType.SubnodeMatch or MatchType.Node_AND_SubnodeMatch);
 
             toVisit.Pop();
         }
@@ -248,7 +247,7 @@ class ConfigTreeRootViewModel : PropertyChangedBase, IDisposable
 
     private void OnPboRemoved(object sender, PboManagerEventArgs e)
     {
-        var configClasses = _configRoot.RemovePbo(e.File, 
+        var configClasses = _configRoot.RemovePbo(e.File,
             ex => _logger.LogError(ex, "Exception when removing PBO from config root")
             );
 

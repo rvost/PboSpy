@@ -21,7 +21,7 @@ public class Module : ModuleBase
 
     private async void RefreshPropertyGrid()
     {
-        if(Shell.ActiveItem is IModelWrapper<ITreeItem> treeItemWrapper)
+        if (Shell.ActiveItem is IModelWrapper<ITreeItem> treeItemWrapper)
         {
             await _metadataInspector.DispalyMetadataFor(treeItemWrapper.Model);
         }

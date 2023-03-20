@@ -3,11 +3,11 @@ using System.IO;
 
 namespace PboSpy.Modules.Signatures.ViewModels;
 
-class KeyViewModel: IDisposable
+class KeyViewModel : IDisposable
 {
     private readonly BiKey _biKey;
     private readonly Stream _data;
-    
+
     public string Authority => _biKey.Name;
     public Stream Data => _data;
 

@@ -52,7 +52,7 @@ public class PreviewManager : IPreviewManager
                 );
 
             _statusBar.Reset();
-           
+
             return document;
         }
         catch (Exception ex)

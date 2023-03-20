@@ -5,8 +5,8 @@ namespace PboSpy.Models;
 
 public class PboDirectory : ITreeItem
 {
-    private readonly List<PboDirectory> directories = new List<PboDirectory>();
-    private readonly List<PboEntry> files = new List<PboEntry>();
+    private readonly List<PboDirectory> directories = new();
+    private readonly List<PboEntry> files = new();
     private List<ITreeItem> merged;
 
     public PboDirectory(string name)
@@ -24,10 +24,7 @@ public class PboDirectory : ITreeItem
     {
         get
         {
-            if (merged == null)
-            {
-                merged = directories.OrderBy(d => d.Name).Cast<ITreeItem>().Concat(files.OrderBy(f => f.Name)).ToList();
-            }
+            merged ??= directories.OrderBy(d => d.Name).Cast<ITreeItem>().Concat(files.OrderBy(f => f.Name)).ToList();
             return merged;
         }
     }
@@ -55,7 +52,7 @@ public class PboDirectory : ITreeItem
         return existing;
     }
 
-    public T Reduce<T>(ITreeItemTransformer<T> transformer) 
+    public T Reduce<T>(ITreeItemTransformer<T> transformer)
         => transformer.Transform(this);
 
     internal IEnumerable<PboEntry> AllFiles => directories.SelectMany(d => d.AllFiles).Concat(files);

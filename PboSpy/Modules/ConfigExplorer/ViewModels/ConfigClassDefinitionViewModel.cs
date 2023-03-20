@@ -1,5 +1,5 @@
-﻿using Gemini.Modules.CodeEditor.Views;
-using Gemini.Modules.CodeEditor;
+﻿using Gemini.Modules.CodeEditor;
+using Gemini.Modules.CodeEditor.Views;
 using PboSpy.Models;
 
 namespace PboSpy.Modules.ConfigExplorer.ViewModels;
@@ -7,7 +7,7 @@ namespace PboSpy.Modules.ConfigExplorer.ViewModels;
 class ConfigClassDefinitionViewModel : Screen
 {
     private readonly PboEntry _pboEntry;
-    
+
     private readonly LanguageDefinitionManager _languageDefinitionManager;
     private ICodeEditorView _view;
 

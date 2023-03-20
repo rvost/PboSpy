@@ -20,7 +20,7 @@ public class PreviewFactory
 
     public Document CreatePreview(FileBase entry)
     {
-        if(_factories.TryGetValue(entry.Extension, out var factory))
+        if (_factories.TryGetValue(entry.Extension, out var factory))
         {
             return factory(entry);
         }

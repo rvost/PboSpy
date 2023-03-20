@@ -1,7 +1,7 @@
 ﻿namespace PboSpy.Modules.Explorer.Commands;
 
 [CommandDefinition]
-internal class CloseAllFilesCommandDefinition: CommandDefinition
+internal class CloseAllFilesCommandDefinition : CommandDefinition
 {
     public override string Name => "File.CloseAllFiles";
 

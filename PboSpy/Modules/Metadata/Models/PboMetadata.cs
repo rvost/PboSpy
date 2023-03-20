@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
-using System.IO;
-using PboSpy.Models;
+﻿using PboSpy.Models;
 using PboSpy.Modules.Metadata.Utils;
+using System.ComponentModel;
+using System.IO;
 using Xceed.Wpf.Toolkit.PropertyGrid.Editors;
 
 namespace PboSpy.Modules.Metadata.Models;

@@ -1,6 +1,5 @@
 ﻿using PboSpy.Models;
 using PboSpy.Modules.Preview.ViewModels;
-using PboSpy.Modules.Signatures.Models;
 
 namespace PboSpy.Modules.Signatures.ViewModels;
 

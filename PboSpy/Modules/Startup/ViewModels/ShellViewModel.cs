@@ -36,7 +36,7 @@ public class ShellViewModel : Gemini.Modules.Shell.ViewModels.ShellViewModel
 
             if (Settings.Default.ConfirmExit)
             {
-                result = MessageBox.Show("Are you sure you want to exit?", "Confirm", 
+                result = MessageBox.Show("Are you sure you want to exit?", "Confirm",
                     MessageBoxButton.YesNo, MessageBoxImage.Question);
             }
 

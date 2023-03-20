@@ -52,7 +52,7 @@ internal class MetadataTransformer : ITreeItemTransformer<Task<IMetadata>>
     public Task<IMetadata> Transform(ConfigClassItem entry)
     {
         var stringified = entry.Properties.ToDictionary(k => k.Key, k => k.Value.ToString());
-        
+
         return Task.FromResult<IMetadata>(new ConfigClassMetadata(stringified, entry.Name));
     }
 }

@@ -12,7 +12,7 @@ internal static class PreviewFactories
     {
         using var stream = entry.GetStream();
         var signModel = BiSign.ReadFromStream(stream);
-        
+
         return new SignaturePreviewViewModel(entry, signModel);
     }
 
@@ -23,7 +23,7 @@ internal static class PreviewFactories
         using var stream = entry.GetStream();
         var keyModel = BiKey.ReadFromStream(stream);
         var keyViewModel = new KeyViewModel(keyModel);
-        
+
         return new KeyPreviewViewModel(entry, keyViewModel);
     }
 }

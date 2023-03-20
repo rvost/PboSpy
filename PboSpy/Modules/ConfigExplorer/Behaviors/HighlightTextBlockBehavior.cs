@@ -1,8 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows;
-using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
 
 namespace PboSpy.Modules.ConfigExplorer.Behaviors;
 
@@ -29,18 +29,16 @@ public static class HighlightTextBlockBehavior
 
     private static void OnRangeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        var txtblock = d as TextBlock;
-
-        if (txtblock == null)
+        if (d is not TextBlock txtblock)
             return;
 
         var range = GetRange(d);  // Get the bound Range value to do highlighting
 
         // Standard background is transparent
-        SolidColorBrush normalBackGround = new SolidColorBrush(Color.FromArgb(00, 00, 00, 00));
+        var normalBackGround = new SolidColorBrush(Color.FromArgb(00, 00, 00, 00));
         if (range != null)
         {
-            if (range.NormalBackground != default(Color))
+            if (range.NormalBackground != default)
                 normalBackGround = new SolidColorBrush(range.NormalBackground);
         }
 
@@ -61,7 +59,7 @@ public static class HighlightTextBlockBehavior
         Brush selectionBackground = new SolidColorBrush(selColor);
         if (range != null)
         {
-            if (range.SelectionBackground != default(Color))
+            if (range.SelectionBackground != default)
                 selectionBackground = new SolidColorBrush(range.SelectionBackground);
         }
 

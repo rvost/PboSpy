@@ -1,6 +1,6 @@
-﻿using System.IO;
-using BIS.PBO;
+﻿using BIS.PBO;
 using PboSpy.Interfaces;
+using System.IO;
 
 namespace PboSpy.Models;
 public class PboEntry : FileBase, ITreeItem
@@ -36,13 +36,9 @@ public class PboEntry : FileBase, ITreeItem
 
     internal void Extract(string fileName)
     {
-        using (var stream = File.Create(fileName))
-        {
-            using (var source = Entry.OpenRead())
-            {
-                source.CopyTo(stream);
-            }
-        }
+        using var stream = File.Create(fileName);
+        using var source = Entry.OpenRead();
+        source.CopyTo(stream);
     }
 
     public override bool Equals(object obj)

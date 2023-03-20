@@ -1,15 +1,13 @@
 ﻿using BIS.Core.Config;
 using BIS.PBO;
 using PboSpy.Interfaces;
-using System.ComponentModel;
-using System.Diagnostics;
 
 namespace PboSpy.Models;
 
 public class ConfigClassItem : ITreeItem
 {
     public const string ROOT = "(root)";
-    
+
     public ConfigClassItem()
     {
         Name = ROOT;
@@ -45,8 +43,6 @@ public class ConfigClassItem : ITreeItem
             return GetAllChildren().OrderBy(c => c.Name, StringComparer.OrdinalIgnoreCase).ToList();
         }
     }
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     private IEnumerable<ITreeItem> GetAllChildren()
     {
@@ -90,7 +86,7 @@ public class ConfigClassItem : ITreeItem
         var resolved = Parent.ResolveClassDirectThenDeep(BaseClassName);
         if (resolved == this)
         {
-            return null; // FIXME !
+            return null; // TODO: FIXME !
         }
         return resolved;
     }

@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using PboSpy.Modules.Signatures.Utils;
+using System.IO;
 using System.Text;
-using PboSpy.Modules.Signatures.Utils;
 
 namespace PboSpy.Modules.Signatures.Models;
 

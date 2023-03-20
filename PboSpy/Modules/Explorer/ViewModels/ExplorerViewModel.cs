@@ -149,7 +149,7 @@ public class ExplorerViewModel : Tool, IPboExplorer, ICommandHandler<CloseFileCo
         return tempFilePath;
     }
 
-    void ICommandHandler<CloseFileCommandDefinition>.Update(Command command) 
+    void ICommandHandler<CloseFileCommandDefinition>.Update(Command command)
         => command.Enabled = CanCloseSelected;
 
     Task ICommandHandler<CloseFileCommandDefinition>.Run(Command command)
@@ -158,7 +158,7 @@ public class ExplorerViewModel : Tool, IPboExplorer, ICommandHandler<CloseFileCo
         return Task.CompletedTask;
     }
 
-    void ICommandHandler<CloseAllFilesCommandDefinition>.Update(Command command) 
+    void ICommandHandler<CloseAllFilesCommandDefinition>.Update(Command command)
         => command.Enabled = true;
 
     Task ICommandHandler<CloseAllFilesCommandDefinition>.Run(Command command)

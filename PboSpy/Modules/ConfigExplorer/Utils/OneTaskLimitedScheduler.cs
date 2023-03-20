@@ -18,7 +18,7 @@ public class OneTaskLimitedScheduler : TaskScheduler
     [ThreadStatic]
     private static bool _currentThreadIsProcessingItems;
     /// <summary>The list of tasks to be executed.</summary>
-    private readonly LinkedList<Task> _tasks = new LinkedList<Task>(); // protected by lock(_tasks)
+    private readonly LinkedList<Task> _tasks = new(); // protected by lock(_tasks)
     /// <summary>The maximum concurrency level allowed by this scheduler.</summary>
     private readonly int _maxDegreeOfParallelism;
     /// <summary>Whether the scheduler is currently processing work items.</summary>

@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using PboSpy.Modules.Signatures.Utils;
+using System.IO;
 using System.Text;
-using PboSpy.Modules.Signatures.Utils;
 
 namespace PboSpy.Modules.Signatures.Models;
 
@@ -42,7 +42,7 @@ public record BiSign
         {
             throw new InvalidOperationException();
         }
-        
+
         var n = reader.ReadBytes((int)length / 8);
 
         reader.ReadUInt32();
@@ -56,15 +56,16 @@ public record BiSign
         reader.ReadUInt32();
         var sig3 = reader.ReadBytes((int)length / 8);
 
-        return new() { 
+        return new()
+        {
             Version = version,
             Name = name,
             Length = length,
             Exponent = exponent,
-            N=n,
-            Sig1=sig1,
-            Sig2=sig2,
-            Sig3=sig3
+            N = n,
+            Sig1 = sig1,
+            Sig2 = sig2,
+            Sig3 = sig3
         };
     }
 
@@ -84,7 +85,7 @@ public record BiSign
         writer.Write(Length);
         writer.Write(Exponent);
         writer.Write(N);
-        writer.Write(Length/8);
+        writer.Write(Length / 8);
         writer.Write(Sig1);
         writer.Write((UInt32)Version);
         writer.Write(Length / 8);

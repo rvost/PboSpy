@@ -1,7 +1,6 @@
-﻿namespace PboSpy.Modules.Metadata
-{
-    public interface IMetadata
-    {
+﻿namespace PboSpy.Modules.Metadata;
 
-    }
+public interface IMetadata
+{
+
 }

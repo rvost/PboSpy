@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using PboSpy.Models;
+﻿using PboSpy.Models;
+using System.ComponentModel;
 
 namespace PboSpy.Modules.Metadata.Models;
 

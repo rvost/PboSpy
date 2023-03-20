@@ -13,7 +13,7 @@ class ConfigTreeItemViewModel : PropertyChangedBase, IHasDummyChild
     private readonly List<ConfigTreeItemViewModel> _backUpNodes = new();
     private readonly ObservableCollection<ConfigTreeItemViewModel> _children = new();
 
-    private readonly object _itemsLock = new object();
+    private readonly object _itemsLock = new();
 
     private bool _isExpanded = false;
     private MatchType _match = MatchType.NoMatch;
@@ -129,9 +129,9 @@ class ConfigTreeItemViewModel : PropertyChangedBase, IHasDummyChild
         {
             throw new ArgumentNullException(nameof(model));
         }
-        
+
         var vm = new ConfigTreeItemViewModel(model, parent);
-        
+
         model.Children
             .Cast<ConfigClassItem>() // TODO: Remove cast
             .Select(child => GetViewModelFromModel(child, vm))

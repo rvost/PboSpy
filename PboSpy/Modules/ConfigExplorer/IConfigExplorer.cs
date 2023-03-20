@@ -1,5 +1,5 @@
 ﻿namespace PboSpy.Modules.ConfigExplorer;
 
-public interface IConfigExplorer: ITool
+public interface IConfigExplorer : ITool
 {
 }

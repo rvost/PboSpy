@@ -44,7 +44,7 @@ public class SingleFileBootstrapper : Gemini.AppBootstrapper
     protected override void BindServices(CompositionBatch batch)
     {
         batch.AddExportedValue<ILoggerFactory>(_loggerfactory);
-        
+
         base.BindServices(batch);
     }
 

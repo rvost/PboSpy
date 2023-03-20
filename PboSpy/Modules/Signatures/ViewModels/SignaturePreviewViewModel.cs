@@ -136,6 +136,6 @@ internal class SignaturePreviewViewModel : PreviewViewModel, ICommandHandler<Ext
         return base.OnDeactivateAsync(close, cancellationToken);
     }
 
-    protected override void OnViewLoaded(object view) 
+    protected override void OnViewLoaded(object view)
         => _view = (IHexEditorView)view;
 }

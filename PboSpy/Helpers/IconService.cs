@@ -1,37 +1,35 @@
-﻿using System.Windows;
+﻿using SharpVectors.Converters;
+using SharpVectors.Renderers.Wpf;
+using System.Windows;
 using System.Windows.Media;
 
-using SharpVectors.Converters;
-using SharpVectors.Renderers.Wpf;
+namespace PboSpy.Helpers;
 
-namespace PboSpy.Helpers
+interface IIconService
 {
-    interface IIconService
-    {
-        ImageSource GetIcon(string iconKey);
-    }
-    internal class IconService : IIconService
-    {
-        private readonly Dictionary<string, ImageSource> _cache = new();
+    ImageSource GetIcon(string iconKey);
+}
+internal class IconService : IIconService
+{
+    private readonly Dictionary<string, ImageSource> _cache = new();
 
-        public ImageSource GetIcon(string iconKey)
+    public ImageSource GetIcon(string iconKey)
+    {
+        if (!_cache.TryGetValue(iconKey, out var imageSource))
         {
-            if (!_cache.TryGetValue(iconKey, out var imageSource))
-            {
-                var uri = GetUriFromKey(iconKey);
-                var resourceStream = Application.GetResourceStream(uri);
+            var uri = GetUriFromKey(iconKey);
+            var resourceStream = Application.GetResourceStream(uri);
 
-                var reader = new FileSvgReader(new WpfDrawingSettings { TextAsGeometry = false, IncludeRuntime = true });
-                var drawing = reader.Read(resourceStream.Stream);
+            var reader = new FileSvgReader(new WpfDrawingSettings { TextAsGeometry = false, IncludeRuntime = true });
+            var drawing = reader.Read(resourceStream.Stream);
 
-                imageSource = new DrawingImage(drawing);
-                _cache[iconKey] = imageSource;
-            }
-
-            return imageSource;
+            imageSource = new DrawingImage(drawing);
+            _cache[iconKey] = imageSource;
         }
 
-        private Uri GetUriFromKey(string iconKey)
-            => new($"/Resources/Icons/{iconKey}.svg", UriKind.Relative);
+        return imageSource;
     }
+
+    private static Uri GetUriFromKey(string iconKey)
+        => new($"/Resources/Icons/{iconKey}.svg", UriKind.Relative);
 }

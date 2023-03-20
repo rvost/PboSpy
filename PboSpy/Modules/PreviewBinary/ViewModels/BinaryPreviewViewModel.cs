@@ -10,13 +10,13 @@ internal class BinaryPreviewViewModel : PreviewViewModel
 
     public BinaryPreviewViewModel(FileBase model) : base(model)
     {
-        Data =  model.GetStream();
+        Data = model.GetStream();
     }
 
     protected override void CanExecuteCopy(Command command)
         => command.Enabled = false;
 
-    protected override Task ExecuteCopy(Command command) 
+    protected override Task ExecuteCopy(Command command)
         => throw new NotImplementedException();
 
     protected override Task OnDeactivateAsync(bool close, CancellationToken cancellationToken)
