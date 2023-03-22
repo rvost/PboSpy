@@ -17,14 +17,17 @@ internal class CsvPreviewViewModel : PreviewViewModel, ICommandHandler<ExtractAs
 
     protected override void CanExecuteCopy(Command command)
     {
-        command.Enabled = false;
+        command.Enabled = true;
     }
 
-    protected override Task ExecuteCopy(Command command)
+    protected override async Task ExecuteCopy(Command command)
     {
-        throw new NotImplementedException();
+        using var r = new StreamReader(_model.GetStream());
+        var text = await r.ReadToEndAsync();
+        Clipboard.SetText(text, TextDataFormat.CommaSeparatedValue);
     }
 
+    // TODO: Remove duplication with TextPreviewViewModel
     void ICommandHandler<ExtractAsTextCommandDefinition>.Update(Command command)
         => command.Enabled = true;
 
