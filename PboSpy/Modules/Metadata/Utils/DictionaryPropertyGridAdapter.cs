@@ -4,8 +4,7 @@ namespace PboSpy.Modules.Metadata.Utils;
 
 // https://support.xceed.com/portal/en/community/topic/propertygrid-dictionary-not-displaying-values-using-icustomtypedescriptor
 [RefreshProperties(RefreshProperties.All)]
-public class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor,
-    IMetadata // TODO: Fix this
+class DictionaryPropertyGridAdapter<T, U> : ICustomTypeDescriptor
 {
     private readonly IDictionary<T, U> _dictionary;
 

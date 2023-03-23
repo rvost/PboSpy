@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace PboSpy.Modules.Metadata.Models;
 
 [DisplayName("Config Class")]
-class ConfigClassMetadata : DictionaryPropertyGridAdapter<string, string>
+class ConfigClassMetadata : DictionaryPropertyGridAdapter<string, string>, IMetadata
 {
     public string Name { get; set; }
 
