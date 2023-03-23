@@ -113,13 +113,13 @@ public class ExplorerViewModel : Tool, IPboExplorer, ICommandHandler<CloseFileCo
         }
     }
 
-    public void OnDrop(DragEventArgs e)
+    public async Task OnDrop(DragEventArgs e)
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-            _pboManager.LoadSupportedFiles(paths);
+            await _pboManager.LoadSupportedFiles(paths);
         }
     }
 

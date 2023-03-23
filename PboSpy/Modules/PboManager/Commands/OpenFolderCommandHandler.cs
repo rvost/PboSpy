@@ -13,7 +13,7 @@ public class OpenFolderCommandHandler : CommandHandlerBase<OpenFolderCommandDefi
         _explorer = explorer;
     }
 
-    public override Task Run(Command command)
+    public override async Task Run(Command command)
     {
         var dialog = new CommonOpenFileDialog
         {
@@ -23,9 +23,7 @@ public class OpenFolderCommandHandler : CommandHandlerBase<OpenFolderCommandDefi
 
         if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
         {
-            _explorer.LoadSupportedFiles(dialog.FileNames);
+            await _explorer.LoadSupportedFiles(dialog.FileNames);
         }
-
-        return Task.CompletedTask;
     }
 }

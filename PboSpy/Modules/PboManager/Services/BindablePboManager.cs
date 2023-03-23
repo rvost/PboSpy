@@ -20,23 +20,12 @@ class BindablePboManager : IPboManager
         FileTree = new BindableCollection<ITreeItem>();
     }
 
-    public void LoadSupportedFiles(IEnumerable<string> paths)
+    public async Task LoadSupportedFiles(IEnumerable<string> paths)
     {
-        // Split folders and files
-        var lookup = paths
-            .Select(path => Path.GetFullPath(path))
-            .ToLookup(path => File.GetAttributes(path).HasFlag(FileAttributes.Directory));
+        var res = await Task.Run(() => paths.Select(x => IsDirectory(x) ? LoadDirectory(x, null) : LoadFile(x, null)))
+            .ConfigureAwait(false);
 
-        // Load folders
-        lookup[true]
-            .Select(path => LoadDirectory(path, null))
-            .Apply(dir => FileTree.Add(dir));
-
-        // Load files
-        lookup[false]
-            .Select(path => LoadFile(path, null))
-            .Apply(file => FileTree.Add(file));
-
+        res.Apply(item => FileTree.Add(item));
     }
 
     // TODO: Remove recursion
@@ -119,4 +108,7 @@ class BindablePboManager : IPboManager
         return Directory.EnumerateFiles(arg, "*.*", SearchOption.TopDirectoryOnly)
             .Where(path => _supportedExtensions.Contains(Path.GetExtension(path)));
     }
+
+    private static bool IsDirectory(string path)
+        => File.GetAttributes(path).HasFlag(FileAttributes.Directory);
 }

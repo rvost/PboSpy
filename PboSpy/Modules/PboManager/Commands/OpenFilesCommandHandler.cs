@@ -15,7 +15,7 @@ public class OpenFilesCommandHandler : CommandHandlerBase<OpenFilesCommandDefini
         _explorer = explorer;
     }
 
-    public override Task Run(Command command)
+    public override async Task Run(Command command)
     {
         var dlg = new OpenFileDialog
         {
@@ -27,9 +27,8 @@ public class OpenFilesCommandHandler : CommandHandlerBase<OpenFilesCommandDefini
 
         if (dlg.ShowDialog() == true)
         {
-            _explorer.LoadSupportedFiles(dlg.FileNames);
+            await _explorer.LoadSupportedFiles(dlg.FileNames);
         }
 
-        return Task.CompletedTask;
     }
 }

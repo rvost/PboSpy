@@ -48,15 +48,14 @@ public class Module : ModuleBase
         _mainWindow.Shell.ToolBars.Visible = true;
     }
 
-    public override Task PostInitializeAsync()
+    public override async Task PostInitializeAsync()
     {
-        LoadFromArguments();//TODO: Make async
+        await LoadFromArguments();
 
         Shell.ActiveLayoutItem = IoC.Get<IPboExplorer>();
-        return Task.CompletedTask;
     }
 
-    private void LoadFromArguments()
+    private async Task LoadFromArguments()
     {
         var args = Environment.GetCommandLineArgs();
         if (args.Length > 1)
@@ -68,7 +67,7 @@ public class Module : ModuleBase
 
             if (paths.Any())
             {
-                _pboManager.LoadSupportedFiles(paths);
+                await _pboManager.LoadSupportedFiles(paths);
             }
         }
     }
