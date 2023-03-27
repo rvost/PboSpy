@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:cal="http://caliburnmicro.com"
-             xmlns:converters="clr-namespace:PboSpy.Converters"
+             xmlns:converters="clr-namespace:PboSpy.Modules.Explorer.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -20,9 +20,9 @@
         
         <!--TODO: Remove buttons and actions-->
         <ToolBar Background="AliceBlue">
-            <Button x:Name="ExtractSelectedPbo" Content="{StaticResource ExtractPBOIcon}" 
-                    ToolTip="Extract selected PBO"/>
-            <Separator/>
+            <Button x:Name="ExtractSelectedPbo" ToolTip="Extract selected PBO">
+                <Image Source="pack://application:,,,/PboSpy;component/Resources/Icons/ExtractPBO.png"/>
+            </Button>
         </ToolBar>
 
         <TreeView Grid.Row="1" x:Name="Items" VirtualizingStackPanel.VirtualizationMode="Recycling"

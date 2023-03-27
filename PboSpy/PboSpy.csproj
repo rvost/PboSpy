@@ -21,7 +21,6 @@
 	<ItemGroup>
 		<Compile Remove="Views\**" />
 		<EmbeddedResource Remove="Views\**" />
-		<None Remove="Resources\Icons\*.svg" />
 		<None Remove="Resources\Icons\*.png" />
 		<None Remove="Views\**" />
 		<Page Remove="Views\**" />
@@ -51,7 +50,6 @@
 	<ItemGroup>
 		<PackageReference Include="Clowd.Squirrel" Version="2.9.42" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-		<PackageReference Include="SharpVectors.Wpf" Version="1.8.1" />
 		<PackageReference Include="Serilog" Version="2.12.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
@@ -68,7 +66,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Resources\Icons\*.svg" />
 		<Resource Include="Resources\Icons\*.png" />
 	</ItemGroup>
 
