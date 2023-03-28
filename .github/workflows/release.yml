@@ -7,6 +7,7 @@ on:
 
 env:
   PROJECT_PATH: PboSpy.sln
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/nuget-packages
 
 jobs:
   release:
@@ -21,9 +22,17 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
+      
+      - name: NuGet cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.NUGET_PACKAGES }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
       - name: Restore
-        run: dotnet restore ${{ env.PROJECT_PATH }} --packages packages
+        run: dotnet restore ${{ env.PROJECT_PATH }}
 
       - name: Build
         run: >
@@ -33,13 +42,13 @@ jobs:
         continue-on-error: true
         shell: pwsh
         run: |
-          packages\clowd.squirrel\2.9.42\tools\Squirrel.exe github-down `
+          ${{ env.NUGET_PACKAGES }}\clowd.squirrel\2.9.42\tools\Squirrel.exe github-down `
           --repoUrl "https://github.com/rvost/PboSpy"
 
       - name: Publish
         shell: pwsh
         run: |
-          packages\clowd.squirrel\2.9.42\tools\Squirrel.exe  pack `
+          ${{ env.NUGET_PACKAGES }}\clowd.squirrel\2.9.42\tools\Squirrel.exe  pack `
           --framework net6 `
           --packId "PboSpy" `
           --packVersion "${{github.ref_name}}" `
