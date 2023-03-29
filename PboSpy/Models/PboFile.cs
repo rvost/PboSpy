@@ -4,15 +4,15 @@ using System.IO;
 
 namespace PboSpy.Models;
 
-public class PboFile : ITreeSubnode
+public class PboFile : ITreeItem, IPersistentItem
 {
     private readonly PBO pbo;
-    private readonly PboDirectory root;
+    private readonly PboDirectory root;// TODO: Refactor
 
     public PboFile(PBO pbo, ITreeItem parent = null)
     {
         this.pbo = pbo;
-        root = GenerateRoot(pbo);
+        root = GenerateRoot(pbo, this);
         Parent = parent;
     }
 
@@ -21,11 +21,12 @@ public class PboFile : ITreeSubnode
     public string Name => pbo.FileName;
 
     public ICollection<ITreeItem> Children => root.Children;
+    
     public ITreeItem Parent { get; }
 
-    private static PboDirectory GenerateRoot(PBO pbo)
+    private static PboDirectory GenerateRoot(PBO pbo, ITreeItem parentPbo)
     {
-        var root = new PboDirectory(null);
+        var root = new PboDirectory("", parentPbo);
         foreach (var entry in pbo.Files)
         {
             var parent = Path.GetDirectoryName(entry.FileName).Trim('/', '\\');
@@ -40,7 +41,7 @@ public class PboFile : ITreeSubnode
         }
         return root;
     }
-
+    
     private static PboDirectory GetDirectory(PboDirectory root, string directory)
     {
         var parent = Path.GetDirectoryName(directory).Trim('/', '\\');
@@ -49,16 +50,6 @@ public class PboFile : ITreeSubnode
             return root.GetOrAddDirectory(directory);
         }
         return GetDirectory(root, parent).GetOrAddDirectory(Path.GetFileName(directory));
-    }
-
-    internal static PboDirectory MergedView(IEnumerable<PboFile> files)
-    {
-        var masterRoot = new PboDirectory(null);
-        foreach (var entry in files.SelectMany(f => f.AllEntries))
-        {
-            GetDirectory(masterRoot, Path.GetDirectoryName(entry.FullPath).Trim('/', '\\')).AddEntry(entry);
-        }
-        return masterRoot;
     }
 
     internal void Extract(string fileName)

@@ -9,12 +9,14 @@ public class PboDirectory : ITreeItem
     private readonly List<PboEntry> files = new();
     private List<ITreeItem> merged;
 
-    public PboDirectory(string name)
+    public PboDirectory(string name, ITreeItem parent)
     {
         Name = name;
+        Parent = parent;
     }
 
     public string Name { get; }
+    public ITreeItem Parent { get; }
 
     public double DataSize => files.Sum(f => f.Entry.DiskSize) + directories.Sum(f => f.DataSize);
 
@@ -31,7 +33,7 @@ public class PboDirectory : ITreeItem
 
     internal void AddEntry(PBO pbo, IPBOFileEntry entry)
     {
-        AddEntry(new PboEntry(pbo, entry));
+        AddEntry(new PboEntry(pbo, entry, this));
     }
 
     internal void AddEntry(PboEntry entry)
@@ -45,7 +47,7 @@ public class PboDirectory : ITreeItem
         var existing = directories.FirstOrDefault(d => string.Equals(d.Name, childName));
         if (existing == null)
         {
-            existing = new PboDirectory(childName);
+            existing = new PboDirectory(childName, this);
             directories.Add(existing);
             merged = null;
         }

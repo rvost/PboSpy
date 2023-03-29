@@ -29,9 +29,9 @@ class BindablePboManager : IPboManager
     }
 
     // TODO: Remove recursion
-    public void Close(ITreeSubnode file)
+    public void Close(IPersistentItem file)
     {
-        var childrenToClose = file.Children?.OfType<ITreeSubnode>().ToList() ?? new();
+        var childrenToClose = file.Children?.OfType<IPersistentItem>().ToList() ?? new();
         childrenToClose.Apply(child => Close(child));
 
         if (file.Parent is null)
@@ -52,7 +52,7 @@ class BindablePboManager : IPboManager
     // TODO: Remove recursion
     public void CloseAll()
     {
-        var toClose = FileTree.OfType<ITreeSubnode>().ToList() ?? new();
+        var toClose = FileTree.OfType<IPersistentItem>().ToList() ?? new();
         toClose.Apply(item => Close(item));
     }
 

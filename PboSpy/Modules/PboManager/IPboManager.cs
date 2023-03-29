@@ -22,6 +22,6 @@ public interface IPboManager
     event EventHandler<PboManagerEventArgs> PboRemoved;
 
     Task LoadSupportedFiles(IEnumerable<string> fileNames);
-    void Close(ITreeSubnode file);
+    void Close(IPersistentItem file);
     void CloseAll();
 }

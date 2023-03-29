@@ -39,7 +39,7 @@ public class ExplorerViewModel : Tool, IPboExplorer, ICommandHandler<CloseFileCo
     }
     public bool CanExtractSelectedPbo => SelectedItem is PboFile;
 
-    public bool CanCloseSelected => SelectedItem is ITreeSubnode;
+    public bool CanCloseSelected => SelectedItem is IPersistentItem;
 
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
@@ -71,7 +71,7 @@ public class ExplorerViewModel : Tool, IPboExplorer, ICommandHandler<CloseFileCo
 
     public void CloseSelected()
     {
-        if (SelectedItem is ITreeSubnode itemToClose)
+        if (SelectedItem is IPersistentItem itemToClose)
         {
             _pboManager.Close(itemToClose);
         }

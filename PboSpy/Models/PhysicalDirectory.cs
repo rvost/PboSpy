@@ -2,7 +2,7 @@
 
 namespace PboSpy.Models;
 
-public class PhysicalDirectory : ITreeSubnode
+public class PhysicalDirectory : ITreeItem, IPersistentItem
 {
     private readonly BindableCollection<ITreeItem> files = new();
 

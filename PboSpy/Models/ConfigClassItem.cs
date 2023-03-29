@@ -22,6 +22,8 @@ public class ConfigClassItem : ITreeItem
     }
 
     public ConfigClassItem Parent { get; }
+    
+    ITreeItem ITreeItem.Parent => (ITreeItem)Parent;
 
     // TODO: Refactor
     public PBO PBO { get; }

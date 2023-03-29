@@ -3,7 +3,7 @@ using System.IO;
 
 namespace PboSpy.Models;
 
-public class PhysicalFile : FileBase, ITreeSubnode
+public class PhysicalFile : FileBase, ITreeItem, IPersistentItem
 {
     public PhysicalFile(string fullPath, ITreeItem parent = null)
     {

@@ -7,12 +7,13 @@ public class PboEntry : FileBase, ITreeItem
 {
     private readonly PBO pbo;
 
-    public PboEntry(PBO pbo, IPBOFileEntry entry)
+    public PboEntry(PBO pbo, IPBOFileEntry entry, ITreeItem parent)
     {
         this.pbo = pbo;
         Name = Path.GetFileName(entry.FileName);
         Extension = Path.GetExtension(entry.FileName).ToLowerInvariant();
         Entry = entry;
+        Parent = parent;
     }
 
     public PBO PBO => pbo;
@@ -28,6 +29,8 @@ public class PboEntry : FileBase, ITreeItem
     public override string FullPath => pbo.Prefix + "\\" + Entry.FileName;
 
     public override int DataSize => Entry.Size;
+
+    public ITreeItem Parent { get; }
 
     public override Stream GetStream()
     {
