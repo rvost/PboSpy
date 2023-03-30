@@ -1,9 +1,10 @@
 ﻿using PboSpy.Models;
+using PboSpy.Modules.Metadata;
 using PboSpy.Modules.Metadata.Utils;
 using System.ComponentModel;
 using System.IO;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.Explorer.Metadata;
 
 [DisplayName("Physical File")]
 class PhysicalFileMetadata : IMetadata

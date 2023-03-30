@@ -1,7 +1,8 @@
 ﻿using PboSpy.Models;
+using PboSpy.Modules.Pbo.Metadata;
 using System.ComponentModel;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.BinaryConfig.Metadata;
 
 [DisplayName("Config file")]
 class ConfigEntryMetadata : PboEntryMetadata
@@ -10,7 +11,7 @@ class ConfigEntryMetadata : PboEntryMetadata
     public string Format { get; set; }
     public ConfigEntryMetadata(PboEntry entry) : base(entry)
     {
-        entry.GetDetectConfigAsText(out bool wasBinary);
+        entry.GetDetectConfigAsText(out var wasBinary);
         Format = wasBinary ? "Binarized" : "Text";
     }
 }

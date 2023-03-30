@@ -1,11 +1,12 @@
 ﻿using PboSpy.Models;
+using PboSpy.Modules.Metadata;
 using PboSpy.Modules.Metadata.Utils;
 using System.ComponentModel;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.Pbo.Metadata;
 
 [DisplayName("PBO Directory")]
-class PboDirectoryMeatdata : IMetadata
+class PboDirectoryMetadata : IMetadata
 {
     public string Name { get; set; }
 
@@ -16,7 +17,7 @@ class PboDirectoryMeatdata : IMetadata
     [Description("Actual size in PBO file")]
     public string SizeInPbo { get; set; }
 
-    public PboDirectoryMeatdata(PboDirectory directory)
+    public PboDirectoryMetadata(PboDirectory directory)
     {
         Name = directory.Name;
         Size = Formatters.FormatSize(directory.UncompressedSize);

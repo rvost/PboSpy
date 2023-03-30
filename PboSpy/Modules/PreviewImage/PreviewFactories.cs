@@ -15,12 +15,4 @@ internal static class PreviewFactories
             BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
         return new ImagePreviewViewModel(entry, image);
     }
-
-    [Export("FilePreviewFactory")]
-    [ExportMetadata("Extensions", new[] { ".paa", ".pac" })]
-    public static Document PreviewPAA(FileBase entry)
-    {
-        var image = entry.GetPaaAsBitmapSource();
-        return new ImagePreviewViewModel(entry, image);
-    }
 }

@@ -1,7 +1,8 @@
 ﻿using PboSpy.Models;
+using PboSpy.Modules.Pbo.Metadata;
 using System.ComponentModel;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.Paa.Metadata;
 
 [DisplayName("PAA")]
 class PaaEntryMetadata : PboEntryMetadata

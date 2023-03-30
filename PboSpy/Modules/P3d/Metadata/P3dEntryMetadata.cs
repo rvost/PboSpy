@@ -1,8 +1,9 @@
 ﻿using BIS.Core.Streams;
 using PboSpy.Models;
+using PboSpy.Modules.Pbo.Metadata;
 using System.ComponentModel;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.P3d.Metadata;
 
 [DisplayName("P3D")]
 class P3dEntryMetadata : PboEntryMetadata

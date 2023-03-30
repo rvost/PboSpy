@@ -1,9 +1,10 @@
 ﻿using BIS.Core.Streams;
 using BIS.WRP;
 using PboSpy.Models;
+using PboSpy.Modules.Pbo.Metadata;
 using System.ComponentModel;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.Wrp.Metadata;
 
 [DisplayName("WRP")]
 class WrpEntryMetadata : PboEntryMetadata

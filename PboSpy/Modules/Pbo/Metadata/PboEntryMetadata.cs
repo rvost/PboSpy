@@ -1,10 +1,12 @@
 ﻿using BIS.PBO;
 using PboSpy.Models;
+using PboSpy.Modules.Metadata;
 using PboSpy.Modules.Metadata.Utils;
 using System.ComponentModel;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.Pbo.Metadata;
 
+// TODO: Remove inheritance hierarchy
 [DisplayName("PBO Entry")]
 class PboEntryMetadata : IMetadata
 {

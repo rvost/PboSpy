@@ -1,7 +1,8 @@
-﻿using PboSpy.Modules.Metadata.Utils;
+﻿using PboSpy.Modules.Metadata;
+using PboSpy.Modules.Metadata.Utils;
 using System.ComponentModel;
 
-namespace PboSpy.Modules.Metadata.Models;
+namespace PboSpy.Modules.ConfigExplorer.Metadata;
 
 [DisplayName("Config Class")]
 class ConfigClassMetadata : DictionaryPropertyGridAdapter<string, string>, IMetadata

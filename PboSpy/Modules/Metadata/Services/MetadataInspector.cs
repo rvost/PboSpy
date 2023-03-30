@@ -1,7 +1,6 @@
 ﻿using Gemini.Modules.PropertyGrid;
 using Microsoft.Extensions.Logging;
 using PboSpy.Interfaces;
-using PboSpy.Modules.Metadata.Utils;
 
 namespace PboSpy.Modules.Metadata.Services;
 
@@ -9,18 +8,43 @@ namespace PboSpy.Modules.Metadata.Services;
 internal class MetadataInspector : IMetadataInspector
 {
     private readonly IPropertyGrid _propertyGrid;
-    private readonly MetadataTransformer _metadataTransformer;
+    private readonly IMetadataHandler _handlerChain;
+    private readonly ILogger _logger;
 
     [ImportingConstructor]
-    public MetadataInspector(IPropertyGrid propertyGrid, ILoggerFactory loggerFactory)
+    public MetadataInspector([ImportMany(typeof(IMetadataHandler))] IEnumerable<Lazy<IMetadataHandler>> handlers,
+        IPropertyGrid propertyGrid, ILoggerFactory loggerFactory)
     {
+        _handlerChain = BuildHandlerChain(handlers.Select(o => o.Value));
         _propertyGrid = propertyGrid;
-        _metadataTransformer = new MetadataTransformer(loggerFactory);
+        _logger = loggerFactory.CreateLogger<MetadataInspector>();
     }
 
     public void Clear()
         => _propertyGrid.SelectedObject = null;
 
     public async Task DispalyMetadataFor(ITreeItem item)
-        => _propertyGrid.SelectedObject = await item?.Reduce(_metadataTransformer);
+    {
+        try
+        {
+            _propertyGrid.SelectedObject = await Task.Run(() => _handlerChain.Handle(item, new()));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error displaying metadata for {Item}", item);
+        }
+    }
+
+    private static IMetadataHandler BuildHandlerChain(IEnumerable<IMetadataHandler> handlers)
+    {
+        IMetadataHandler chain = new CatchAllMetadataHandler();
+
+        foreach (var handler in handlers)
+        {
+            handler.Next = chain;
+            chain = handler;
+        }
+
+        return chain;
+    }
 }
