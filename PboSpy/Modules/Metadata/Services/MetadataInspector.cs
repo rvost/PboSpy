@@ -12,10 +12,10 @@ internal class MetadataInspector : IMetadataInspector
     private readonly ILogger _logger;
 
     [ImportingConstructor]
-    public MetadataInspector([ImportMany(typeof(IMetadataHandler))] IEnumerable<Lazy<IMetadataHandler>> handlers,
+    public MetadataInspector([ImportMany(typeof(IMetadataHandler))] IEnumerable<Lazy<IMetadataHandler>> handlerExports,
         IPropertyGrid propertyGrid, ILoggerFactory loggerFactory)
     {
-        _handlerChain = BuildHandlerChain(handlers.Select(o => o.Value));
+        _handlerChain = BuildHandlerChain(handlerExports);
         _propertyGrid = propertyGrid;
         _logger = loggerFactory.CreateLogger<MetadataInspector>();
     }
@@ -35,10 +35,13 @@ internal class MetadataInspector : IMetadataInspector
         }
     }
 
-    private static IMetadataHandler BuildHandlerChain(IEnumerable<IMetadataHandler> handlers)
+    private static IMetadataHandler BuildHandlerChain(IEnumerable<Lazy<IMetadataHandler>> exports)
     {
-        IMetadataHandler chain = new CatchAllMetadataHandler();
+        var handlers = exports
+            .Select(o => o.Value)
+            .OrderBy(h => (int)h.Priority);
 
+        IMetadataHandler chain = new CatchAllMetadataHandler();
         foreach (var handler in handlers)
         {
             handler.Next = chain;
