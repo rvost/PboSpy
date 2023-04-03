@@ -21,12 +21,4 @@ internal static class PreviewFactories
             return new BinaryPreviewViewModel(entry);
         }
     }
-
-    [Export("FilePreviewFactory")]
-    [ExportMetadata("Extensions", new[] { ".rvmat", ".sqm" })]
-    public static Document PreviewDetectConfig(FileBase entry)
-    {
-        var text = entry.GetDetectConfigAsText(out _);
-        return new TextPreviewViewModel(entry, text);
-    }
 }
