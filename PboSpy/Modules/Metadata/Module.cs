@@ -1,4 +1,4 @@
-﻿using PboSpy.Interfaces;
+﻿using PboSpy.Modules.Preview.ViewModels;
 
 namespace PboSpy.Modules.Metadata;
 
@@ -21,9 +21,9 @@ public class Module : ModuleBase
 
     private async void RefreshPropertyGrid()
     {
-        if (Shell.ActiveItem is IModelWrapper<ITreeItem> treeItemWrapper)
+        if (Shell.ActiveItem is PreviewViewModel preview)
         {
-            await _metadataInspector.DispalyMetadataFor(treeItemWrapper.Model);
+            await _metadataInspector.DispalyMetadataFor(preview.Model);
         }
         else
         {

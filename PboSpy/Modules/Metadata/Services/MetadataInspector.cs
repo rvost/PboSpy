@@ -23,7 +23,7 @@ internal class MetadataInspector : IMetadataInspector
     public void Clear()
         => _propertyGrid.SelectedObject = null;
 
-    public async Task DispalyMetadataFor(ITreeItem item)
+    public async Task DispalyMetadataFor(object item)
     {
         try
         {
