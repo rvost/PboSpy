@@ -1,11 +1,12 @@
 ﻿using BIS.Core.Config;
 using BIS.PBO;
 using PboSpy.Interfaces;
+using PboSpy.Models;
 using PboSpy.Modules.ConfigExplorer.Utils;
 
-namespace PboSpy.Models;
+namespace PboSpy.Modules.ConfigExplorer.Models;
 
-public class ConfigClassItem : ITreeItem
+public class ConfigClassItem
 {
     public const string ROOT = "(root)";
 
@@ -23,8 +24,6 @@ public class ConfigClassItem : ITreeItem
     }
 
     public ConfigClassItem Parent { get; }
-    
-    ITreeItem ITreeItem.Parent => (ITreeItem)Parent;
 
     // TODO: Refactor
     public PBO PBO { get; }
@@ -39,7 +38,7 @@ public class ConfigClassItem : ITreeItem
 
     public Dictionary<PboEntry, ParamClass> Definitions { get; } = new();
 
-    public ICollection<ITreeItem> Children
+    public ICollection<ConfigClassItem> Children
     {
         get
         {
@@ -47,9 +46,9 @@ public class ConfigClassItem : ITreeItem
         }
     }
 
-    private IEnumerable<ITreeItem> GetAllChildren()
+    private IEnumerable<ConfigClassItem> GetAllChildren()
     {
-        return Merged(d => d.ChildrenClasses).Values.Cast<ITreeItem>();
+        return Merged(d => d.ChildrenClasses).Values;
     }
 
     public IEnumerable<KeyValuePair<string, object>> GetAllProperties()
@@ -235,7 +234,4 @@ public class ConfigClassItem : ITreeItem
             // TODO: Account for ParamDeleteClass
         }
     }
-
-    public T Reduce<T>(ITreeItemTransformer<T> transformer)
-        => transformer.Transform(this);
 }

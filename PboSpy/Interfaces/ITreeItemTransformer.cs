@@ -9,5 +9,4 @@ public interface ITreeItemTransformer<T>
     T Transform(PboFile entry);
     T Transform(PhysicalFile entry);
     T Transform(PhysicalDirectory entry);
-    T Transform(ConfigClassItem entry);
 }

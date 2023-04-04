@@ -1,13 +1,10 @@
-﻿using PboSpy.Interfaces;
-using PboSpy.Models;
+﻿using PboSpy.Modules.ConfigExplorer.Models;
 
 namespace PboSpy.Modules.ConfigExplorer.ViewModels;
 
-class ConfigClassViewModel : Document, IModelWrapper<ITreeItem>
+class ConfigClassViewModel : Document
 {
     private readonly ConfigClassItem _model;
-
-    public ITreeItem Model => _model;
 
     public ICollection<ConfigClassDefinitionViewModel> Definitions { get; }
 

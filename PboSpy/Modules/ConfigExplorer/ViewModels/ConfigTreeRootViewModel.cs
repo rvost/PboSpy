@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using PboSpy.Models;
+using PboSpy.Modules.ConfigExplorer.Models;
 using PboSpy.Modules.ConfigExplorer.Utils;
 using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
 using PboSpy.Modules.PboManager;

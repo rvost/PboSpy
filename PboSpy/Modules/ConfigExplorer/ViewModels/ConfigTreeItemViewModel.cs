@@ -1,4 +1,4 @@
-﻿using PboSpy.Models;
+﻿using PboSpy.Modules.ConfigExplorer.Models;
 using PboSpy.Modules.ConfigExplorer.Utils;
 using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
 using System.Windows.Data;
@@ -133,7 +133,6 @@ class ConfigTreeItemViewModel : PropertyChangedBase, IHasDummyChild
         var vm = new ConfigTreeItemViewModel(model, parent);
 
         model.Children
-            .Cast<ConfigClassItem>() // TODO: Remove cast
             .Select(child => GetViewModelFromModel(child, vm))
             .Apply(childVm => vm.AddChild(childVm));
 

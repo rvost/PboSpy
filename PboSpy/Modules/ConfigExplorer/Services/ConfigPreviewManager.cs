@@ -1,6 +1,6 @@
 ﻿using Gemini.Modules.Output;
 using Microsoft.Extensions.Logging;
-using PboSpy.Models;
+using PboSpy.Modules.ConfigExplorer.Models;
 using PboSpy.Modules.ConfigExplorer.ViewModels;
 using PboSpy.Modules.StatusBar;
 using System.Windows.Input;

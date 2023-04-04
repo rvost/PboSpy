@@ -1,4 +1,4 @@
-﻿using PboSpy.Models;
+﻿using PboSpy.Modules.ConfigExplorer.Models;
 using PboSpy.Modules.Metadata;
 
 namespace PboSpy.Modules.ConfigExplorer.Metadata;
