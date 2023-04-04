@@ -7,6 +7,4 @@ public interface ITreeItem
     ITreeItem Parent { get; }
     
     ICollection<ITreeItem> Children { get; }
-
-    T Reduce<T>(ITreeItemTransformer<T> transformer);
 }

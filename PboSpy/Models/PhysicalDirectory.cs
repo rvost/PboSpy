@@ -23,7 +23,4 @@ public class PhysicalDirectory : ITreeItem, IPersistentItem
     }
 
     public ITreeItem Parent { get; }
-
-    public T Reduce<T>(ITreeItemTransformer<T> transformer)
-        => transformer.Transform(this);
 }

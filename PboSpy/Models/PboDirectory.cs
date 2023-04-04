@@ -54,8 +54,5 @@ public class PboDirectory : ITreeItem
         return existing;
     }
 
-    public T Reduce<T>(ITreeItemTransformer<T> transformer)
-        => transformer.Transform(this);
-
     internal IEnumerable<PboEntry> AllFiles => directories.SelectMany(d => d.AllFiles).Concat(files);
 }

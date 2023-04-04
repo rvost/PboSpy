@@ -54,7 +54,4 @@ public class PboEntry : FileBase, ITreeItem
     {
         return HashCode.Combine(FullPath);
     }
-
-    public T Reduce<T>(ITreeItemTransformer<T> transformer)
-        => transformer.Transform(this);
 }

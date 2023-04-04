@@ -28,7 +28,4 @@ public class PhysicalFile : FileBase, ITreeItem, IPersistentItem
     {
         return File.OpenRead(FullPath);
     }
-
-    public T Reduce<T>(ITreeItemTransformer<T> transformer)
-        => transformer.Transform(this);
 }

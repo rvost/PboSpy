@@ -58,7 +58,4 @@ public class PboFile : ITreeItem, IPersistentItem
     }
 
     internal IEnumerable<PboEntry> AllEntries => root.AllFiles;
-
-    public T Reduce<T>(ITreeItemTransformer<T> transformer)
-        => transformer.Transform(this);
 }
