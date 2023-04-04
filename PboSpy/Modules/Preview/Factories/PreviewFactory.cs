@@ -1,4 +1,5 @@
 ﻿using PboSpy.Models;
+using PboSpy.Modules.Preview.Utils;
 using PboSpy.Modules.Preview.ViewModels;
 using PreviewFunc = System.Func<PboSpy.Models.FileBase, Gemini.Framework.Document>;
 

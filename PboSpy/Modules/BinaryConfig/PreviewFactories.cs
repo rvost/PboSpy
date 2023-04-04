@@ -1,4 +1,5 @@
 ﻿using PboSpy.Models;
+using PboSpy.Modules.BinaryConfig.Utils;
 using PboSpy.Modules.Preview.ViewModels;
 
 namespace PboSpy.Modules.BinaryConfig;

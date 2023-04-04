@@ -1,5 +1,6 @@
 ﻿using PboSpy.Models;
 using PboSpy.Modules.Preview.ViewModels;
+using PboSpy.Modules.PreviewBinary.Utils;
 using PboSpy.Modules.PreviewBinary.ViewModels;
 
 namespace PboSpy.Modules.PreviewBinary;
