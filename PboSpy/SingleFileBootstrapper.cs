@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Serilog;
 using System.ComponentModel.Composition.Hosting;
+using System.ComponentModel.Composition.ReflectionModel;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
@@ -66,5 +68,16 @@ public class SingleFileBootstrapper : Gemini.AppBootstrapper
         _logger.LogCritical(e.Exception, "Unhandled exception");
 
         base.OnUnhandledException(sender, e);
+    }
+
+    protected override void PopulateAssemblySource()
+    {
+        string executableDirectoryPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+        var geminiCatalog = new DirectoryCatalog(executableDirectoryPath, "Gemini*.dll");
+        AssemblySource.Instance.AddRange(
+            geminiCatalog.Parts
+                .Select(part => ReflectionModelServices.GetPartType(part).Value.Assembly)
+                .Where(assembly => !AssemblySource.Instance.Contains(assembly)));
     }
 }
