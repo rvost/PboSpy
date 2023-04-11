@@ -10,8 +10,8 @@ public class PboEntry : FileBase, ITreeItem
     public PboEntry(PBO pbo, IPBOFileEntry entry, ITreeItem parent)
     {
         this.pbo = pbo;
-        Name = Path.GetFileName(entry.FileName);
-        Extension = Path.GetExtension(entry.FileName).ToLowerInvariant();
+        Name = System.IO.Path.GetFileName(entry.FileName);
+        Extension = System.IO.Path.GetExtension(entry.FileName).ToLowerInvariant();
         Entry = entry;
         Parent = parent;
     }
@@ -22,6 +22,8 @@ public class PboEntry : FileBase, ITreeItem
 
     public override string Name { get; }
 
+    public string Path => FullPath;
+
     public override string Extension { get; }
 
     public ICollection<ITreeItem> Children => null;
@@ -30,7 +32,7 @@ public class PboEntry : FileBase, ITreeItem
 
     public override int DataSize => Entry.Size;
 
-    public ITreeItem Parent { get; }
+    public ITreeItem Parent { get; set; }
 
     public override Stream GetStream()
     {

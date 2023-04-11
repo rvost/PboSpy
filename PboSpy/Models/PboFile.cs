@@ -20,16 +20,18 @@ public class PboFile : ITreeItem, IPersistentItem
 
     public string Name => pbo.FileName;
 
+    public string Path => System.IO.Path.GetFullPath(pbo.PBOFilePath);
+
     public ICollection<ITreeItem> Children => root.Children;
     
-    public ITreeItem Parent { get; }
+    public ITreeItem Parent { get; set; }
 
     private static PboDirectory GenerateRoot(PBO pbo, ITreeItem parentPbo)
     {
         var root = new PboDirectory("", parentPbo);
         foreach (var entry in pbo.Files)
         {
-            var parent = Path.GetDirectoryName(entry.FileName).Trim('/', '\\');
+            var parent = System.IO.Path.GetDirectoryName(entry.FileName).Trim('/', '\\');
             if (string.IsNullOrEmpty(parent))
             {
                 root.AddEntry(pbo, entry);
@@ -44,12 +46,12 @@ public class PboFile : ITreeItem, IPersistentItem
     
     private static PboDirectory GetDirectory(PboDirectory root, string directory)
     {
-        var parent = Path.GetDirectoryName(directory).Trim('/', '\\');
+        var parent = System.IO.Path.GetDirectoryName(directory).Trim('/', '\\');
         if (string.IsNullOrEmpty(parent))
         {
             return root.GetOrAddDirectory(directory);
         }
-        return GetDirectory(root, parent).GetOrAddDirectory(Path.GetFileName(directory));
+        return GetDirectory(root, parent).GetOrAddDirectory(System.IO.Path.GetFileName(directory));
     }
 
     internal void Extract(string fileName)

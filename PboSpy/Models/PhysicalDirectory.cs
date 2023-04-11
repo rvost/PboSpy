@@ -7,6 +7,7 @@ public class PhysicalDirectory : ITreeItem, IPersistentItem
     private readonly BindableCollection<ITreeItem> files = new();
 
     public string Name { get; }
+    public string Path => FullPath;
 
     public PhysicalDirectory(string name, string fullPath, ITreeItem parent = null)
     {
@@ -22,5 +23,5 @@ public class PhysicalDirectory : ITreeItem, IPersistentItem
         get { return files; }
     }
 
-    public ITreeItem Parent { get; }
+    public ITreeItem Parent { get; set; }
 }

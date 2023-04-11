@@ -16,7 +16,8 @@ public class PboDirectory : ITreeItem
     }
 
     public string Name { get; }
-    public ITreeItem Parent { get; }
+    public string Path => $"{Parent.Path}\\{Name}";
+    public ITreeItem Parent { get; set; }
 
     public double DataSize => files.Sum(f => f.Entry.DiskSize) + directories.Sum(f => f.DataSize);
 
