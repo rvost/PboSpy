@@ -1,6 +1,4 @@
-﻿using BIS.PBO;
-using PboSpy.Interfaces;
-using PboSpy.Models;
+﻿using PboSpy.Interfaces;
 using System.Data;
 using System.IO;
 
@@ -10,20 +8,36 @@ namespace PboSpy.Modules.FileManager.Services;
 [PartCreationPolicy(CreationPolicy.Shared)]
 class FileManager : IFileManager
 {
+    private IFileLoader _loaderChain;
     public ICollection<ITreeItem> FileTree { get; }
 
     public event EventHandler<FileManagerEventArgs> FileLoaded;
     public event EventHandler<FileManagerEventArgs> FileRemoved;
 
-    public FileManager()
+    [ImportingConstructor]
+    public FileManager([ImportMany(typeof(IFileLoader))] IEnumerable<Lazy<IFileLoader>> loaderEports)
     {
+        _loaderChain = BuildLoaderChain(loaderEports);
         FileTree = new BindableCollection<ITreeItem>();
     }
 
     public async Task LoadSupportedFiles(IEnumerable<string> paths)
     {
-        var res = await Task.Run(() => paths.Select(x => IsDirectory(x) ? LoadDirectory(x, null) : LoadFile(x, null)))
-            .ConfigureAwait(false);
+        var res = await Task.Run(() =>
+        {
+            var flat = ExpandPaths(paths)
+            .Select(Path.GetFullPath)
+            .Select(path => _loaderChain.Load(path))
+            .Where(x => x != null)
+            .ToList();
+
+            foreach (var item in flat.OfType<IPersistentItem>())
+            {
+                OnFileLoaded(item);
+            }
+
+            return ToHierarchy(flat);
+        }).ConfigureAwait(false);
 
         res.Apply(item => FileTree.Add(item));
     }
@@ -56,51 +70,68 @@ class FileManager : IFileManager
         toClose.Apply(item => Close(item));
     }
 
-    private ITreeItem LoadFile(string path, ITreeItem parent)
-    {
-        IPersistentItem file = IsPboFile(path) ? new PboFile(new PBO(path, false), parent)
-            : new PhysicalFile(Path.GetFullPath(path), parent);
-        OnFileLoaded(file);
-        return file;
-    }
-
-    private PhysicalDirectory LoadDirectory(string path, ITreeItem parent)
-    {
-        var dirInfo = new DirectoryInfo(path);
-
-        var dir = new PhysicalDirectory(dirInfo.Name, dirInfo.FullName, parent);
-
-        dirInfo.EnumerateDirectories()
-            .Select(inf => LoadDirectory(inf.FullName, dir))
-            .Apply(d => dir.Children.Add(d));
-
-        GetSupportedFiles(dirInfo.FullName)
-            .Select(file => LoadFile(file, dir))
-            .Apply(file => dir.Children.Add(file));
-
-        OnFileLoaded(dir);
-
-        return dir;
-    }
-
-    private static bool IsPboFile(string path)
-        => string.Equals(Path.GetExtension(path), ".pbo", StringComparison.OrdinalIgnoreCase);
-
-    private static IEnumerable<string> GetSupportedFiles(string arg)
-    {
-        HashSet<string> _supportedExtensions = new() { ".pbo", ".paa", ".rvmat", ".bin",
-        ".pac", ".p3d", ".wrp", ".sqm", ".bisign", ".bikey", ".cpp", ".hpp" };
-
-        return Directory.EnumerateFiles(arg, "*.*", SearchOption.TopDirectoryOnly)
-            .Where(path => _supportedExtensions.Contains(Path.GetExtension(path)));
-    }
-
     private static bool IsDirectory(string path)
         => File.GetAttributes(path).HasFlag(FileAttributes.Directory);
 
-    private void OnFileLoaded(IPersistentItem file) 
+    private void OnFileLoaded(IPersistentItem file)
         => FileLoaded?.Invoke(this, new(file));
 
     private void OnFileRemoved(IPersistentItem file)
         => FileRemoved?.Invoke(this, new(file));
+
+    private static IFileLoader BuildLoaderChain(IEnumerable<Lazy<IFileLoader>> exports)
+    {
+        var supportedExtensions = new string[] { ".pbo", ".paa", ".rvmat", ".bin",
+        ".pac", ".p3d", ".wrp", ".sqm", ".bisign", ".bikey", ".cpp", ".hpp" }; // TODO: Make configurable
+
+        var loaders = exports.Select(o => o.Value);
+        var stack = new Stack<IFileLoader>(loaders);
+        stack.Push(new PhysicalFileLoader(supportedExtensions));
+        stack.Push(new PhysicalDirectoryLoader());
+
+        var chain = stack.Pop();
+
+        foreach (var loader in stack)
+        {
+            loader.Next = chain;
+            chain = loader;
+        }
+
+        return chain;
+    }
+
+    private static IEnumerable<string> ExpandPaths(IEnumerable<string> paths)
+    {
+        var lookup = paths.ToLookup(IsDirectory);
+        var result = new List<string>();
+        result.AddRange(lookup[false]);
+        foreach (var path in lookup[true])
+        {
+            result.Add(path);
+            result.AddRange(Directory.EnumerateFileSystemEntries(path, "*", SearchOption.AllDirectories));
+        }
+        return result;
+    }
+
+    private static IEnumerable<ITreeItem> ToHierarchy(IList<ITreeItem> flatNodes)
+    {
+        var nodesByPath = flatNodes.ToDictionary(node => node.Path);
+        var groupsByParent = flatNodes.ToLookup(node => Path.GetDirectoryName(node.Path));
+
+        foreach (var group in groupsByParent)
+        {
+            nodesByPath.TryGetValue(group.Key, out var parent);
+
+            if (parent != null)
+            {
+                foreach (var item in group)
+                {
+                    item.Parent = parent;
+                    parent.Children.Add(item);
+                }
+            }
+        }
+
+        return nodesByPath.Values.Where(x => x.Parent == null).ToList();
+    }
 }
