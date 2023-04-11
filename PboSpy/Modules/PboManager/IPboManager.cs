@@ -1,14 +1,12 @@
 ﻿using PboSpy.Interfaces;
-using PboSpy.Models;
 
 namespace PboSpy.Modules.PboManager;
 
-// TODO: Generalize for all supported files
-public class PboManagerEventArgs
+public class FileManagerEventArgs
 {
-    public PboFile File { get; }
+    public IPersistentItem File { get; }
 
-    public PboManagerEventArgs(PboFile file)
+    public FileManagerEventArgs(IPersistentItem file)
     {
         File = file;
     }
@@ -18,8 +16,8 @@ public interface IPboManager
 {
     ICollection<ITreeItem> FileTree { get; }
 
-    event EventHandler<PboManagerEventArgs> PboLoaded;
-    event EventHandler<PboManagerEventArgs> PboRemoved;
+    event EventHandler<FileManagerEventArgs> FileLoaded;
+    event EventHandler<FileManagerEventArgs> FileRemoved;
 
     Task LoadSupportedFiles(IEnumerable<string> fileNames);
     void Close(IPersistentItem file);

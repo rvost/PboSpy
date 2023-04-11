@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using PboSpy.Models;
 using PboSpy.Modules.ConfigExplorer.Models;
 using PboSpy.Modules.ConfigExplorer.Utils;
 using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
@@ -37,14 +38,14 @@ class ConfigTreeRootViewModel : PropertyChangedBase, IDisposable
             param.LoadChildren();
         });
 
-        _pboManager.PboLoaded += OnPboLoaded;
-        _pboManager.PboRemoved += OnPboRemoved;
+        _pboManager.FileLoaded += OnPboLoaded;
+        _pboManager.FileRemoved += OnPboRemoved;
     }
 
     public void Dispose()
     {
-        _pboManager.PboLoaded -= OnPboLoaded;
-        _pboManager.PboRemoved -= OnPboRemoved;
+        _pboManager.FileLoaded -= OnPboLoaded;
+        _pboManager.FileRemoved -= OnPboRemoved;
     }
 
     public ObservableCollection<ConfigTreeItemViewModel> RootItems => _rootItems;
@@ -235,23 +236,30 @@ class ConfigTreeRootViewModel : PropertyChangedBase, IDisposable
 
     // TODO: Refactor ConfigTree update in OnPboLoaded and OnPboRemoved
     // TODO: Improve messages informativeness
-    private void OnPboLoaded(object sender, PboManagerEventArgs e)
+    private void OnPboLoaded(object sender, FileManagerEventArgs e)
     {
-        var configClasses = _configRoot.MergePbo(e.File,
-            ex => _logger.LogError(ex, "Exception when merging PBO with config root")
-            );
+        if (e.File is PboFile pbo)
+        {
+            var configClasses = _configRoot.MergePbo(pbo,
+                        ex => _logger.LogError(ex, "Exception when merging PBO with config root")
+                        );
 
-        Clear();
-        AddItems(configClasses);
+            Clear();
+            AddItems(configClasses);
+        }
+
     }
 
-    private void OnPboRemoved(object sender, PboManagerEventArgs e)
+    private void OnPboRemoved(object sender, FileManagerEventArgs e)
     {
-        var configClasses = _configRoot.RemovePbo(e.File,
+        if (e.File is PboFile pbo)
+        {
+            var configClasses = _configRoot.RemovePbo(pbo,
             ex => _logger.LogError(ex, "Exception when removing PBO from config root")
             );
 
-        Clear();
-        AddItems(configClasses);
+            Clear();
+            AddItems(configClasses);
+        }
     }
 }

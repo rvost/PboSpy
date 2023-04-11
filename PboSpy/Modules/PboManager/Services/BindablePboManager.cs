@@ -12,8 +12,8 @@ class BindablePboManager : IPboManager
 {
     public ICollection<ITreeItem> FileTree { get; }
 
-    public event EventHandler<PboManagerEventArgs> PboLoaded;
-    public event EventHandler<PboManagerEventArgs> PboRemoved;
+    public event EventHandler<FileManagerEventArgs> FileLoaded;
+    public event EventHandler<FileManagerEventArgs> FileRemoved;
 
     public BindablePboManager()
     {
@@ -43,9 +43,9 @@ class BindablePboManager : IPboManager
             file.Parent.Children.Remove(file);
         }
 
-        if (file is PboFile pbo)
+        if (file is IPersistentItem persistentFile)
         {
-            PboRemoved?.Invoke(this, new(pbo));
+            OnFileRemoved(persistentFile);
         }
     }
 
@@ -58,27 +58,11 @@ class BindablePboManager : IPboManager
 
     private ITreeItem LoadFile(string path, ITreeItem parent)
     {
-        if (IsPboFile(path))
-        {
-            return LoadPbo(path, parent);
-        }
-        else
-        {
-            return LoadPhysicalFile(path, parent);
-        }
+        IPersistentItem file = IsPboFile(path) ? new PboFile(new PBO(path, false), parent)
+            : new PhysicalFile(Path.GetFullPath(path), parent);
+        OnFileLoaded(file);
+        return file;
     }
-
-    private PboFile LoadPbo(string path, ITreeItem parent)
-    {
-        var pbo = new PboFile(new PBO(path, false), parent);
-
-        PboLoaded?.Invoke(this, new(pbo));
-
-        return pbo;
-    }
-
-    private static PhysicalFile LoadPhysicalFile(string path, ITreeItem parent)
-        => new(Path.GetFullPath(path), parent);
 
     private PhysicalDirectory LoadDirectory(string path, ITreeItem parent)
     {
@@ -93,6 +77,8 @@ class BindablePboManager : IPboManager
         GetSupportedFiles(dirInfo.FullName)
             .Select(file => LoadFile(file, dir))
             .Apply(file => dir.Children.Add(file));
+
+        OnFileLoaded(dir);
 
         return dir;
     }
@@ -111,4 +97,10 @@ class BindablePboManager : IPboManager
 
     private static bool IsDirectory(string path)
         => File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+
+    private void OnFileLoaded(IPersistentItem file) 
+        => FileLoaded?.Invoke(this, new(file));
+
+    private void OnFileRemoved(IPersistentItem file)
+        => FileRemoved?.Invoke(this, new(file));
 }
