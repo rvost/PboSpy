@@ -1,6 +1,6 @@
 ﻿using BIS.Core.Streams;
-using PboSpy.Models;
 using PboSpy.Modules.Pbo.Metadata;
+using PboSpy.Modules.Pbo.Models;
 using System.ComponentModel;
 
 namespace PboSpy.Modules.P3d.Metadata;

@@ -1,7 +1,7 @@
 ﻿using BIS.PBO;
 using PboSpy.Interfaces;
-using PboSpy.Models;
 using PboSpy.Modules.FileManager;
+using PboSpy.Modules.Pbo.Models;
 using System.IO;
 
 namespace PboSpy.Modules.Pbo;

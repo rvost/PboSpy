@@ -1,6 +1,6 @@
-﻿using PboSpy.Models;
-using PboSpy.Modules.BinaryConfig.Utils;
+﻿using PboSpy.Modules.BinaryConfig.Utils;
 using PboSpy.Modules.Pbo.Metadata;
+using PboSpy.Modules.Pbo.Models;
 using System.ComponentModel;
 
 namespace PboSpy.Modules.BinaryConfig.Metadata;

@@ -1,6 +1,6 @@
 ﻿using Gemini.Modules.CodeEditor;
 using Gemini.Modules.CodeEditor.Views;
-using PboSpy.Models;
+using PboSpy.Modules.Pbo.Models;
 
 namespace PboSpy.Modules.ConfigExplorer.ViewModels;
 

@@ -1,8 +1,7 @@
 ﻿using BIS.PBO;
 using PboSpy.Interfaces;
-using System.IO;
 
-namespace PboSpy.Models;
+namespace PboSpy.Modules.Pbo.Models;
 
 public class PboFile : ITreeItem, IPersistentItem
 {
@@ -23,7 +22,7 @@ public class PboFile : ITreeItem, IPersistentItem
     public string Path => System.IO.Path.GetFullPath(pbo.PBOFilePath);
 
     public ICollection<ITreeItem> Children => root.Children;
-    
+
     public ITreeItem Parent { get; set; }
 
     private static PboDirectory GenerateRoot(PBO pbo, ITreeItem parentPbo)
@@ -43,7 +42,7 @@ public class PboFile : ITreeItem, IPersistentItem
         }
         return root;
     }
-    
+
     private static PboDirectory GetDirectory(PboDirectory root, string directory)
     {
         var parent = System.IO.Path.GetDirectoryName(directory).Trim('/', '\\');

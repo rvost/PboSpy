@@ -2,6 +2,7 @@
 using PboSpy.Interfaces;
 using PboSpy.Models;
 using PboSpy.Modules.Extraction.Commands;
+using PboSpy.Modules.Pbo.Models;
 
 namespace PboSpy.Modules.Preview.ViewModels;
 

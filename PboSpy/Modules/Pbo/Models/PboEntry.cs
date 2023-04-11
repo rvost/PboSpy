@@ -1,8 +1,9 @@
 ﻿using BIS.PBO;
 using PboSpy.Interfaces;
+using PboSpy.Models;
 using System.IO;
 
-namespace PboSpy.Models;
+namespace PboSpy.Modules.Pbo.Models;
 public class PboEntry : FileBase, ITreeItem
 {
     private readonly PBO pbo;

@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using PboSpy.Modules.Pbo.Models;
 
 namespace PboSpy.Modules.Explorer.ViewModels;
 

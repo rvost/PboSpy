@@ -1,8 +1,8 @@
 ﻿using BIS.Core.Config;
 using BIS.PBO;
 using PboSpy.Interfaces;
-using PboSpy.Models;
 using PboSpy.Modules.ConfigExplorer.Utils;
+using PboSpy.Modules.Pbo.Models;
 
 namespace PboSpy.Modules.ConfigExplorer.Models;
 

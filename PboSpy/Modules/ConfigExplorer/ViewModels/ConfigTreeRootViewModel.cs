@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using PboSpy.Models;
 using PboSpy.Modules.ConfigExplorer.Models;
 using PboSpy.Modules.ConfigExplorer.Utils;
 using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
 using PboSpy.Modules.FileManager;
+using PboSpy.Modules.Pbo.Models;
 using System.Windows.Data;
 using System.Windows.Input;
 

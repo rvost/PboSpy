@@ -1,7 +1,7 @@
 ﻿using BIS.PBO;
 using PboSpy.Interfaces;
 
-namespace PboSpy.Models;
+namespace PboSpy.Modules.Pbo.Models;
 
 public class PboDirectory : ITreeItem
 {
