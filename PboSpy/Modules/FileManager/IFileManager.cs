@@ -1,6 +1,6 @@
 ﻿using PboSpy.Interfaces;
 
-namespace PboSpy.Modules.PboManager;
+namespace PboSpy.Modules.FileManager;
 
 public class FileManagerEventArgs
 {
@@ -12,7 +12,7 @@ public class FileManagerEventArgs
     }
 }
 
-public interface IPboManager
+public interface IFileManager
 {
     ICollection<ITreeItem> FileTree { get; }
 

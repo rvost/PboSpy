@@ -1,7 +1,7 @@
 ﻿using PboSpy.Modules.About;
 using PboSpy.Modules.ConfigExplorer;
 using PboSpy.Modules.Explorer;
-using PboSpy.Modules.PboManager;
+using PboSpy.Modules.FileManager;
 using PboSpy.Properties;
 using System.IO;
 using System.Windows;
@@ -13,7 +13,7 @@ namespace PboSpy.Modules.Startup;
 public class Module : ModuleBase
 {
     private readonly IMainWindow _mainWindow;
-    private readonly IPboManager _pboManager;
+    private readonly IFileManager _pboManager;
 
     public override IEnumerable<IDocument> DefaultDocuments
     {
@@ -33,7 +33,7 @@ public class Module : ModuleBase
     }
 
     [ImportingConstructor]
-    public Module(IMainWindow mainWindow, IPboManager pboManager)
+    public Module(IMainWindow mainWindow, IFileManager pboManager)
     {
         _mainWindow = mainWindow;
         _pboManager = pboManager;

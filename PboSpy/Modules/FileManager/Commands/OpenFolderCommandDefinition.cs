@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace PboSpy.Modules.PboManager.Commands;
+namespace PboSpy.Modules.FileManager.Commands;
 
 [CommandDefinition]
 public class OpenFolderCommandDefinition : CommandDefinition

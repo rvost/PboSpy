@@ -1,6 +1,6 @@
-﻿using PboSpy.Modules.PboManager.Commands;
+﻿using PboSpy.Modules.FileManager.Commands;
 
-namespace PboSpy.Modules.PboManager;
+namespace PboSpy.Modules.FileManager;
 
 internal static class MenuDefinitions
 {

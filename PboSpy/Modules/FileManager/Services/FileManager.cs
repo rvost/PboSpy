@@ -4,18 +4,18 @@ using PboSpy.Models;
 using System.Data;
 using System.IO;
 
-namespace PboSpy.Modules.PboManager.Services;
+namespace PboSpy.Modules.FileManager.Services;
 
-[Export(typeof(IPboManager))]
+[Export(typeof(IFileManager))]
 [PartCreationPolicy(CreationPolicy.Shared)]
-class BindablePboManager : IPboManager
+class FileManager : IFileManager
 {
     public ICollection<ITreeItem> FileTree { get; }
 
     public event EventHandler<FileManagerEventArgs> FileLoaded;
     public event EventHandler<FileManagerEventArgs> FileRemoved;
 
-    public BindablePboManager()
+    public FileManager()
     {
         FileTree = new BindableCollection<ITreeItem>();
     }

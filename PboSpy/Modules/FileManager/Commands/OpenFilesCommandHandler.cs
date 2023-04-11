@@ -1,16 +1,16 @@
 ﻿using Gemini.Modules.Shell.Commands;
 using Microsoft.Win32;
 
-namespace PboSpy.Modules.PboManager.Commands;
+namespace PboSpy.Modules.FileManager.Commands;
 
 [CommandHandler]
 public class OpenFilesCommandHandler : CommandHandlerBase<OpenFilesCommandDefinition>,
     ICommandHandler<OpenFileCommandDefinition>
 {
-    private readonly IPboManager _explorer;
+    private readonly IFileManager _explorer;
 
     [ImportingConstructor]
-    public OpenFilesCommandHandler(IPboManager explorer)
+    public OpenFilesCommandHandler(IFileManager explorer)
     {
         _explorer = explorer;
     }

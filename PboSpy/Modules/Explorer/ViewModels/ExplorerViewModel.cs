@@ -4,7 +4,7 @@ using PboSpy.Interfaces;
 using PboSpy.Models;
 using PboSpy.Modules.Explorer.Commands;
 using PboSpy.Modules.Metadata;
-using PboSpy.Modules.PboManager;
+using PboSpy.Modules.FileManager;
 using PboSpy.Modules.Preview;
 using System.Collections.Specialized;
 using System.IO;
@@ -18,7 +18,7 @@ namespace PboSpy.Modules.Explorer.ViewModels;
 public class ExplorerViewModel : Tool, IPboExplorer, ICommandHandler<CloseFileCommandDefinition>,
     ICommandHandler<CloseAllFilesCommandDefinition>
 {
-    private readonly IPboManager _pboManager;
+    private readonly IFileManager _pboManager;
     private readonly IPreviewManager _previewManager;
     private readonly IMetadataInspector _metadataInspector;
 
@@ -44,7 +44,7 @@ public class ExplorerViewModel : Tool, IPboExplorer, ICommandHandler<CloseFileCo
     public override PaneLocation PreferredLocation => PaneLocation.Left;
 
     [ImportingConstructor]
-    public ExplorerViewModel(IPboManager pboManager, IPreviewManager previewManager, IMetadataInspector metadataInspector)
+    public ExplorerViewModel(IFileManager pboManager, IPreviewManager previewManager, IMetadataInspector metadataInspector)
     {
         _pboManager = pboManager;
         _previewManager = previewManager;

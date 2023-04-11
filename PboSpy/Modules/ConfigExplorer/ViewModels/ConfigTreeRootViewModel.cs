@@ -3,7 +3,7 @@ using PboSpy.Models;
 using PboSpy.Modules.ConfigExplorer.Models;
 using PboSpy.Modules.ConfigExplorer.Utils;
 using PboSpy.Modules.ConfigExplorer.ViewModels.Search;
-using PboSpy.Modules.PboManager;
+using PboSpy.Modules.FileManager;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -13,7 +13,7 @@ namespace PboSpy.Modules.ConfigExplorer.ViewModels;
 [PartCreationPolicy(CreationPolicy.Shared)]
 class ConfigTreeRootViewModel : PropertyChangedBase, IDisposable
 {
-    private readonly IPboManager _pboManager;
+    private readonly IFileManager _pboManager;
     private readonly ILogger<ConfigTreeRootViewModel> _logger;
     private readonly ConfigClassItem _configRoot = new();
 
@@ -23,7 +23,7 @@ class ConfigTreeRootViewModel : PropertyChangedBase, IDisposable
     private readonly object _itemsLock = new();
 
     [ImportingConstructor]
-    public ConfigTreeRootViewModel(IPboManager pboManager, ILoggerFactory loggerFactory)
+    public ConfigTreeRootViewModel(IFileManager pboManager, ILoggerFactory loggerFactory)
     {
         _pboManager = pboManager;
         _logger = loggerFactory.CreateLogger<ConfigTreeRootViewModel>();

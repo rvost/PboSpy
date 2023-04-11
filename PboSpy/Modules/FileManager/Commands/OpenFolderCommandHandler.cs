@@ -1,14 +1,14 @@
 ﻿using Microsoft.WindowsAPICodePack.Dialogs;
 
-namespace PboSpy.Modules.PboManager.Commands;
+namespace PboSpy.Modules.FileManager.Commands;
 
 [CommandHandler]
 public class OpenFolderCommandHandler : CommandHandlerBase<OpenFolderCommandDefinition>
 {
-    private readonly IPboManager _explorer;
+    private readonly IFileManager _explorer;
 
     [ImportingConstructor]
-    public OpenFolderCommandHandler(IPboManager explorer)
+    public OpenFolderCommandHandler(IFileManager explorer)
     {
         _explorer = explorer;
     }
