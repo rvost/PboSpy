@@ -1,5 +1,6 @@
 ﻿using BIS.PBO;
 using PboSpy.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace PboSpy.Modules.Pbo.Models;
 
@@ -28,9 +29,10 @@ public class PboFile : ITreeItem, IPersistentItem
     private static PboDirectory GenerateRoot(PBO pbo, ITreeItem parentPbo)
     {
         var root = new PboDirectory("", parentPbo);
-        foreach (var entry in pbo.Files)
+        foreach (var entry in pbo.Files.Where(f => f.Size > 4))
         {
-            var parent = System.IO.Path.GetDirectoryName(entry.FileName).Trim('/', '\\');
+            var sanitizedName = SanitizeFileName(entry.FileName);
+            var parent = System.IO.Path.GetDirectoryName(sanitizedName)?.Trim('/', '\\');
             if (string.IsNullOrEmpty(parent))
             {
                 root.AddEntry(pbo, entry);
@@ -45,7 +47,7 @@ public class PboFile : ITreeItem, IPersistentItem
 
     private static PboDirectory GetDirectory(PboDirectory root, string directory)
     {
-        var parent = System.IO.Path.GetDirectoryName(directory).Trim('/', '\\');
+        var parent = System.IO.Path.GetDirectoryName(directory)?.Trim('/', '\\');
         if (string.IsNullOrEmpty(parent))
         {
             return root.GetOrAddDirectory(directory);
@@ -59,4 +61,15 @@ public class PboFile : ITreeItem, IPersistentItem
     }
 
     internal IEnumerable<PboEntry> AllEntries => root.AllFiles;
+
+    private static string SanitizeFileName(string name)
+    {
+        if (name != null)
+        {
+            string pattern = @"\.+\\|\\{2,}";
+            var res = Regex.Replace(name, pattern, "\\");
+            return res;
+        }
+        return null;
+    }
 }
