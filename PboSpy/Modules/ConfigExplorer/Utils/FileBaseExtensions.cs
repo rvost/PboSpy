@@ -9,8 +9,15 @@ internal static class FileBaseExtensions
     {
         if (file.DataSize > 4)
         {
-            using var stream = file.GetStream();
-            return IsBinaryConfig(stream);
+            try
+            {
+                using var stream = file.GetStream();
+                return IsBinaryConfig(stream);
+            }
+            catch 
+            { 
+                return false; // TODO: Refactor
+            }
         }
         return false;
     }
