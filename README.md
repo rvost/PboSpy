@@ -1,12 +1,9 @@
 ﻿# PboSpy
 
-PboSpy is graphical tool for exploring [BI PBO files](https://community.bistudio.com/wiki/PBO_File_Format)
+**PboSpy is a graphical tool for exploring and extracting [PBO files](https://community.bistudio.com/wiki/PBO_File_Format).**
 
-It allows you to walk through ArmA or DayZ (and mods) PBOs to check for configuration and files.
-It also allows you to quickly check if packaging and macros have worked the expected way.
-
-PboSpy can be used to unpack PBOs or extract individual files.
-**In that case, please check the licensing of files to ensure you are allowed to extract any data.**
+![License](https://img.shields.io/github/license/rvost/PboSpy?style=flat-square)
+![Downloads all releases](https://img.shields.io/github/downloads/rvost/PboSpy/total?style=flat-square)
 
 ![PboSpy](images/PboSpy.png)
 
@@ -15,17 +12,46 @@ Any feedback is highly appreciated!
 
 Please give this project a ⭐ if you find it useful!
 
-## Download
+## Features
 
-You can get [latest](https://github.com/rvost/PboSpy/releases/latest) version on [Releases page](https://github.com/rvost/PboSpy/releases). 
-Pick one `.exe` as described below. 
-Other files required for updates and you don't need to download them manually.
+* Explore the contents of ArmA and DayZ PBOs;
+* Extract PBOs or individual files;
+  **In that case, please check the licensing of files to ensure you are allowed to extract any data.**
+* View and extract obfuscated PBOs;
+* Preview files in PBO without extracting them;
+* View class definitions (configs) in PBOs;
+* Recover `.bikey` from `.bisign`.
 
 ## Installation
 
-Since v0.6.0 PboSpy comes in two version. 
-`PboSpyPortable.exe` is ready-to-run portable executable that however will not receive updates. 
-`PboSpySetup.exe` is one-click installer for distribution with auto-updates. 
+1. Download the `PboSpySetup.exe` installer from the [latest release](https://github.com/rvost/PboSpy/releases/latest) page.
+  Other files required for updates and you don't need to download them manually.
+2. Run the installer.
+3. Your installation will be automatically updated as new releases become available.
+
+Sometimes you may get a warning from Windows Defender or other anti-virus software.
+You can safely ignore it.
+This is because PboSpy is not a properly signed application. 
+
+**OR** 
+
+If you don't trust executables from the Internet, you can always build PboSpy from source.
+In this case please note that PboSpy uses the git submodules so clone the repository with the `--recursive` option:
+
+`git clone https://github.com/rvost/PboSpy.git --recursive`
+
+If you already have cloned without the `--recursive`, you have to perform `git submodule init` followed by `git submodule update` in order to get all dependencies cloned.
+
+## Related projects
+
+You may also be interested in these *open source* projects which offer similar functionality and some unique features:
+
+* [PboExplorer](https://github.com/jetelain/PboExplorer) is the predecessor of PboSpy, which can be used to modify files inside PBOs.
+   * [PboExplorer (BisUtils)](https://github.com/FlipperPlz/PboExplorer) is a fork of PboExplorer with some new features like text search in files.
+* [PakExplorer](https://github.com/FlipperPlz/PakExplorer) is a simple GUI application for opening/viewing/extracting Arma Reforger's PAC1 file format.
+* [PboManager](https://github.com/winseros/pboman3) can be used to package PBOs and has Windows Explorer integration.
+* [PboViewer](https://github.com/SteezCram/PboViewer) is a cross-platform PBO maker/unpacker.
+* [OFP PBO Reader](https://github.com/ofpisnotdead-com/rust-pbo-wasm) can be used to view (OFP) PBO  content directly in your [web browser](https://ofpisnotdead-com.github.io/rust-pbo-wasm/).
 
 ## License
 
@@ -43,4 +69,4 @@ GUI built with [Tim Jones's Gemini framework](https://github.com/tgjones/gemini)
 
 Preview of  signatures, keys and other binary files implemented with [Derek Tremblay's WPF Hexeditor](https://github.com/abbaye/WpfHexEditorControl), released under the Apache 2.0 license.
 
-Implementation of config search is based on [article](https://www.codeproject.com/Articles/1213031/Advanced-WPF-TreeViews-in-Csharp-VB-Net-Part-of-n) by Dirk Bahle and Alaa Ben Fatma and uses Dirk Bahle's [TreeLib](https://github.com/Dirkster99/TreeLib).
+Implementation of config search is based on [article](https://www.codeproject.com/Articles/1213031/Advanced-WPF-TreeViews-in-Csharp-VB-Net-Part-of-n) by Dirk Bahle and Alaa Ben Fatma.
