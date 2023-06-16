@@ -60,10 +60,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\bis-file-formats\BIS.P3D\BIS.P3D.csproj" />
-		<ProjectReference Include="..\bis-file-formats\BIS.PAA\BIS.PAA.csproj" />
-		<ProjectReference Include="..\bis-file-formats\BIS.PBO\BIS.PBO.csproj" />
-		<ProjectReference Include="..\bis-file-formats\BIS.WRP\BIS.WRP.csproj" />
+		<ProjectReference Include="..\..\libs\bis-file-formats\BIS.P3D\BIS.P3D.csproj" />
+		<ProjectReference Include="..\..\libs\bis-file-formats\BIS.PAA\BIS.PAA.csproj" />
+		<ProjectReference Include="..\..\libs\bis-file-formats\BIS.PBO\BIS.PBO.csproj" />
+		<ProjectReference Include="..\..\libs\bis-file-formats\BIS.WRP\BIS.WRP.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -90,11 +90,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EditorConfigFiles Remove="C:\Users\Roman\source\repos\rvost\PboExplorer\PboSpy\.editorconfig" />
+		<EditorConfigFiles Remove=".editorconfig" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="C:\Users\Roman\source\repos\rvost\PboExplorer\PboSpy\.editorconfig" />
+		<None Include=".editorconfig" />
 	</ItemGroup>
 
 </Project>

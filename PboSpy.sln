@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PboSpy", "PboSpy\PboSpy.csproj", "{A3931905-5DD4-4CCD-AD5F-19B27214ABE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PboSpy", "src\PboSpy\PboSpy.csproj", "{A3931905-5DD4-4CCD-AD5F-19B27214ABE7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bis-file-formats", "bis-file-formats", "{080DE378-3C6F-482D-ADEA-A61E2A33E07C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.Core", "bis-file-formats\BIS.Core\BIS.Core.csproj", "{C9661BB1-3A7B-4D73-933F-E74DEF8E8771}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.Core", "libs\bis-file-formats\BIS.Core\BIS.Core.csproj", "{C9661BB1-3A7B-4D73-933F-E74DEF8E8771}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.P3D", "bis-file-formats\BIS.P3D\BIS.P3D.csproj", "{F8F82E34-9D07-41DF-B973-881ED911471A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.P3D", "libs\bis-file-formats\BIS.P3D\BIS.P3D.csproj", "{F8F82E34-9D07-41DF-B973-881ED911471A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.PAA", "bis-file-formats\BIS.PAA\BIS.PAA.csproj", "{2E4A96B1-6D60-49D1-A5E3-B045B0A209A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.PAA", "libs\bis-file-formats\BIS.PAA\BIS.PAA.csproj", "{2E4A96B1-6D60-49D1-A5E3-B045B0A209A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.PBO", "bis-file-formats\BIS.PBO\BIS.PBO.csproj", "{B58F5C4D-DD65-4533-AD4B-4CBC59745CBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.PBO", "libs\bis-file-formats\BIS.PBO\BIS.PBO.csproj", "{B58F5C4D-DD65-4533-AD4B-4CBC59745CBE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.WRP", "bis-file-formats\BIS.WRP\BIS.WRP.csproj", "{700C58FA-7E06-4D9C-B108-C5E89730B327}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BIS.WRP", "libs\bis-file-formats\BIS.WRP\BIS.WRP.csproj", "{700C58FA-7E06-4D9C-B108-C5E89730B327}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
